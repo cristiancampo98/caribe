@@ -20,6 +20,7 @@ class CreateMenusTable extends Migration
             $table->text('description')->nullable();
             $table->string('icon')->nullable();
             $table->boolean('available');
+            $table->boolean('isDirect');
             $table->tinyInteger('position');
             $table->timestamps();
         });

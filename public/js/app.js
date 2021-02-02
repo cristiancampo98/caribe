@@ -4297,6 +4297,46 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4323,8 +4363,9 @@ __webpack_require__.r(__webpack_exports__);
         name: null,
         slug: null,
         description: null,
-        icon: null,
-        available: null
+        icon: 'menu-alt-4',
+        available: 0,
+        isDirect: 0
       })
     };
   },
@@ -4411,6 +4452,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Jetstream_InputError__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/Jetstream/InputError */ "./resources/js/Jetstream/InputError.vue");
 /* harmony import */ var _Jetstream_ActionMessage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/Jetstream/ActionMessage */ "./resources/js/Jetstream/ActionMessage.vue");
 /* harmony import */ var _Jetstream_Button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/Jetstream/Button */ "./resources/js/Jetstream/Button.vue");
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5751,6 +5798,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -5774,8 +5839,8 @@ __webpack_require__.r(__webpack_exports__);
         name: null,
         slug: null,
         description: null,
-        full_access: null,
-        "public": null
+        full_access: 'no',
+        "public": 0
       })
     };
   },
@@ -34850,6 +34915,16 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
+                          _c("p", { staticClass: "text-sm text-blue-600" }, [
+                            _vm._v(
+                              "\n\t\t\t                \tNota: Recuerda que este campo debe coincidir con el "
+                            ),
+                            _c("strong", [
+                              _vm._v("Identificador único de un permiso")
+                            ]),
+                            _vm._v(".\n\t\t\t                ")
+                          ]),
+                          _vm._v(" "),
                           _c("jet-input-error", {
                             staticClass: "mt-2",
                             attrs: { message: _vm.form.errors.slug }
@@ -34866,19 +34941,32 @@ var render = function() {
                             attrs: { for: "description", value: "Descripción" }
                           }),
                           _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.description,
+                                expression: "form.description"
+                              }
+                            ],
+                            staticClass: "mt-1 block w-full rounded-md",
                             attrs: {
                               id: "description",
-                              type: "text",
                               autocomplete: "description"
                             },
-                            model: {
-                              value: _vm.form.description,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "description", $$v)
-                              },
-                              expression: "form.description"
+                            domProps: { value: _vm.form.description },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "description",
+                                  $event.target.value
+                                )
+                              }
                             }
                           }),
                           _vm._v(" "),
@@ -34914,9 +35002,260 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
+                          _c("p", { staticClass: "text-sm text-blue-600" }, [
+                            _vm._v("\n\t\t\t                \tNota: Aquí "),
+                            _c("strong", [
+                              _c(
+                                "a",
+                                {
+                                  attrs: {
+                                    href: "https://heroicons.com",
+                                    target: "_blank"
+                                  }
+                                },
+                                [_vm._v("https://heroicons.com")]
+                              ),
+                              _vm._v("/")
+                            ]),
+                            _vm._v(
+                              " puedes buscar un icono que te agrade. Copias el nombre que aparece abajo de la cajita y lo pegas. Por ejemplo: ['menu','user-group',...].\n\t\t\t                "
+                            )
+                          ]),
+                          _vm._v(" "),
                           _c("jet-input-error", {
                             staticClass: "mt-2",
                             attrs: { message: _vm.form.errors.icon }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "col-span-6 sm:col-span-4" },
+                        [
+                          _c("jet-label", {
+                            attrs: { for: "available", value: "Disponible" }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "grid grid-flow-col auto-cols-max md:auto-cols-min"
+                            },
+                            [
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.available,
+                                        expression: "form.available"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-green-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "1" },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form.available, "1")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          "available",
+                                          "1"
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" Si")]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.available,
+                                        expression: "form.available"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-red-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-red-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "0" },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form.available, "0")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          "available",
+                                          "0"
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" No")]
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("jet-input-error", {
+                            staticClass: "mt-2",
+                            attrs: { message: _vm.form.errors.available }
+                          })
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "col-span-6 sm:col-span-4" },
+                        [
+                          _c("jet-label", {
+                            attrs: { for: "isDirect", value: "Enlace directo" }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "grid grid-flow-col auto-cols-max md:auto-cols-min"
+                            },
+                            [
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.isDirect,
+                                        expression: "form.isDirect"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-green-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "1" },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form.isDirect, "1")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          "isDirect",
+                                          "1"
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" Si")]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.isDirect,
+                                        expression: "form.isDirect"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-red-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-red-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "0" },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form.isDirect, "0")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          "isDirect",
+                                          "0"
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" No")]
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("p", { staticClass: "text-sm text-blue-600" }, [
+                            _vm._v(
+                              "\n\t\t\t                \tNota: Si marcas esta casilla querrá decir que el menu será un enlace directo a una ruta y por ende en "
+                            ),
+                            _c("strong", [_vm._v("Identificador único")]),
+                            _vm._v(" "),
+                            _c("u", [
+                              _vm._v(
+                                'deberás colocar el "name" de una ruta. Por ejemplo: '
+                              ),
+                              _c("strong", [_vm._v("menu.create")])
+                            ]),
+                            _vm._v(
+                              ". Si no lo haces, este menú será el padre de un submenú.\n\t\t\t                "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("jet-input-error", {
+                            staticClass: "mt-2",
+                            attrs: { message: _vm.form.errors.isDirect }
                           })
                         ],
                         1
@@ -35175,6 +35514,12 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
+                          _c("p", { staticClass: "text-sm text-blue-600" }, [
+                            _vm._v(
+                              '\n\t\t\t                \tNota: El identificador único debe corresponder siempre a el "name" de una ruta.\n\t\t\t                '
+                            )
+                          ]),
+                          _vm._v(" "),
                           _c("jet-input-error", {
                             staticClass: "mt-2",
                             attrs: { message: _vm.form.errors.slug }
@@ -35207,6 +35552,20 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
+                          _c("p", { staticClass: "text-sm text-blue-600" }, [
+                            _vm._v(
+                              "\n\t\t\t                \tNota: Digita el nombre del controlador "
+                            ),
+                            _c("strong", [_vm._v("Sí")]),
+                            _vm._v(
+                              " hay mas permisos para el mismo. Por ejemplo: Controlador => "
+                            ),
+                            _c("u", [_vm._v("permission")]),
+                            _vm._v(
+                              "  Permisos => ['permission.index', 'permission.create', ...].\n\t\t\t                "
+                            )
+                          ]),
+                          _vm._v(" "),
                           _c("jet-input-error", {
                             staticClass: "mt-2",
                             attrs: { message: _vm.form.errors.controller }
@@ -35223,19 +35582,32 @@ var render = function() {
                             attrs: { for: "description", value: "Descripción" }
                           }),
                           _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.description,
+                                expression: "form.description"
+                              }
+                            ],
+                            staticClass: "mt-1 block w-full rounded-md",
                             attrs: {
                               id: "description",
-                              type: "text",
                               autocomplete: "description"
                             },
-                            model: {
-                              value: _vm.form.description,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "description", $$v)
-                              },
-                              expression: "form.description"
+                            domProps: { value: _vm.form.description },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "description",
+                                  $event.target.value
+                                )
+                              }
                             }
                           }),
                           _vm._v(" "),
@@ -35329,7 +35701,7 @@ var render = function() {
                   staticClass:
                     "font-semibold text-xl text-gray-800 leading-tight"
                 },
-                [_vm._v("\n            Roles\n        ")]
+                [_vm._v("\n            Permisos\n        ")]
               )
             ]
           },
@@ -37269,21 +37641,102 @@ var render = function() {
                             attrs: { for: "full_access", value: "Acceso total" }
                           }),
                           _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "full_access",
-                              type: "text",
-                              autocomplete: "full_access"
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "grid grid-flow-col auto-cols-max md:auto-cols-min"
                             },
-                            model: {
-                              value: _vm.form.full_access,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "full_access", $$v)
-                              },
-                              expression: "form.full_access"
-                            }
-                          }),
+                            [
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.full_access,
+                                        expression: "form.full_access"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-green-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "yes" },
+                                    domProps: {
+                                      checked: _vm._q(
+                                        _vm.form.full_access,
+                                        "yes"
+                                      )
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          "full_access",
+                                          "yes"
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" Si")]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.full_access,
+                                        expression: "form.full_access"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-red-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-red-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "no" },
+                                    domProps: {
+                                      checked: _vm._q(
+                                        _vm.form.full_access,
+                                        "no"
+                                      )
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(
+                                          _vm.form,
+                                          "full_access",
+                                          "no"
+                                        )
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" No")]
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
                           _vm._v(" "),
                           _c("jet-input-error", {
                             staticClass: "mt-2",
@@ -37298,24 +37751,91 @@ var render = function() {
                         { staticClass: "col-span-6 sm:col-span-4" },
                         [
                           _c("jet-label", {
-                            attrs: { for: "public", value: "Publico" }
+                            attrs: { for: "public", value: "Public" }
                           }),
                           _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "public",
-                              type: "text",
-                              autocomplete: "public"
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "grid grid-flow-col auto-cols-max md:auto-cols-min"
                             },
-                            model: {
-                              value: _vm.form.public,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "public", $$v)
-                              },
-                              expression: "form.public"
-                            }
-                          }),
+                            [
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.public,
+                                        expression: "form.public"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-green-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "1" },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form.public, "1")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(_vm.form, "public", "1")
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" Si")]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "label",
+                                { staticClass: "flex items-center" },
+                                [
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.form.public,
+                                        expression: "form.public"
+                                      }
+                                    ],
+                                    staticClass:
+                                      "rounded border-gray-300 text-red-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-red-200 focus:ring-opacity-50",
+                                    attrs: { type: "radio", value: "0" },
+                                    domProps: {
+                                      checked: _vm._q(_vm.form.public, "0")
+                                    },
+                                    on: {
+                                      change: function($event) {
+                                        return _vm.$set(_vm.form, "public", "0")
+                                      }
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "ml-1 mr-3 text-sm text-gray-600"
+                                    },
+                                    [_vm._v(" No")]
+                                  )
+                                ]
+                              )
+                            ]
+                          ),
                           _vm._v(" "),
                           _c("jet-input-error", {
                             staticClass: "mt-2",

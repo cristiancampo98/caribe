@@ -9,11 +9,11 @@ class MenuSeeder extends Seeder
 {
 
 	protected $modules = [
-		'Clientes',
-		'Productos',
-		'Pedidos',
-		'Remisiones',
-		'Configuración'
+		['Clientes', 'user.index', 1],
+		['Productos', 'product.index', 1],
+		['Pedidos', 'order.index', 1],
+		['Remisiones', 'remission.index', 1],
+		['Configuración', 'setting', 0]
 	];
     /**
      * Run the database seeds.
@@ -25,10 +25,11 @@ class MenuSeeder extends Seeder
     	foreach ($this->modules as $key => $value) {
     		 DB::table('menus')->insert([
 			    [
-			    	'name' => $value, 
-			    	'slug' => $value,
+			    	'name' => $value[0], 
+			    	'slug' => $value[1],
 			    	'available' => 1,
 			    	'position' => $key + 1,
+			    	'isDirect' => $value[2]
 			    ],
 			]);
     	}

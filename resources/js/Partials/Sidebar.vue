@@ -1,6 +1,6 @@
 <template>
 	<div class="w-64 p-6 hidden md:block border-r border-gray-200">
-		<img class="w-16 md:w-32 lg:w-48" src="images/Logos-01.png" alt="...">
+		<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="...">
 		<h6 class="font-bold mb-4">Menu</h6>
 		<ul class="mb-8">
 			<div v-for="(item, index) in menu" 
@@ -14,7 +14,7 @@
 	                    	<span  class="inline-flex rounded-md">
 	                            <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
 	                            	<div class="bg-white shadow-sm mr-3 p-2 rounded-lg">
-										<img src="img/home.svg">
+										<img src="/img/home.svg">
 									</div>
 	                                {{ item.name }}
 
@@ -43,7 +43,7 @@
 				<inertia-link v-else :href="route(item.slug)">
 					<li class="flex  text-gray-900 hover:text-blue-400">
 						<div class="bg-white shadow-sm mr-3 p-2 rounded-lg">
-							<img src="img/home.svg">
+							<img src="/img/home.svg">
 						</div>
 						<span class="self-center">{{item.name}}</span>
 					</li>

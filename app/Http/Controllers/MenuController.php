@@ -14,7 +14,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Menu/Index');
     }
 
     /**
@@ -24,7 +24,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Menu/Create');
     }
 
     /**
@@ -35,7 +35,10 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            "name" => "required|unique:menus,name",
+            "slug" => "required|unique:menus,slug",
+        ]);
     }
 
     /**

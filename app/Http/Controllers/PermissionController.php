@@ -14,7 +14,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Permission/Index');
     }
 
     /**
@@ -24,7 +24,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Permission/Create');
     }
 
     /**
@@ -35,7 +35,15 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            "name" => "required|unique:permission,name",
+            "slug" => "required|unique:permission,slug",
+            "controller" => 'required'
+        ]);
+
+        Permission::create($request->all());
+
+        return redirect()->route('permission.index');
     }
 
     /**

@@ -14,7 +14,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Role/Index');
     }
 
     /**
@@ -24,7 +24,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Role/Create');
     }
 
     /**
@@ -35,7 +35,19 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            "name" => "required|unique:roles,name",
+            "slug" => "required|unique:roles,slug",
+            "description" => "required",
+            "full_access" => "required",
+            "public" => "required"
+        ]);
+
+        $role = (new Role)->fill($request->all());
+        $role['full-access'] = $request->full_access;
+        $role->save();
+
+        return redirect()->route('role.index');
     }
 
     /**

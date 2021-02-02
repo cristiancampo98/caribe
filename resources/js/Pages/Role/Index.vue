@@ -32,5 +32,8 @@
             JetNavLink,
             JetButton
         },
+        props : {
+            roles: Object
+        }
     }
 </script>

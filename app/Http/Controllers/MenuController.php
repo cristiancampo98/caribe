@@ -37,8 +37,16 @@ class MenuController extends Controller
     {
         $this->validate($request, [
             "name" => "required|unique:menus,name",
-            "slug" => "required|unique:menus,slug",
+            "slug" => "required|string|max:50",
+            "icon" => "required|string|max:50",
+            "available" => "required|boolean",
+            "isDirect" => "required|boolean"
         ]);
+        $menu = (new Menu)->fill($request->all());
+        $menu->position = Menu::count() + 1;
+        $menu->save();
+
+        return redirect()->route('menu.index');
     }
 
     /**

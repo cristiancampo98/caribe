@@ -3,11 +3,15 @@ require('./bootstrap');
 // Import modules...
 import Vue from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue';
+import Vuesax from 'vuesax'
+import 'vuesax/dist/vuesax.css'
+
 import PortalVue from 'portal-vue';
 
 Vue.mixin({ methods: { route } });
 Vue.use(InertiaPlugin);
 Vue.use(PortalVue);
+Vue.use(Vuesax)
 
 const app = document.getElementById('app');
 

@@ -7,10 +7,12 @@ use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PermissionRoleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RemissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
+use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +51,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         'order' => OrderController::class,
         'orderDetail' => OrderDetailController::class,
         'permission' => PermissionController::class,
+        'permissionRole' => PermissionRoleController::class,
         'product' => ProductController::class,
         'remission' => RemissionController::class,
         'role' => RoleController::class,
@@ -56,5 +59,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         'user' => UserController::class
     ]);
     Route::get('security/getAccessMenu',[MenuAccessController::class, 'getAccessMenu']);
+    Route::get('security/{role}/assignPermission',[SecurityController::class, 'assignPermission'])->name('security.assignPermission');
 
 });

@@ -5,17 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Multimedia extends Model
+class UnitMeasure extends Model
 {
     use HasFactory;
 
-    protected $table = 'multimedias';
+    protected $table = 'unit_measures';
 
     protected $fillable = [
-		'path',
-		'filename',
-		'model',
-		'foreign_key',
-		'model_id'
-	];
+    	'name',
+    	'available'
+    ];
 }

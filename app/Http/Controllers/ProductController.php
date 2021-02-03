@@ -33,7 +33,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Product/Create', [
+        ]);
     }
 
     /**
@@ -44,24 +45,16 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        
         $this->validate($request, [
-            'name' => 'required|string|max:50',
+            'name' => 'required|string|max:100',
             'reference' => 'required|string|max:50',
-            'unit' => 'required|numeric',
+            'unit_measure_id' => 'required|numeric',
             'price' => 'required|numeric',
         ]);
-        
-        Validator::make($request->all(), [
-            'name' => ['required'],
-            'reference' => ['required'],
-            'unit' => ['required'],
-            'price' => ['required'],
-        ])->validate();
-  
-        Product::create($request->all());
-  
-        return redirect()->back()
-                    ->with('message', 'Guardado correctamente.');
+        $product = $this->product->storeProduct($request->all());
+        $this->product->storeMultimedia($request->file('photos'), 'products', 'product', 'product_id', $product->id);
+        return redirect()->route('product.index');
     }
 
     /**

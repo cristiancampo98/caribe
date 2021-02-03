@@ -22,6 +22,13 @@ class PermissionSeeder extends Seeder
         $this->setPermissions('product','Productos');
         $this->setPermissions('order','Pedidos');
         $this->setPermissions('remission','Remisiones');
+
+         Permission::create([
+            'name' => 'Configuración',
+            'slug' => 'setting',
+            'description' => 'User can show configuración',
+            'controller' => 'none'
+        ]);
     }
 
     public function setPermissions($prefix,$nameModel){

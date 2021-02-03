@@ -1,80 +1,90 @@
 <template>
-	<jet-form-section @submitted="storeProduct">
-        <template #title>
-            Información de producto
+	<admin-layout>
+		 <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Crear producto
+            </h2>
         </template>
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-        <template #description>
-            Crea un producto con la información requerida.
-        </template>
+				<jet-form-section @submitted="storeProduct">
+			        <template #title>
+			            Información de producto
+			        </template>
 
-        <template #form>
-            <!-- Profile Photo -->
-            
+			        <template #description>
+			            Crea un producto con la información requerida.
+			        </template>
 
-            <!-- Name -->
-            <div class="col-span-6 sm:col-span-4">
-                <jet-label for="name" value="Nombre" />
-                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
-                <jet-input-error :message="form.errors.name" class="mt-2" />
+			        <template #form>
+
+			            <!-- Name -->
+			            <div class="col-span-6 lg:col-span-3">
+			                <jet-label for="name" value="Nombre" />
+			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
+			                <jet-input-error :message="form.errors.name" class="mt-2" />
+			            </div>
+			            <!-- Reference -->
+			            <div class="col-span-6 lg:col-span-3">
+			                <jet-label for="reference" value="Referencia" />
+			                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" />
+			                <jet-input-error :message="form.errors.reference" class="mt-2" />
+			            </div>
+			            <!-- Unit measure -->
+			            <div class="col-span-6 lg:col-span-3">
+			                <jet-label for="unit_measure_id" value="Unidad medida" />
+			                <jet-input id="unit_measure_id" type="text" class="mt-1 block w-full" v-model="form.unit_measure_id" autocomplete="unit_measure_id" />
+			                <jet-input-error :message="form.errors.unit_measure_id" class="mt-2" />
+			            </div>
+			            <!-- Price -->
+			            <div class="col-span-6 lg:col-span-3">
+			                <jet-label for="price" value="Precio" />
+			                <jet-input id="price" type="text" class="mt-1 block w-full" v-model="form.price" autocomplete="price" />
+			                <jet-input-error :message="form.errors.price" class="mt-2" />
+			            </div>
+			            <!-- Description -->
+			            <div class="col-span-6 lg:col-span-6">
+			                <jet-label for="description" value="Descripción" />
+			                <textarea id="description" class="mt-1 block w-full rounded-lg" v-model="form.description"></textarea>
+			                <jet-input-error :message="form.errors.description" class="mt-2" />
+			            </div>
+			            <div class="col-span-6 lg:col-span-6">
+			            	<drap-zone-component title="Fotos producto" @setFiles="getFiles"/>
+			            	 <p class="text-sm text-red-500">
+			                	Nota: Cualquier archivo distinto a los indicados sera ignorado.</strong>.
+			                </p>
+			            </div>
+			            
+			        </template>
+
+			        <template #actions>
+			            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
+			                Guardado.
+			            </jet-action-message>
+
+			            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+			                Guardar
+			            </jet-button>
+			        </template>
+			    </jet-form-section>
+
             </div>
-            <!-- Reference -->
-            <div class="col-span-6 sm:col-span-4">
-                <jet-label for="reference" value="Referencia" />
-                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" />
-                <jet-input-error :message="form.errors.reference" class="mt-2" />
-            </div>
-            <!-- Unit -->
-             <div class="col-span-6 sm:col-span-4">
-                <jet-label for="unit" value="Unidad" />
-                <div class="grid grid-flow-col auto-cols-max md:auto-cols-min">
-                	<div v-for="(item,index) in units" :key="index">
-                		<label class="flex items-center">
-		                   	<input  type="radio" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"  :value="item" v-model="form.unit">	
-		                    <span class="ml-1 mr-3 text-sm text-gray-600"> {{item}}</span>
-		                </label>
-                	</div>
+        </div>
 
+	</admin-layout>
 
-                </div>
-                <jet-input-error :message="form.errors.unit" class="mt-2" />
-            </div>
-
-            <!-- Price -->
-             <div class="col-span-6 sm:col-span-4">
-                <jet-label for="price" value="Precio" />
-                <jet-input id="price" type="number" class="mt-1 block w-full" v-model="form.price" autocomplete="price" />
-                <jet-input-error :message="form.errors.price" class="mt-2" />
-            </div>
-
-            <!-- Description -->
-             <div class="col-span-6 sm:col-span-4">
-                <jet-label for="description" value="Descripción" />
-                <jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.description" autocomplete="description" />
-                <jet-input-error :message="form.errors.description" class="mt-2" />
-            </div>
-
-            
-        </template>
-
-        <template #actions>
-            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
-                Saved.
-            </jet-action-message>
-
-            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
-            </jet-button>
-        </template>
-    </jet-form-section>
+	
 </template>
 <script>
+	import AdminLayout from '@/Layouts/AdminLayout'
 	import JetFormSection from '@/Jetstream/FormSection'
     import JetInput from '@/Jetstream/Input'
     import JetLabel from '@/Jetstream/Label'
     import JetInputError from '@/Jetstream/InputError'
     import JetActionMessage from '@/Jetstream/ActionMessage'
     import JetButton from '@/Jetstream/Button'
+    import DrapZoneComponent from '@/components/DrapZone'
 
     export default {
     	components: {
@@ -84,24 +94,23 @@
             JetInputError,
             JetActionMessage,
             JetButton,
-    	},
-    	props: {
-    		units: Array
+            AdminLayout,
+            DrapZoneComponent
     	},
     	data(){
             return {
                 form: this.$inertia.form({
                     name: null,
                     reference: null,
-                    unit: null,
-                    price: null,
+                    unit_measure_id: null,
+                    price: 0,
                     description: null,
-                    image: [],
+                    photos: []
                 }),
             }
         },
         mounted(){
-        	console.log(this.units)
+
         },
         methods: {
             storeProduct(){
@@ -109,6 +118,17 @@
                     errorBag: 'storeProduct',
                     preserveScroll: true
                 });
+            },
+            getFiles(files){
+
+            	for (var i = 0; i < files.length; i++) {
+            		if (files[i].type != "application/pdf") {
+            			
+            			this.form.photos.push(files[i]);
+            		}
+            	}
+            	console.log(this.form.photos);
+            	
             }
         }
 

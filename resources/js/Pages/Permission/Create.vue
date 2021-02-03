@@ -31,6 +31,9 @@
 			            <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="slug" value="Identificador único" />
 			                <jet-input id="slug" type="text" class="mt-1 block w-full" v-model="form.slug" autocomplete="slug" />
+			                <p class="text-sm text-blue-600">
+			                	Nota: El identificador único debe corresponder siempre a el "name" de una ruta.
+			                </p>
 			                <jet-input-error :message="form.errors.slug" class="mt-2" />
 			            </div>
 			            
@@ -39,13 +42,16 @@
 			             <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="controller" value="Controlador" />
 			                <jet-input id="controller" type="text" class="mt-1 block w-full" v-model="form.controller" autocomplete="controller" />
+			                <p class="text-sm text-blue-600">
+			                	Nota: Digita el nombre del controlador <strong>Sí</strong> hay mas permisos para el mismo. Por ejemplo: Controlador => <u>permission</u>  Permisos => ['permission.index', 'permission.create', ...].
+			                </p>
 			                <jet-input-error :message="form.errors.controller" class="mt-2" />
 			            </div>
 
 			            <!-- Description -->
 			             <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="description" value="Descripción" />
-			                <jet-input id="description" type="text" class="mt-1 block w-full" v-model="form.description" autocomplete="description" />
+			                <textarea id="description" class="mt-1 block w-full rounded-md" v-model="form.description" autocomplete="description"></textarea>
 			                <jet-input-error :message="form.errors.description" class="mt-2" />
 			            </div>
 

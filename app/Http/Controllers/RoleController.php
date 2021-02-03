@@ -14,7 +14,10 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return inertia('Role/Index');
+        $roles = Role::all();
+        return inertia('Role/Index', [
+            'roles' => $roles
+        ]);
     }
 
     /**
@@ -36,11 +39,11 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            "name" => "required|unique:roles,name",
-            "slug" => "required|unique:roles,slug",
+            "name" => "required|string|max:50",
+            "slug" => "required|string|max:50|unique:roles,slug",
             "description" => "required",
-            "full_access" => "required",
-            "public" => "required"
+            "full_access" => "required|",
+            "public" => "required|boolean"
         ]);
 
         $role = (new Role)->fill($request->all());

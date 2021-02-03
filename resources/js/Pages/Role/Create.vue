@@ -38,17 +38,35 @@
 			                <jet-input-error :message="form.errors.description" class="mt-2" />
 			            </div>
 
-			            <!-- Description -->
-			             <div class="col-span-6 sm:col-span-4">
+			            <!-- full-access -->
+			            <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="full_access" value="Acceso total" />
-			                <jet-input id="full_access" type="text" class="mt-1 block w-full" v-model="form.full_access" autocomplete="full_access" />
+			                <div class="grid grid-flow-col auto-cols-max md:auto-cols-min">
+		                		<label class="flex items-center">
+				                   	<input  type="radio" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-200 focus:ring-opacity-50"  value="yes" v-model="form.full_access">	
+				                    <span class="ml-1 mr-3 text-sm text-gray-600"> Si</span>
+				                </label>
+				                <label class="flex items-center">
+				                   	<input  type="radio" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-red-200 focus:ring-opacity-50"  value="no" v-model="form.full_access">	
+				                    <span class="ml-1 mr-3 text-sm text-gray-600"> No</span>
+				                </label>
+			                </div>
 			                <jet-input-error :message="form.errors.full_access" class="mt-2" />
 			            </div>
 
 			            <!-- Public -->
-			             <div class="col-span-6 sm:col-span-4">
-			                <jet-label for="public" value="Publico" />
-			                <jet-input id="public" type="text" class="mt-1 block w-full" v-model="form.public" autocomplete="public" />
+			            <div class="col-span-6 sm:col-span-4">
+			                <jet-label for="public" value="Public" />
+			                <div class="grid grid-flow-col auto-cols-max md:auto-cols-min">
+		                		<label class="flex items-center">
+				                   	<input  type="radio" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-green-200 focus:ring-opacity-50"  value="1" v-model="form.public">	
+				                    <span class="ml-1 mr-3 text-sm text-gray-600"> Si</span>
+				                </label>
+				                <label class="flex items-center">
+				                   	<input  type="radio" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-red-200 focus:ring-opacity-50"  value="0" v-model="form.public">	
+				                    <span class="ml-1 mr-3 text-sm text-gray-600"> No</span>
+				                </label>
+			                </div>
 			                <jet-input-error :message="form.errors.public" class="mt-2" />
 			            </div>
 
@@ -98,8 +116,8 @@
                     name: null,
                     slug: null,
                     description: null,
-                    full_access: null,
-                    public: null,
+                    full_access: 'no',
+                    public: 0,
                 }),
             }
         },

@@ -24,7 +24,10 @@
                         </template>
                         <template #content>
                            <table-component v-if="!active"/>
+                           
                         </template>
+
+                        
                     </work-space-component>
                 </div>
                 <jet-section-border />

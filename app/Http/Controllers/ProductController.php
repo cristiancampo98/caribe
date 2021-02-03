@@ -50,6 +50,18 @@ class ProductController extends Controller
             'unit' => 'required|numeric',
             'price' => 'required|numeric',
         ]);
+        
+        Validator::make($request->all(), [
+            'name' => ['required'],
+            'reference' => ['required'],
+            'unit' => ['required'],
+            'price' => ['required'],
+        ])->validate();
+  
+        Product::create($request->all());
+  
+        return redirect()->back()
+                    ->with('message', 'Guardado correctamente.');
     }
 
     /**

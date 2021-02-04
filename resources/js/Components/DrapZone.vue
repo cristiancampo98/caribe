@@ -11,18 +11,18 @@
 				<div class="flex text-sm text-gray-600" @dragover="dragover" @dragleave="dragleave" @drop="drop">
 					<label for="assetsFieldHandle" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 						<span>Upload a file</span>
-						<input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle" class="w-px h-px opacity-0 overflow-hidden absolute" @change="onChange" ref="file" accept=".pdf,.jpg,.jpeg,.png" />
+						<input type="file" multiple name="fields[assetsFieldHandle][]" id="assetsFieldHandle" class="w-px h-px opacity-0 overflow-hidden absolute" @change="onChange" ref="file" :accept="accept" />
 					</label>
 					<p class="pl-1">or drag and drop</p>
 				</div>
 
 				<ul class="mt-4" v-if="this.filelist.length" v-cloak>
-					<li class="text-sm p-1" v-for="file in filelist" v-if="file.type != 'application/pdf'">
+					<li class="text-sm p-1" v-for="file in filelist">
 						{{file.name}}<button class="border border-black mx-4 bg-red-500 px-2 rounded-lg" type="button" @click="remove(filelist.indexOf(file))" title="Remove file">x</button>
 					</li>
 				</ul>
 				<p class="text-xs text-gray-500">
-					PNG, JPG, GIF up to 10MB
+					{{types}}
 				</p>
 			</div>
 		</div>
@@ -35,7 +35,7 @@ export default {
 			filelist: []
 		}
 	},
-	props: ['title'],
+	props: ['title','accept','types'],
 	methods: {
 		onChange() {
 			

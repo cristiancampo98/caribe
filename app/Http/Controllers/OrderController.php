@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    protected $order;
+
+    public function __construct()
+    {
+        $this->order = new Order;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Order/Index', [
+            'orders' => $this->order->getOrdersByRole(),
+        ]);
     }
 
     /**
@@ -24,7 +33,11 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+
+        return inertia('Order/Create', [
+            'products' => Product::all(),
+            'clients' => $this->order->getClientsToOrder()
+        ]);
     }
 
     /**

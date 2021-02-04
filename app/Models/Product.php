@@ -23,5 +23,10 @@ class Product extends Model
 	    'description'
     ];
 
-    public $units = ['m3','t','kg'];
+    protected $with = ['units_measure'];
+
+    public function units_measure()
+    {
+        return $this->belongsTo(UnitMeasure::class, 'unit_measure_id', 'id');
+    }
 }

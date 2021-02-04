@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\UnitMeasure;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -22,7 +23,7 @@ class ProductController extends Controller
     public function index()
     {
         return inertia('Product/Index',[
-            'units' => $this->product->units
+            
         ]);
     }
 
@@ -34,6 +35,7 @@ class ProductController extends Controller
     public function create()
     {
         return inertia('Product/Create', [
+            'units_measure' => UnitMeasure::where('available',1)->get(),
         ]);
     }
 
@@ -49,8 +51,8 @@ class ProductController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:100',
             'reference' => 'required|string|max:50',
-            'unit_measure_id' => 'required|numeric',
-            'price' => 'required|numeric',
+            'unit_measure_id' => 'required|numeric|gt:0',
+            'price' => 'required|numeric|min:1',
         ]);
         $product = $this->product->storeProduct($request->all());
         $this->product->storeMultimedia($request->file('photos'), 'products', 'product', 'product_id', $product->id);

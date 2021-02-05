@@ -12,6 +12,7 @@ use App\Http\Controllers\RemissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ClientController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -53,7 +54,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         'remission' => RemissionController::class,
         'role' => RoleController::class,
         'roleUser' => RoleUserController::class,
-        'user' => UserController::class
+        'user' => UserController::class,
+        'client' => ClientController::class
     ]);
     Route::get('security/getAccessMenu',[MenuAccessController::class, 'getAccessMenu']);
 

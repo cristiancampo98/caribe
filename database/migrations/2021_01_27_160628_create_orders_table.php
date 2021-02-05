@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->foreignId('user_id') ->constrained();
             $table->string('shipping_address',100);
             $table->string('city',100);
-            $table->text('note');
+            $table->text('note')->nullable();
             $table->string('status');
             $table->double('total');
             $table->foreignId('created_by') ->constrained('users');

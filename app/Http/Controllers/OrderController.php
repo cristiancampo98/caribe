@@ -48,7 +48,15 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'user_id' => 'required|numeric|min:1' ,
+            'shipping_address' => 'required|string|max:100' ,
+            'city' => 'required|string|max:100' ,
+            'order_details' => 'required|array|min:1'
+        ]);
+        $this->order->storeOrder($request->all());
+
+        return redirect()->route('order.index');
     }
 
     /**

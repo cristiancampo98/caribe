@@ -3,7 +3,7 @@
 		<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="...">
 		<h6 class="font-bold mb-4">Menu</h6>
 		<ul class="mb-8">
-			<div v-for="(item, index) in menu" 
+			<div v-for="(item, index) in $page.props.menu" 
 			:key="index"
 			class="hover:bg-white px-1 py-0.5 rounded-md" 
 			>
@@ -71,13 +71,7 @@ export default {
 		this.getAccessMenu();
 	},
 	methods: {
-		getAccessMenu(){
-			axios.get('/security/getAccessMenu')
-    		.then(res => {
-				this.menu = res.data;
-			})
-			.finally( () => { this.isLoading = false })
-		},
+		
 	}
 }
 </script>

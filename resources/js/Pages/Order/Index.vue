@@ -9,6 +9,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
+
                 	<jet-nav-link :href="route('order.create')" class="m-8">
                 		<jet-button type="button">
                 			Crear pedido
@@ -25,12 +26,19 @@
     import AdminLayout from '@/Layouts/AdminLayout'
     import JetNavLink from '@/Jetstream/NavLink'
     import JetButton from '@/Jetstream/Button'
+    
 
     export default {
         components: {
             AdminLayout,
             JetNavLink,
-            JetButton
+            JetButton,
+            
         },
+        data () {
+		    return {
+		      
+		    }
+		  },
     }
 </script>

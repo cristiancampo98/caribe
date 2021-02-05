@@ -9,7 +9,6 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.css">
         <!-- Styles -->
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
@@ -19,6 +18,36 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body class="font-sans antialiased bg-gray-100">
+
+        <style>
+        #example_wrapper .dataTables_length{
+            display: inline-block;
+        }
+        .dataTables_info, .dataTables_paginate{
+            display: none;
+        }
+        #example_filter{
+            margin: 20px 20px 20px 20px;
+            float: right;
+        }
+        #example_filter input{
+            line-height: 1em;
+            border-radius: 7px;
+            border: solid 0.5px rgb(204, 204, 204);
+        }
+        .dataTables_length{
+            margin: 20px 20px 20px 20px;
+        }
+        .dataTables_length select{
+            line-height: 1em;
+            border-radius: 7px;
+            border: solid 0.5px rgb(204, 204, 204);
+        }
+        .py-12{
+            margin: 0 50px 0 50px;
+        }
+        </style>
+
         @inertia
     </body>
 </html>

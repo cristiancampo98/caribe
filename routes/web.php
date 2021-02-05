@@ -58,6 +58,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         'roleUser' => RoleUserController::class,
         'user' => UserController::class
     ]);
+    //Route::get('permission/{id}',[PermissionController::class, 'show'])->name('permission.show');
+    Route::post('permission/update',[PermissionController::class, 'update'])->name('permission.update');
     Route::get('security/getAccessMenu',[MenuAccessController::class, 'getAccessMenu']);
     Route::get('security/{role}/assignPermission',[SecurityController::class, 'assignPermission'])->name('security.assignPermission');
 

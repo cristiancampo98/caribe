@@ -56,9 +56,12 @@ class PermissionController extends Controller
      * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\Response
      */
-    public function show(Permission $permission)
+    public function show($id)
     {
-        //
+
+        return inertia('Permission/Show', [
+            'permissions' => Permission::find($id),
+        ]);
     }
 
     /**
@@ -70,6 +73,7 @@ class PermissionController extends Controller
     public function edit(Permission $permission)
     {
         //
+        return inertia('Permission/Edit', ['permission' => $permission]);
     }
 
     /**
@@ -82,6 +86,8 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission)
     {
         //
+        $permission->update($request->all());
+        return Redirect::route('Permission.index');
     }
 
     /**

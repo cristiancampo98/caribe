@@ -7,6 +7,7 @@ use Database\Seeders\MenuSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\RoleUserSeeder;
+use Database\Seeders\UnitMeasureSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
 
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
 	        ItemSeeder::class,
 	        RoleSeeder::class,
 	        PermissionSeeder::class,
-	        RoleUserSeeder::class
+	        RoleUserSeeder::class,
+            UnitMeasureSeeder::class
 	    ]);
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PermissionRole;
-use App\Models\Role;
+use App\Models\UnitMeasure;
 use Illuminate\Http\Request;
 
-class PermissionRoleController extends Controller
+class UnitMeasureController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,22 +35,16 @@ class PermissionRoleController extends Controller
      */
     public function store(Request $request)
     {
-        $role = Role::find($request->role_id);
-        $permissions = [];
-        foreach ($request->permissions as $key => $value) {
-            $permissions[] = $value['id'];
-        }
-        $role->permissions()->sync($permissions);
-        return redirect()->back();
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\PermissionRole  $permissionRole
+     * @param  \App\Models\UnitMeasure  $unitMeasure
      * @return \Illuminate\Http\Response
      */
-    public function show(PermissionRole $permissionRole)
+    public function show(UnitMeasure $unitMeasure)
     {
         //
     }
@@ -59,22 +52,22 @@ class PermissionRoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\PermissionRole  $permissionRole
+     * @param  \App\Models\UnitMeasure  $unitMeasure
      * @return \Illuminate\Http\Response
      */
-    public function edit(PermissionRole $permissionRole)
+    public function edit(UnitMeasure $unitMeasure)
     {
-        dd($permissionRole);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\PermissionRole  $permissionRole
+     * @param  \App\Models\UnitMeasure  $unitMeasure
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PermissionRole $permissionRole)
+    public function update(Request $request, UnitMeasure $unitMeasure)
     {
         //
     }
@@ -82,10 +75,10 @@ class PermissionRoleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\PermissionRole  $permissionRole
+     * @param  \App\Models\UnitMeasure  $unitMeasure
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PermissionRole $permissionRole)
+    public function destroy(UnitMeasure $unitMeasure)
     {
         //
     }

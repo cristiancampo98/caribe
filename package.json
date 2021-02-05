@@ -27,6 +27,8 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "@moesaid/cleopatra": "^1.1.1"
+        "@moesaid/cleopatra": "^1.1.1",
+        "datatables": "^1.10.18",
+        "vuesax": "^4.0.1-alpha.25"
     }
 }

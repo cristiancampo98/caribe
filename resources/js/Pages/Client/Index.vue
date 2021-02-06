@@ -7,43 +7,72 @@
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <jet-nav-link :href="route('client.create')" class="my-8">
+                    <jet-button type="button">
+                        Crear Cliente
+                    </jet-button>
+                </jet-nav-link>
+                <div v-if="Object.keys(clients).length">
+                    <table-responsive-component v-if="showTable">
+                        <template #title>
+                            <tr>
+                                <th-responsive-component 
+                                v-for="(title, key) in titles"
+                                :key="key">{{title}}</th-responsive-component>
+                                <th-responsive-component></th-responsive-component>
+                            </tr>
+                        </template>
+                        <template #content>
+                            <tr v-for="(item, key) in clients" :key="key">
+                                <td-responsive-component>{{item.user_id}}</td-responsive-component>
+                                <td-responsive-component>{{item.users.name}}</td-responsive-component>
+                                <td-responsive-component>
+                                    {{item.users.details.name_company}}
+                                </td-responsive-component>
+                                <td-responsive-component>
+                                    {{item.users.details.street_address}}
+                                </td-responsive-component>
+                                <td-responsive-component>
+                                    {{item.users.details.city}}
+                                </td-responsive-component>
+                                <td-responsive-component>
+                                    {{item.users.email}}
+                                </td-responsive-component>
+                                <td-responsive-component >
+                                    {{item.users.status}}
+                                </td-responsive-component>
+                                <td-responsive-component>
+                                    <jet-dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <span  class="inline-flex rounded-md">
+                                                <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
+                                                    <div class="bg-white border border-transparent hover:border-black shadow-sm p-2 rounded-lg">
+                                                        <img src="/img/menu.svg">
+                                                    </div>
+                                                </button>
+                                            </span>
+                                        </template>
 
-                    <jet-nav-link :href="route('client.create')" class="m-8">
-                        <jet-button type="button">
-                            Crear Cliente
-                        </jet-button>
-                    </jet-nav-link>
+                                        <template #content>
+                                            <!-- Account Management -->
+                                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                                Opciones
+                                            </div>
 
-                    <div class="m-8" v-if="Object.keys(clients).length">
-                        <table-responsive-component>
-                            <template #title>
-                                <tr>
-                                    <th-responsive-component 
-                                    v-for="(title, key) in titles"
-                                    :key="key">{{title}}</th-responsive-component>
-                                    <th-responsive-component></th-responsive-component>
-                                </tr>
-                            </template>
-                            <template #content>
-                                <tr v-for="(item, key) in clients" :key="key">
-                                    <td-responsive-component>{{item.user_id}}</td-responsive-component>
-                                    <td-responsive-component>{{item.users.name}}</td-responsive-component>
-                                    <td-responsive-component>{{item.users.email}}</td-responsive-component>
-                                    <td-responsive-component>
-                                    {{item.users.details ? item.users.details.city : 'N/A'}}</td-responsive-component>
-                                    <td-responsive-component>
-                                        <button type="button" class="bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2">
-                                            Eliminar
-                                        </button>
-                                    </td-responsive-component>
+                                            <jet-dropdown-link v-for="(option,key) in options"
+                                            :key="key"
+                                            :href="route(option.route, {client: item.id})" :as="option.as" method="option.method">
+                                                {{option.name}}
+                                            </jet-dropdown-link>
 
-                                </tr>
-                            </template>
-                        </table-responsive-component>
-                        
-                    </div>
+                                        </template>
+                                    </jet-dropdown>
+                                </td-responsive-component>
 
+                            </tr>
+                        </template>
+                    </table-responsive-component>
+                    
                 </div>
             </div>
         </div>
@@ -57,6 +86,8 @@
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
+    import JetDropdown from '@/Jetstream/Dropdown'
+    import JetDropdownLink from '@/Jetstream/DropdownLink'
 
     export default {
         components: {
@@ -65,7 +96,9 @@
             JetButton,
             TableResponsiveComponent,
             ThResponsiveComponent,
-            TdResponsiveComponent
+            TdResponsiveComponent,
+            JetDropdown,
+            JetDropdownLink
         },
         props: {
             clients: {
@@ -74,10 +107,57 @@
             }
 
         },
+        mounted(){
+            this.validateDataClients();
+            
+        },
         data() {
             return {
-                titles: ['#','Nombre','Correo','Ciudad'],
+                titles: ['#','Nombre','Empresa','Dirección','Ciudad','Correo','Estado'],
+                showTable: false,
+                options: [
+                    {name: 'Editar', route:'client.edit', method: 'get' , as: ""},
+                    {name: 'Ver', route:'client.show', method: 'get' , as: ""},
+                ]
             }
+        },
+        methods: {
+            validateDataClients(){
+
+                for (var i = 0; i < this.clients.length; i++) {
+
+                    if (this.clients[i].users.details) {
+
+                        this.clients[i].users.details.name_company  = this.clients[i].users.details.name_company 
+                        ? this.clients[i].users.details.name_company 
+                        : 'N/A';
+
+                        this.clients[i].users.details.street_address  = this.clients[i].users.details.street_address 
+                        ? this.clients[i].users.details.street_address 
+                        : 'N/A';
+
+                        this.clients[i].users.details.city  = this.clients[i].users.details.city 
+                        ? this.clients[i].users.details.city 
+                        : 'N/A';
+
+                        this.clients[i].users.details.email  = this.clients[i].users.details.email 
+                        ? this.clients[i].users.details.email 
+                        : 'N/A';
+                          
+                    }else{
+                        this.clients[i].users.details = {
+                            name_company : 'N/A',
+                            street_address : 'N/A',
+                            city : 'N/A',
+                            email : 'N/A'
+                        }
+                    }
+                    this.clients[i].users.status = this.clients[i].users.status
+                    ? 'Activo'
+                    : 'Inactivo';
+                }
+                this.showTable = true;
+            },
         }
     }
 </script>

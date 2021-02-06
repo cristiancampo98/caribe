@@ -17,6 +17,7 @@ class Multimedia extends Model
 		'path',
 		'filename',
 		'model',
+		'reason',
 		'foreign_key',
 		'model_id'
 	];

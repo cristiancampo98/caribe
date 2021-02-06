@@ -113,9 +113,10 @@
 			                <jet-input-error :message="form.errors.deparment" class="mt-2" />
 			            </div>
 			            <!-- city -->
-			            <div class="col-span-6 lg:col-span-2" v-if="form.city || citys.length">
+			            <div class="col-span-6 lg:col-span-2" >
 			                <jet-label for="city" value="Ciudad" />
 			               	<v-select 
+			               	v-if="form.city || citys.length"
 			            	class="mt-1"
 			            	id="city"
 			            	label="ciudades"
@@ -125,16 +126,23 @@
 			            </div>
 			            
 			            <!-- others_email -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="others_email" value="Otros correos" />
 			                <textarea id="others_email" class="mt-1 block w-full rounded-md" v-model="form.others_email"></textarea>
 			                <jet-input-error :message="form.errors.others_email" class="mt-2" />
 			            </div>
 			            <!-- phones -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="phones" value="Otros telefonos" />
 			                <textarea id="phones"  class="mt-1 block w-full rounded-md" v-model="form.phones"></textarea>
 			                <jet-input-error :message="form.errors.phones" class="mt-2" />
+			            </div>
+			             <!-- vehicles -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="vehicles" value="Vehículos" />
+			                <textarea id="vehicles"  class="uppercase mt-1 block w-full rounded-md" v-model="form.vehicles"></textarea>
+			                <jet-input-error :message="form.errors.vehicles" class="mt-2" />
+			                <p class="text-sm text-blue-500">Nota: Ingrese las placas de los vehículos separados por comas. Ejemplo: Placa1,Placa2, ...</p>
 			            </div>
 			            <!-- photo document -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -151,6 +159,14 @@
 			            		<input type="file"  id="rut"  ref="rut" @change="uploadRut" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
 			            	</label>
 			            	<span v-if="uploadedRut" class="ml-4 text-green-500">¡Hecho!</span>
+			            </div>
+			            <!-- logo -->
+			            <div class="col-span-6 lg:col-span-2">
+			            	<label for="logo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            		<span>Subir Logo</span>
+			            		<input type="file"  id="logo"  ref="logo" @change="uploadLogo" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
+			            	</label>
+			            	<span v-if="uploadedLogo" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 
 			        </template>
@@ -217,6 +233,7 @@
                     sex: null,
                     photo_document: null,
                     rut_document: null,
+                    logo: null,
                     type_blood_id: null,
                     name_company: null,
                     type_pay: null,
@@ -228,10 +245,12 @@
                     country: null,
                     others_email: null,
                     phones: null,
+                    vehicles: null
 
                 }),
                 uploadedDocument: false,
                 uploadedRut: false,
+                uploadedLogo: false,
                 deparments: [],
                 citys: [],
                 showFormEdit: false
@@ -249,17 +268,22 @@
                 if (this.$refs.rut) {
                     this.form.rut_document = this.$refs.rut.files[0]
                 }
-                console.log(this.form);
+                if (this.$refs.logo) {
+                    this.form.logo = this.$refs.logo.files[0]
+                }
                 this.form.post(route('client.update', { id: this.client.id }), {
                     errorBag: 'updateClient',
                     preserveScroll: true
                 });
             },
             uploadDocument(){
-            	this.uploadedDocument = true
+            	this.uploadedDocument = true;
             },
             uploadRut(){
-            	this.uploadedRut = true
+            	this.uploadedRut = true;
+            },
+            uploadLogo(){
+            	this.uploadedLogo = true;
             },
             loadFileColombiaJson(){
             	axios.get('/default/colombia-json-master/colombia.json')
@@ -272,7 +296,6 @@
             	this.form.deparment = value.departamento
             },
             clientHasDetail(){
-            	console.log(this.client.details)
             	if (this.client.details) {
             		this.form.number_identification = this.client.details.number_identification;
                     this.form.type_identification_id = this.client.details.type_identification_id;

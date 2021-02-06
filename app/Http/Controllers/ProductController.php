@@ -55,7 +55,7 @@ class ProductController extends Controller
 
         if (!$request->filled('photos')) {
 
-            self::storeMultimedia($request->file('photos'), 'products', 'product', 'product_id', $product->id);
+            self::storeMultimedia($request->file('photos'), 'products', 'product', 'img_product','product_id', $product->id);
         }
 
         return redirect()->route('product.index');

@@ -21,6 +21,7 @@ class CreateProductsTable extends Migration
             $table->double('price')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('user_id') ->constrained();
+            $table->boolean('status');
             $table->timestamps();
         });
     }

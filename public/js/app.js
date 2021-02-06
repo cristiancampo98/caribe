@@ -4478,6 +4478,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4520,6 +4536,7 @@ __webpack_require__.r(__webpack_exports__);
         sex: null,
         photo_document: null,
         rut_document: null,
+        logo: null,
         type_blood_id: null,
         name_company: null,
         type_pay: null,
@@ -4530,10 +4547,12 @@ __webpack_require__.r(__webpack_exports__);
         deparment: null,
         country: null,
         others_email: null,
-        phones: null
+        phones: null,
+        vehicles: null
       }),
       uploadedDocument: false,
       uploadedRut: false,
+      uploadedLogo: false,
       deparments: [],
       citys: [],
       showFormEdit: false
@@ -4553,7 +4572,10 @@ __webpack_require__.r(__webpack_exports__);
         this.form.rut_document = this.$refs.rut.files[0];
       }
 
-      console.log(this.form);
+      if (this.$refs.logo) {
+        this.form.logo = this.$refs.logo.files[0];
+      }
+
       this.form.post(route('client.update', {
         id: this.client.id
       }), {
@@ -4567,6 +4589,9 @@ __webpack_require__.r(__webpack_exports__);
     uploadRut: function uploadRut() {
       this.uploadedRut = true;
     },
+    uploadLogo: function uploadLogo() {
+      this.uploadedLogo = true;
+    },
     loadFileColombiaJson: function loadFileColombiaJson() {
       var _this = this;
 
@@ -4579,8 +4604,6 @@ __webpack_require__.r(__webpack_exports__);
       this.form.deparment = value.departamento;
     },
     clientHasDetail: function clientHasDetail() {
-      console.log(this.client.details);
-
       if (this.client.details) {
         this.form.number_identification = this.client.details.number_identification;
         this.form.type_identification_id = this.client.details.type_identification_id;
@@ -4624,6 +4647,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_TableResponsive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/Components/TableResponsive */ "./resources/js/Components/TableResponsive.vue");
 /* harmony import */ var _Components_THResponsive__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/Components/THResponsive */ "./resources/js/Components/THResponsive.vue");
 /* harmony import */ var _Components_TDResponsive__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/Components/TDResponsive */ "./resources/js/Components/TDResponsive.vue");
+/* harmony import */ var _Jetstream_Dropdown__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/Jetstream/Dropdown */ "./resources/js/Jetstream/Dropdown.vue");
+/* harmony import */ var _Jetstream_DropdownLink__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/Jetstream/DropdownLink */ "./resources/js/Jetstream/DropdownLink.vue");
 //
 //
 //
@@ -4676,6 +4701,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 
@@ -4689,7 +4745,9 @@ __webpack_require__.r(__webpack_exports__);
     JetButton: _Jetstream_Button__WEBPACK_IMPORTED_MODULE_2__.default,
     TableResponsiveComponent: _Components_TableResponsive__WEBPACK_IMPORTED_MODULE_3__.default,
     ThResponsiveComponent: _Components_THResponsive__WEBPACK_IMPORTED_MODULE_4__.default,
-    TdResponsiveComponent: _Components_TDResponsive__WEBPACK_IMPORTED_MODULE_5__.default
+    TdResponsiveComponent: _Components_TDResponsive__WEBPACK_IMPORTED_MODULE_5__.default,
+    JetDropdown: _Jetstream_Dropdown__WEBPACK_IMPORTED_MODULE_6__.default,
+    JetDropdownLink: _Jetstream_DropdownLink__WEBPACK_IMPORTED_MODULE_7__.default
   },
   props: {
     clients: {
@@ -4697,10 +4755,48 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     }
   },
+  mounted: function mounted() {
+    this.validateDataClients();
+  },
   data: function data() {
     return {
-      titles: ['#', 'Nombre', 'Correo', 'Ciudad']
+      titles: ['#', 'Nombre', 'Empresa', 'Dirección', 'Ciudad', 'Correo', 'Estado'],
+      showTable: false,
+      options: [{
+        name: 'Editar',
+        route: 'client.edit',
+        method: 'get',
+        as: ""
+      }, {
+        name: 'Ver',
+        route: 'client.show',
+        method: 'get',
+        as: ""
+      }]
     };
+  },
+  methods: {
+    validateDataClients: function validateDataClients() {
+      for (var i = 0; i < this.clients.length; i++) {
+        if (this.clients[i].users.details) {
+          this.clients[i].users.details.name_company = this.clients[i].users.details.name_company ? this.clients[i].users.details.name_company : 'N/A';
+          this.clients[i].users.details.street_address = this.clients[i].users.details.street_address ? this.clients[i].users.details.street_address : 'N/A';
+          this.clients[i].users.details.city = this.clients[i].users.details.city ? this.clients[i].users.details.city : 'N/A';
+          this.clients[i].users.details.email = this.clients[i].users.details.email ? this.clients[i].users.details.email : 'N/A';
+        } else {
+          this.clients[i].users.details = {
+            name_company: 'N/A',
+            street_address: 'N/A',
+            city: 'N/A',
+            email: 'N/A'
+          };
+        }
+
+        this.clients[i].users.status = this.clients[i].users.status ? 'Activo' : 'Inactivo';
+      }
+
+      this.showTable = true;
+    }
   }
 });
 
@@ -58364,7 +58460,7 @@ var render = function() {
             "div",
             {
               staticClass:
-                "shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+                "shadow overflow-visible border-b border-gray-200 sm:rounded-lg rounded-md mb-24"
             },
             [
               _c(
@@ -59409,7 +59505,7 @@ var render = function() {
             "inertia-link",
             {
               staticClass:
-                "block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out",
+                "block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out overflow-visible",
               attrs: { href: _vm.href }
             },
             [_vm._t("default")],
@@ -63354,16 +63450,16 @@ var render = function() {
                               1
                             ),
                             _vm._v(" "),
-                            _vm.form.city || _vm.citys.length
-                              ? _c(
-                                  "div",
-                                  { staticClass: "col-span-6 lg:col-span-2" },
-                                  [
-                                    _c("jet-label", {
-                                      attrs: { for: "city", value: "Ciudad" }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("v-select", {
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: { for: "city", value: "Ciudad" }
+                                }),
+                                _vm._v(" "),
+                                _vm.form.city || _vm.citys.length
+                                  ? _c("v-select", {
                                       staticClass: "mt-1",
                                       attrs: {
                                         id: "city",
@@ -63377,20 +63473,20 @@ var render = function() {
                                         },
                                         expression: "form.city"
                                       }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("jet-input-error", {
-                                      staticClass: "mt-2",
-                                      attrs: { message: _vm.form.errors.city }
                                     })
-                                  ],
-                                  1
-                                )
-                              : _vm._e(),
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.city }
+                                })
+                              ],
+                              1
+                            ),
                             _vm._v(" "),
                             _c(
                               "div",
-                              { staticClass: "col-span-6 lg:col-span-3" },
+                              { staticClass: "col-span-6 lg:col-span-2" },
                               [
                                 _c("jet-label", {
                                   attrs: {
@@ -63437,7 +63533,7 @@ var render = function() {
                             _vm._v(" "),
                             _c(
                               "div",
-                              { staticClass: "col-span-6 lg:col-span-3" },
+                              { staticClass: "col-span-6 lg:col-span-2" },
                               [
                                 _c("jet-label", {
                                   attrs: {
@@ -63476,6 +63572,59 @@ var render = function() {
                                   staticClass: "mt-2",
                                   attrs: { message: _vm.form.errors.phones }
                                 })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: { for: "vehicles", value: "Vehículos" }
+                                }),
+                                _vm._v(" "),
+                                _c("textarea", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.vehicles,
+                                      expression: "form.vehicles"
+                                    }
+                                  ],
+                                  staticClass:
+                                    "uppercase mt-1 block w-full rounded-md",
+                                  attrs: { id: "vehicles" },
+                                  domProps: { value: _vm.form.vehicles },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "vehicles",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.vehicles }
+                                }),
+                                _vm._v(" "),
+                                _c(
+                                  "p",
+                                  { staticClass: "text-sm text-blue-500" },
+                                  [
+                                    _vm._v(
+                                      "Nota: Ingrese las placas de los vehículos separados por comas. Ejemplo: Placa1,Placa2, ..."
+                                    )
+                                  ]
+                                )
                               ],
                               1
                             ),
@@ -63549,6 +63698,44 @@ var render = function() {
                                 ),
                                 _vm._v(" "),
                                 _vm.uploadedRut
+                                  ? _c(
+                                      "span",
+                                      { staticClass: "ml-4 text-green-500" },
+                                      [_vm._v("¡Hecho!")]
+                                    )
+                                  : _vm._e()
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass:
+                                      "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500",
+                                    attrs: { for: "logo" }
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Subir Logo")]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      ref: "logo",
+                                      staticClass:
+                                        "w-px h-px opacity-0 overflow-hidden absolute",
+                                      attrs: {
+                                        type: "file",
+                                        id: "logo",
+                                        accept: ".jpg, .png"
+                                      },
+                                      on: { change: _vm.uploadLogo }
+                                    })
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _vm.uploadedLogo
                                   ? _c(
                                       "span",
                                       { staticClass: "ml-4 text-green-500" },
@@ -63655,125 +63842,263 @@ var render = function() {
     [
       _vm._v(" "),
       _c("div", { staticClass: "py-12" }, [
-        _c("div", { staticClass: "max-w-7xl mx-auto sm:px-6 lg:px-8" }, [
-          _c(
-            "div",
-            { staticClass: "bg-white overflow-hidden shadow-xl sm:rounded-lg" },
-            [
-              _c(
-                "jet-nav-link",
-                {
-                  staticClass: "m-8",
-                  attrs: { href: _vm.route("client.create") }
-                },
-                [
-                  _c("jet-button", { attrs: { type: "button" } }, [
-                    _vm._v(
-                      "\n                        Crear Cliente\n                    "
-                    )
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              Object.keys(_vm.clients).length
-                ? _c(
-                    "div",
-                    { staticClass: "m-8" },
-                    [
-                      _c("table-responsive-component", {
-                        scopedSlots: _vm._u(
-                          [
-                            {
-                              key: "title",
-                              fn: function() {
-                                return [
-                                  _c(
-                                    "tr",
-                                    [
-                                      _vm._l(_vm.titles, function(title, key) {
-                                        return _c(
-                                          "th-responsive-component",
-                                          { key: key },
-                                          [_vm._v(_vm._s(title))]
-                                        )
-                                      }),
-                                      _vm._v(" "),
-                                      _c("th-responsive-component")
-                                    ],
-                                    2
-                                  )
-                                ]
-                              },
-                              proxy: true
-                            },
-                            {
-                              key: "content",
-                              fn: function() {
-                                return _vm._l(_vm.clients, function(item, key) {
-                                  return _c(
-                                    "tr",
-                                    { key: key },
-                                    [
-                                      _c("td-responsive-component", [
-                                        _vm._v(_vm._s(item.user_id))
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("td-responsive-component", [
-                                        _vm._v(_vm._s(item.users.name))
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("td-responsive-component", [
-                                        _vm._v(_vm._s(item.users.email))
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("td-responsive-component", [
-                                        _vm._v(
-                                          "\n                                " +
-                                            _vm._s(
-                                              item.users.details
-                                                ? item.users.details.city
-                                                : "N/A"
-                                            )
-                                        )
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("td-responsive-component", [
-                                        _c(
-                                          "button",
-                                          {
-                                            staticClass:
-                                              "bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2",
-                                            attrs: { type: "button" }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "\n                                        Eliminar\n                                    "
-                                            )
-                                          ]
-                                        )
-                                      ])
-                                    ],
-                                    1
-                                  )
-                                })
-                              },
-                              proxy: true
-                            }
-                          ],
-                          null,
-                          false,
-                          3656630543
-                        )
-                      })
-                    ],
-                    1
+        _c(
+          "div",
+          { staticClass: "max-w-7xl mx-auto sm:px-6 lg:px-8" },
+          [
+            _c(
+              "jet-nav-link",
+              {
+                staticClass: "my-8",
+                attrs: { href: _vm.route("client.create") }
+              },
+              [
+                _c("jet-button", { attrs: { type: "button" } }, [
+                  _vm._v(
+                    "\n                    Crear Cliente\n                "
                   )
-                : _vm._e()
-            ],
-            1
-          )
-        ])
+                ])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            Object.keys(_vm.clients).length
+              ? _c(
+                  "div",
+                  [
+                    _vm.showTable
+                      ? _c("table-responsive-component", {
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "title",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "tr",
+                                      [
+                                        _vm._l(_vm.titles, function(
+                                          title,
+                                          key
+                                        ) {
+                                          return _c(
+                                            "th-responsive-component",
+                                            { key: key },
+                                            [_vm._v(_vm._s(title))]
+                                          )
+                                        }),
+                                        _vm._v(" "),
+                                        _c("th-responsive-component")
+                                      ],
+                                      2
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              },
+                              {
+                                key: "content",
+                                fn: function() {
+                                  return _vm._l(_vm.clients, function(
+                                    item,
+                                    key
+                                  ) {
+                                    return _c(
+                                      "tr",
+                                      { key: key },
+                                      [
+                                        _c("td-responsive-component", [
+                                          _vm._v(_vm._s(item.user_id))
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td-responsive-component", [
+                                          _vm._v(_vm._s(item.users.name))
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td-responsive-component", [
+                                          _vm._v(
+                                            "\n                                " +
+                                              _vm._s(
+                                                item.users.details.name_company
+                                              ) +
+                                              "\n                            "
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td-responsive-component", [
+                                          _vm._v(
+                                            "\n                                " +
+                                              _vm._s(
+                                                item.users.details
+                                                  .street_address
+                                              ) +
+                                              "\n                            "
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td-responsive-component", [
+                                          _vm._v(
+                                            "\n                                " +
+                                              _vm._s(item.users.details.city) +
+                                              "\n                            "
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td-responsive-component", [
+                                          _vm._v(
+                                            "\n                                " +
+                                              _vm._s(item.users.email) +
+                                              "\n                            "
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td-responsive-component", [
+                                          _vm._v(
+                                            "\n                                " +
+                                              _vm._s(item.users.status) +
+                                              "\n                            "
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c(
+                                          "td-responsive-component",
+                                          [
+                                            _c("jet-dropdown", {
+                                              attrs: {
+                                                align: "right",
+                                                width: "48"
+                                              },
+                                              scopedSlots: _vm._u(
+                                                [
+                                                  {
+                                                    key: "trigger",
+                                                    fn: function() {
+                                                      return [
+                                                        _c(
+                                                          "span",
+                                                          {
+                                                            staticClass:
+                                                              "inline-flex rounded-md"
+                                                          },
+                                                          [
+                                                            _c(
+                                                              "button",
+                                                              {
+                                                                staticClass:
+                                                                  "inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150",
+                                                                attrs: {
+                                                                  type: "button"
+                                                                }
+                                                              },
+                                                              [
+                                                                _c(
+                                                                  "div",
+                                                                  {
+                                                                    staticClass:
+                                                                      "bg-white border border-transparent hover:border-black shadow-sm p-2 rounded-lg"
+                                                                  },
+                                                                  [
+                                                                    _c("img", {
+                                                                      attrs: {
+                                                                        src:
+                                                                          "/img/menu.svg"
+                                                                      }
+                                                                    })
+                                                                  ]
+                                                                )
+                                                              ]
+                                                            )
+                                                          ]
+                                                        )
+                                                      ]
+                                                    },
+                                                    proxy: true
+                                                  },
+                                                  {
+                                                    key: "content",
+                                                    fn: function() {
+                                                      return [
+                                                        _c(
+                                                          "div",
+                                                          {
+                                                            staticClass:
+                                                              "block px-4 py-2 text-xs text-gray-400"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              "\n                                            Opciones\n                                        "
+                                                            )
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _vm._l(
+                                                          _vm.options,
+                                                          function(
+                                                            option,
+                                                            key
+                                                          ) {
+                                                            return _c(
+                                                              "jet-dropdown-link",
+                                                              {
+                                                                key: key,
+                                                                attrs: {
+                                                                  href: _vm.route(
+                                                                    option.route,
+                                                                    {
+                                                                      client:
+                                                                        item.id
+                                                                    }
+                                                                  ),
+                                                                  as: option.as,
+                                                                  method:
+                                                                    "option.method"
+                                                                }
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  "\n                                            " +
+                                                                    _vm._s(
+                                                                      option.name
+                                                                    ) +
+                                                                    "\n                                        "
+                                                                )
+                                                              ]
+                                                            )
+                                                          }
+                                                        )
+                                                      ]
+                                                    },
+                                                    proxy: true
+                                                  }
+                                                ],
+                                                null,
+                                                true
+                                              )
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  })
+                                },
+                                proxy: true
+                              }
+                            ],
+                            null,
+                            false,
+                            2297221005
+                          )
+                        })
+                      : _vm._e()
+                  ],
+                  1
+                )
+              : _vm._e()
+          ],
+          1
+        )
       ])
     ]
   )

@@ -17,7 +17,7 @@
 			            Crea un cliente con la información requerida.
 			        </template>
 
-			        <template #form>
+			        <template #form v-if="showFormEdit">
 
 			            <!-- name -->
 			            <div class="col-span-6 lg:col-span-3">
@@ -34,14 +34,21 @@
 			            <!-- number identification -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="number_identification" value="Número de identificación" />
-			                <jet-input id="number_identification" type="text" class="mt-1 block w-full" v-model="form.number_identification" autocomplete="number_identification" />
+			                <jet-input id="number_identification" type="number" class="mt-1 block w-full" v-model.number="form.number_identification" autocomplete="number_identification" />
 			                <jet-input-error :message="form.errors.number_identification" class="mt-2" />
 			            </div>
 			             <!-- type identification -->
 			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="type_identification" value="Tipo identificación" />
-			                <jet-input id="type_identification" type="text" class="mt-1 block w-full" v-model="form.type_identification" autocomplete="type_identification" />
-			                <jet-input-error :message="form.errors.type_identification" class="mt-2" />
+			                <jet-label for="type_identification_id" value="Tipo identificación" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="type_identification_id"
+			            	label="description"
+			            	:reduce="description => description.id"
+			            	v-model="form.type_identification_id"
+			            	:options="types_identification"
+			            	:clearable="false"></v-select>
+			                <jet-input-error :message="form.errors.type_identification_id" class="mt-2" />
 			            </div>
 			            <!-- sex -->
 			            <div class="col-span-6 lg:col-span-1">
@@ -51,9 +58,16 @@
 			            </div>
 			            <!-- type blood -->
 			            <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="type_blood" value="Tipo de sangre" />
-			                <jet-input id="type_blood" type="text" class="mt-1 block w-full" v-model="form.type_blood" autocomplete="type_blood" />
-			                <jet-input-error :message="form.errors.type_blood" class="mt-2" />
+			                <jet-label for="type_blood_id" value="Tipo de sangre" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="type_blood_id"
+			            	label="acronym"
+			            	:reduce="acronym => acronym.id"
+			            	v-model="form.type_blood_id"
+			            	:options="types_blood"
+			            	:clearable="false"></v-select>
+			                <jet-input-error :message="form.errors.type_blood_id" class="mt-2" />
 			            </div>
 			            <!-- name company -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -88,13 +102,25 @@
 			            <!-- department -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="deparment" value="Departamento" />
-			                <jet-input id="deparment" type="text" class="mt-1 block w-full" v-model="form.deparment" autocomplete="deparment" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="deparment"
+			            	label="departamento"
+			            	:options="deparments"
+			            	v-model="form.deparment"
+			            	:clearable="false"
+			            	@input="showCitys"></v-select>
 			                <jet-input-error :message="form.errors.deparment" class="mt-2" />
 			            </div>
 			            <!-- city -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-2" v-if="form.city || citys.length">
 			                <jet-label for="city" value="Ciudad" />
-			                <jet-input id="city" type="text" class="mt-1 block w-full" v-model="form.city" autocomplete="city" />
+			               	<v-select 
+			            	class="mt-1"
+			            	id="city"
+			            	label="ciudades"
+			            	v-model="form.city"
+			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
 			            
@@ -155,6 +181,8 @@
     import JetInputError from '@/Jetstream/InputError'
     import JetActionMessage from '@/Jetstream/ActionMessage'
     import JetButton from '@/Jetstream/Button'
+    import vSelect from "vue-select"
+    import 'vue-select/dist/vue-select.css'
 
     export default {
     	components: {
@@ -165,10 +193,17 @@
             JetActionMessage,
             JetButton,
             AdminLayout,
+            vSelect
     	},
     	props: {
     		client: {
     			type: Object
+    		},
+    		types_blood: {
+    			type: Array
+    		},
+    		types_identification: {
+    			type: Array
     		}
     	},
     	data(){
@@ -178,11 +213,11 @@
                     name: this.client.name,
                     email: this.client.email,
                     number_identification: null,
-                    type_identification: null,
+                    type_identification_id: null,
                     sex: null,
                     photo_document: null,
                     rut_document: null,
-                    type_blood: null,
+                    type_blood_id: null,
                     name_company: null,
                     type_pay: null,
                     street_address: null,
@@ -196,11 +231,15 @@
 
                 }),
                 uploadedDocument: false,
-                uploadedRut: false
+                uploadedRut: false,
+                deparments: [],
+                citys: [],
+                showFormEdit: false
             }
         },
         mounted(){
-
+        	this.clientHasDetail();
+        	this.loadFileColombiaJson();
         },
         methods: {
             updateClient(){
@@ -221,6 +260,38 @@
             },
             uploadRut(){
             	this.uploadedRut = true
+            },
+            loadFileColombiaJson(){
+            	axios.get('/default/colombia-json-master/colombia.json')
+            	.then( res => {
+            		this.deparments = res.data;
+            	})
+            },
+            showCitys(value){
+            	this.citys = value.ciudades
+            	this.form.deparment = value.departamento
+            },
+            clientHasDetail(){
+            	console.log(this.client.details)
+            	if (this.client.details) {
+            		this.form.number_identification = this.client.details.number_identification;
+                    this.form.type_identification_id = this.client.details.type_identification_id;
+                    this.form.sex = this.client.details.sex;
+                    this.form.photo_document = this.client.details.photo_document;
+                    this.form.rut_document = this.client.details.rut_document;
+                    this.form.type_blood_id = this.client.details.type_blood_id;
+                    this.form.name_company = this.client.details.name_company;
+                    this.form.type_pay = this.client.details.type_pay;
+                    this.form.street_address = this.client.details.street_address;
+                    this.form.street_details = this.client.details.street_details;
+                    this.form.street_comune = this.client.details.street_comune;
+                    this.form.city = this.client.details.city;
+                    this.form.deparment = this.client.details.deparment;
+                    this.form.country = this.client.details.country;
+                    this.form.others_email = this.client.details.others_email;
+                    this.form.phones = this.client.details.phones;
+            	}
+            	this.showFormEdit = true;
             }
         }
 

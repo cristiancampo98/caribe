@@ -4300,6 +4300,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Jetstream_InputError__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/Jetstream/InputError */ "./resources/js/Jetstream/InputError.vue");
 /* harmony import */ var _Jetstream_ActionMessage__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/Jetstream/ActionMessage */ "./resources/js/Jetstream/ActionMessage.vue");
 /* harmony import */ var _Jetstream_Button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/Jetstream/Button */ "./resources/js/Jetstream/Button.vue");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue-select */ "./node_modules/vue-select/dist/vue-select.js");
+/* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 //
 //
 //
@@ -4449,6 +4452,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 
@@ -4464,11 +4495,18 @@ __webpack_require__.r(__webpack_exports__);
     JetInputError: _Jetstream_InputError__WEBPACK_IMPORTED_MODULE_4__.default,
     JetActionMessage: _Jetstream_ActionMessage__WEBPACK_IMPORTED_MODULE_5__.default,
     JetButton: _Jetstream_Button__WEBPACK_IMPORTED_MODULE_6__.default,
-    AdminLayout: _Layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_0__.default
+    AdminLayout: _Layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_0__.default,
+    vSelect: (vue_select__WEBPACK_IMPORTED_MODULE_7___default())
   },
   props: {
     client: {
       type: Object
+    },
+    types_blood: {
+      type: Array
+    },
+    types_identification: {
+      type: Array
     }
   },
   data: function data() {
@@ -4478,11 +4516,11 @@ __webpack_require__.r(__webpack_exports__);
         name: this.client.name,
         email: this.client.email,
         number_identification: null,
-        type_identification: null,
+        type_identification_id: null,
         sex: null,
         photo_document: null,
         rut_document: null,
-        type_blood: null,
+        type_blood_id: null,
         name_company: null,
         type_pay: null,
         street_address: null,
@@ -4495,10 +4533,16 @@ __webpack_require__.r(__webpack_exports__);
         phones: null
       }),
       uploadedDocument: false,
-      uploadedRut: false
+      uploadedRut: false,
+      deparments: [],
+      citys: [],
+      showFormEdit: false
     };
   },
-  mounted: function mounted() {},
+  mounted: function mounted() {
+    this.clientHasDetail();
+    this.loadFileColombiaJson();
+  },
   methods: {
     updateClient: function updateClient() {
       if (this.$refs.photo) {
@@ -4522,6 +4566,41 @@ __webpack_require__.r(__webpack_exports__);
     },
     uploadRut: function uploadRut() {
       this.uploadedRut = true;
+    },
+    loadFileColombiaJson: function loadFileColombiaJson() {
+      var _this = this;
+
+      axios.get('/default/colombia-json-master/colombia.json').then(function (res) {
+        _this.deparments = res.data;
+      });
+    },
+    showCitys: function showCitys(value) {
+      this.citys = value.ciudades;
+      this.form.deparment = value.departamento;
+    },
+    clientHasDetail: function clientHasDetail() {
+      console.log(this.client.details);
+
+      if (this.client.details) {
+        this.form.number_identification = this.client.details.number_identification;
+        this.form.type_identification_id = this.client.details.type_identification_id;
+        this.form.sex = this.client.details.sex;
+        this.form.photo_document = this.client.details.photo_document;
+        this.form.rut_document = this.client.details.rut_document;
+        this.form.type_blood_id = this.client.details.type_blood_id;
+        this.form.name_company = this.client.details.name_company;
+        this.form.type_pay = this.client.details.type_pay;
+        this.form.street_address = this.client.details.street_address;
+        this.form.street_details = this.client.details.street_details;
+        this.form.street_comune = this.client.details.street_comune;
+        this.form.city = this.client.details.city;
+        this.form.deparment = this.client.details.deparment;
+        this.form.country = this.client.details.country;
+        this.form.others_email = this.client.details.others_email;
+        this.form.phones = this.client.details.phones;
+      }
+
+      this.showFormEdit = true;
     }
   }
 });
@@ -62788,663 +62867,738 @@ var render = function() {
           [
             _c("jet-form-section", {
               on: { submitted: _vm.updateClient },
-              scopedSlots: _vm._u([
-                {
-                  key: "title",
-                  fn: function() {
-                    return [
-                      _vm._v(
-                        "\n\t\t\t            Información de cliente\n\t\t\t        "
-                      )
-                    ]
+              scopedSlots: _vm._u(
+                [
+                  {
+                    key: "title",
+                    fn: function() {
+                      return [
+                        _vm._v(
+                          "\n\t\t\t            Información de cliente\n\t\t\t        "
+                        )
+                      ]
+                    },
+                    proxy: true
                   },
-                  proxy: true
-                },
-                {
-                  key: "description",
-                  fn: function() {
-                    return [
-                      _vm._v(
-                        "\n\t\t\t            Crea un cliente con la información requerida.\n\t\t\t        "
-                      )
-                    ]
+                  {
+                    key: "description",
+                    fn: function() {
+                      return [
+                        _vm._v(
+                          "\n\t\t\t            Crea un cliente con la información requerida.\n\t\t\t        "
+                        )
+                      ]
+                    },
+                    proxy: true
                   },
-                  proxy: true
-                },
-                {
-                  key: "form",
-                  fn: function() {
-                    return [
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-3" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "name", value: "Nombre Completo" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "name",
-                              type: "text",
-                              autocomplete: "name"
-                            },
-                            model: {
-                              value: _vm.form.name,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "name", $$v)
-                              },
-                              expression: "form.name"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.name }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-3" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "email", value: "Correo" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "email",
-                              type: "text",
-                              autocomplete: "email"
-                            },
-                            model: {
-                              value: _vm.form.email,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "email", $$v)
-                              },
-                              expression: "form.email"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.email }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: {
-                              for: "number_identification",
-                              value: "Número de identificación"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "number_identification",
-                              type: "text",
-                              autocomplete: "number_identification"
-                            },
-                            model: {
-                              value: _vm.form.number_identification,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "number_identification", $$v)
-                              },
-                              expression: "form.number_identification"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: {
-                              message: _vm.form.errors.number_identification
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: {
-                              for: "type_identification",
-                              value: "Tipo identificación"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "type_identification",
-                              type: "text",
-                              autocomplete: "type_identification"
-                            },
-                            model: {
-                              value: _vm.form.type_identification,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "type_identification", $$v)
-                              },
-                              expression: "form.type_identification"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: {
-                              message: _vm.form.errors.type_identification
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-1" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "sex", value: "Sexo" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "sex",
-                              type: "text",
-                              autocomplete: "sex"
-                            },
-                            model: {
-                              value: _vm.form.sex,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "sex", $$v)
-                              },
-                              expression: "form.sex"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.sex }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-1" },
-                        [
-                          _c("jet-label", {
-                            attrs: {
-                              for: "type_blood",
-                              value: "Tipo de sangre"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "type_blood",
-                              type: "text",
-                              autocomplete: "type_blood"
-                            },
-                            model: {
-                              value: _vm.form.type_blood,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "type_blood", $$v)
-                              },
-                              expression: "form.type_blood"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.type_blood }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "name_company", value: "Empresa" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "name_company",
-                              type: "text",
-                              autocomplete: "name_company"
-                            },
-                            model: {
-                              value: _vm.form.name_company,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "name_company", $$v)
-                              },
-                              expression: "form.name_company"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.name_company }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "type_pay", value: "Tipo de pago" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "type_pay",
-                              type: "text",
-                              autocomplete: "type_pay"
-                            },
-                            model: {
-                              value: _vm.form.type_pay,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "type_pay", $$v)
-                              },
-                              expression: "form.type_pay"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.type_pay }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "street_address", value: "Dirección" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "street_address",
-                              type: "text",
-                              autocomplete: "street_address"
-                            },
-                            model: {
-                              value: _vm.form.street_address,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "street_address", $$v)
-                              },
-                              expression: "form.street_address"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.street_address }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-6" },
-                        [
-                          _c("jet-label", {
-                            attrs: {
-                              for: "street_details",
-                              value: "Detalles de dirección"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("textarea", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.street_details,
-                                expression: "form.street_details"
-                              }
-                            ],
-                            staticClass: "mt-1 block w-full rounded-md",
-                            attrs: { id: "street_details" },
-                            domProps: { value: _vm.form.street_details },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "street_details",
-                                  $event.target.value
+                  _vm.showFormEdit
+                    ? {
+                        key: "form",
+                        fn: function() {
+                          return [
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-3" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "name",
+                                    value: "Nombre Completo"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "name",
+                                    type: "text",
+                                    autocomplete: "name"
+                                  },
+                                  model: {
+                                    value: _vm.form.name,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "name", $$v)
+                                    },
+                                    expression: "form.name"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.name }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-3" },
+                              [
+                                _c("jet-label", {
+                                  attrs: { for: "email", value: "Correo" }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "email",
+                                    type: "text",
+                                    autocomplete: "email"
+                                  },
+                                  model: {
+                                    value: _vm.form.email,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "email", $$v)
+                                    },
+                                    expression: "form.email"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.email }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "number_identification",
+                                    value: "Número de identificación"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "number_identification",
+                                    type: "number",
+                                    autocomplete: "number_identification"
+                                  },
+                                  model: {
+                                    value: _vm.form.number_identification,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.form,
+                                        "number_identification",
+                                        _vm._n($$v)
+                                      )
+                                    },
+                                    expression: "form.number_identification"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message:
+                                      _vm.form.errors.number_identification
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "type_identification_id",
+                                    value: "Tipo identificación"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  staticClass: "mt-1",
+                                  attrs: {
+                                    id: "type_identification_id",
+                                    label: "description",
+                                    reduce: function(description) {
+                                      return description.id
+                                    },
+                                    options: _vm.types_identification,
+                                    clearable: false
+                                  },
+                                  model: {
+                                    value: _vm.form.type_identification_id,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.form,
+                                        "type_identification_id",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "form.type_identification_id"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message:
+                                      _vm.form.errors.type_identification_id
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-1" },
+                              [
+                                _c("jet-label", {
+                                  attrs: { for: "sex", value: "Sexo" }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "sex",
+                                    type: "text",
+                                    autocomplete: "sex"
+                                  },
+                                  model: {
+                                    value: _vm.form.sex,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "sex", $$v)
+                                    },
+                                    expression: "form.sex"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.sex }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-1" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "type_blood_id",
+                                    value: "Tipo de sangre"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  staticClass: "mt-1",
+                                  attrs: {
+                                    id: "type_blood_id",
+                                    label: "acronym",
+                                    reduce: function(acronym) {
+                                      return acronym.id
+                                    },
+                                    options: _vm.types_blood,
+                                    clearable: false
+                                  },
+                                  model: {
+                                    value: _vm.form.type_blood_id,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "type_blood_id", $$v)
+                                    },
+                                    expression: "form.type_blood_id"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message: _vm.form.errors.type_blood_id
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "name_company",
+                                    value: "Empresa"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "name_company",
+                                    type: "text",
+                                    autocomplete: "name_company"
+                                  },
+                                  model: {
+                                    value: _vm.form.name_company,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "name_company", $$v)
+                                    },
+                                    expression: "form.name_company"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message: _vm.form.errors.name_company
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "type_pay",
+                                    value: "Tipo de pago"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "type_pay",
+                                    type: "text",
+                                    autocomplete: "type_pay"
+                                  },
+                                  model: {
+                                    value: _vm.form.type_pay,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "type_pay", $$v)
+                                    },
+                                    expression: "form.type_pay"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.type_pay }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "street_address",
+                                    value: "Dirección"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "street_address",
+                                    type: "text",
+                                    autocomplete: "street_address"
+                                  },
+                                  model: {
+                                    value: _vm.form.street_address,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "street_address", $$v)
+                                    },
+                                    expression: "form.street_address"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message: _vm.form.errors.street_address
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-6" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "street_details",
+                                    value: "Detalles de dirección"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("textarea", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.street_details,
+                                      expression: "form.street_details"
+                                    }
+                                  ],
+                                  staticClass: "mt-1 block w-full rounded-md",
+                                  attrs: { id: "street_details" },
+                                  domProps: { value: _vm.form.street_details },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "street_details",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message: _vm.form.errors.street_details
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "street_comune",
+                                    value: "Comuna"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input", {
+                                  staticClass: "mt-1 block w-full",
+                                  attrs: {
+                                    id: "street_comune",
+                                    type: "text",
+                                    autocomplete: "street_comune"
+                                  },
+                                  model: {
+                                    value: _vm.form.street_comune,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "street_comune", $$v)
+                                    },
+                                    expression: "form.street_comune"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message: _vm.form.errors.street_comune
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "deparment",
+                                    value: "Departamento"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("v-select", {
+                                  staticClass: "mt-1",
+                                  attrs: {
+                                    id: "deparment",
+                                    label: "departamento",
+                                    options: _vm.deparments,
+                                    clearable: false
+                                  },
+                                  on: { input: _vm.showCitys },
+                                  model: {
+                                    value: _vm.form.deparment,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.form, "deparment", $$v)
+                                    },
+                                    expression: "form.deparment"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.deparment }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _vm.form.city || _vm.citys.length
+                              ? _c(
+                                  "div",
+                                  { staticClass: "col-span-6 lg:col-span-2" },
+                                  [
+                                    _c("jet-label", {
+                                      attrs: { for: "city", value: "Ciudad" }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("v-select", {
+                                      staticClass: "mt-1",
+                                      attrs: {
+                                        id: "city",
+                                        label: "ciudades",
+                                        options: _vm.citys
+                                      },
+                                      model: {
+                                        value: _vm.form.city,
+                                        callback: function($$v) {
+                                          _vm.$set(_vm.form, "city", $$v)
+                                        },
+                                        expression: "form.city"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("jet-input-error", {
+                                      staticClass: "mt-2",
+                                      attrs: { message: _vm.form.errors.city }
+                                    })
+                                  ],
+                                  1
                                 )
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.street_details }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "street_comune", value: "Comuna" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "street_comune",
-                              type: "text",
-                              autocomplete: "street_comune"
-                            },
-                            model: {
-                              value: _vm.form.street_comune,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "street_comune", $$v)
-                              },
-                              expression: "form.street_comune"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.street_comune }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "deparment", value: "Departamento" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "deparment",
-                              type: "text",
-                              autocomplete: "deparment"
-                            },
-                            model: {
-                              value: _vm.form.deparment,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "deparment", $$v)
-                              },
-                              expression: "form.deparment"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.deparment }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-2" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "city", value: "Ciudad" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "city",
-                              type: "text",
-                              autocomplete: "city"
-                            },
-                            model: {
-                              value: _vm.form.city,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "city", $$v)
-                              },
-                              expression: "form.city"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.city }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-3" },
-                        [
-                          _c("jet-label", {
-                            attrs: {
-                              for: "others_email",
-                              value: "Otros correos"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("textarea", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.others_email,
-                                expression: "form.others_email"
-                              }
-                            ],
-                            staticClass: "mt-1 block w-full rounded-md",
-                            attrs: { id: "others_email" },
-                            domProps: { value: _vm.form.others_email },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "others_email",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.others_email }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 lg:col-span-3" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "phones", value: "Otros telefonos" }
-                          }),
-                          _vm._v(" "),
-                          _c("textarea", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.phones,
-                                expression: "form.phones"
-                              }
-                            ],
-                            staticClass: "mt-1 block w-full rounded-md",
-                            attrs: { id: "phones" },
-                            domProps: { value: _vm.form.phones },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "phones",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.phones }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-span-6 lg:col-span-2" }, [
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-3" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "others_email",
+                                    value: "Otros correos"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("textarea", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.others_email,
+                                      expression: "form.others_email"
+                                    }
+                                  ],
+                                  staticClass: "mt-1 block w-full rounded-md",
+                                  attrs: { id: "others_email" },
+                                  domProps: { value: _vm.form.others_email },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "others_email",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: {
+                                    message: _vm.form.errors.others_email
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-3" },
+                              [
+                                _c("jet-label", {
+                                  attrs: {
+                                    for: "phones",
+                                    value: "Otros telefonos"
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("textarea", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.phones,
+                                      expression: "form.phones"
+                                    }
+                                  ],
+                                  staticClass: "mt-1 block w-full rounded-md",
+                                  attrs: { id: "phones" },
+                                  domProps: { value: _vm.form.phones },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "phones",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("jet-input-error", {
+                                  staticClass: "mt-2",
+                                  attrs: { message: _vm.form.errors.phones }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass:
+                                      "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500",
+                                    attrs: { for: "photo" }
+                                  },
+                                  [
+                                    _c("span", [
+                                      _vm._v("Subir Identificación")
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      ref: "photo",
+                                      staticClass:
+                                        "w-px h-px opacity-0 overflow-hidden absolute",
+                                      attrs: {
+                                        type: "file",
+                                        id: "photo",
+                                        accept: ".pdf"
+                                      },
+                                      on: { change: _vm.uploadDocument }
+                                    })
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _vm.uploadedDocument
+                                  ? _c(
+                                      "span",
+                                      { staticClass: "ml-4 text-green-500" },
+                                      [_vm._v("¡Hecho!")]
+                                    )
+                                  : _vm._e()
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              { staticClass: "col-span-6 lg:col-span-2" },
+                              [
+                                _c(
+                                  "label",
+                                  {
+                                    staticClass:
+                                      "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500",
+                                    attrs: { for: "rut" }
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Subir RUT")]),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      ref: "rut",
+                                      staticClass:
+                                        "w-px h-px opacity-0 overflow-hidden absolute",
+                                      attrs: {
+                                        type: "file",
+                                        id: "rut",
+                                        accept: ".pdf"
+                                      },
+                                      on: { change: _vm.uploadRut }
+                                    })
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _vm.uploadedRut
+                                  ? _c(
+                                      "span",
+                                      { staticClass: "ml-4 text-green-500" },
+                                      [_vm._v("¡Hecho!")]
+                                    )
+                                  : _vm._e()
+                              ]
+                            )
+                          ]
+                        },
+                        proxy: true
+                      }
+                    : null,
+                  {
+                    key: "actions",
+                    fn: function() {
+                      return [
                         _c(
-                          "label",
+                          "jet-action-message",
                           {
-                            staticClass:
-                              "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500",
-                            attrs: { for: "photo" }
+                            staticClass: "mr-3",
+                            attrs: { on: _vm.form.recentlySuccessful }
                           },
                           [
-                            _c("span", [_vm._v("Subir Identificación")]),
-                            _vm._v(" "),
-                            _c("input", {
-                              ref: "photo",
-                              staticClass:
-                                "w-px h-px opacity-0 overflow-hidden absolute",
-                              attrs: {
-                                type: "file",
-                                id: "photo",
-                                accept: ".pdf"
-                              },
-                              on: { change: _vm.uploadDocument }
-                            })
+                            _vm._v(
+                              "\n\t\t\t                Guardado.\n\t\t\t            "
+                            )
                           ]
                         ),
                         _vm._v(" "),
-                        _vm.uploadedDocument
-                          ? _c("span", { staticClass: "ml-4 text-green-500" }, [
-                              _vm._v("¡Hecho!")
-                            ])
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-span-6 lg:col-span-2" }, [
                         _c(
-                          "label",
+                          "jet-button",
                           {
-                            staticClass:
-                              "relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500",
-                            attrs: { for: "rut" }
+                            class: { "opacity-25": _vm.form.processing },
+                            attrs: { disabled: _vm.form.processing }
                           },
                           [
-                            _c("span", [_vm._v("Subir RUT")]),
-                            _vm._v(" "),
-                            _c("input", {
-                              ref: "rut",
-                              staticClass:
-                                "w-px h-px opacity-0 overflow-hidden absolute",
-                              attrs: {
-                                type: "file",
-                                id: "rut",
-                                accept: ".pdf"
-                              },
-                              on: { change: _vm.uploadRut }
-                            })
+                            _vm._v(
+                              "\n\t\t\t                Guardar\n\t\t\t            "
+                            )
                           ]
-                        ),
-                        _vm._v(" "),
-                        _vm.uploadedRut
-                          ? _c("span", { staticClass: "ml-4 text-green-500" }, [
-                              _vm._v("¡Hecho!")
-                            ])
-                          : _vm._e()
-                      ])
-                    ]
-                  },
-                  proxy: true
-                },
-                {
-                  key: "actions",
-                  fn: function() {
-                    return [
-                      _c(
-                        "jet-action-message",
-                        {
-                          staticClass: "mr-3",
-                          attrs: { on: _vm.form.recentlySuccessful }
-                        },
-                        [
-                          _vm._v(
-                            "\n\t\t\t                Guardado.\n\t\t\t            "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "jet-button",
-                        {
-                          class: { "opacity-25": _vm.form.processing },
-                          attrs: { disabled: _vm.form.processing }
-                        },
-                        [
-                          _vm._v(
-                            "\n\t\t\t                Guardar\n\t\t\t            "
-                          )
-                        ]
-                      )
-                    ]
-                  },
-                  proxy: true
-                }
-              ])
+                        )
+                      ]
+                    },
+                    proxy: true
+                  }
+                ],
+                null,
+                true
+              )
             })
           ],
           1

@@ -2,13 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\ItemSeeder;
-use Database\Seeders\MenuSeeder;
-use Database\Seeders\PermissionSeeder;
-use Database\Seeders\RoleSeeder;
-use Database\Seeders\RoleUserSeeder;
-use Database\Seeders\UnitMeasureSeeder;
-use Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -28,7 +21,9 @@ class DatabaseSeeder extends Seeder
 	        RoleSeeder::class,
 	        PermissionSeeder::class,
 	        RoleUserSeeder::class,
-            UnitMeasureSeeder::class
+            UnitMeasureSeeder::class,
+            TypeIdentificationSeeder::class,
+            TypeBloodSeeder::class
 	    ]);
     }
 }

@@ -15,4 +15,9 @@ class UnitMeasure extends Model
     	'name',
     	'available'
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

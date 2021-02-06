@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\UserDetailTrait;
 use App\Traits\UserTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use UserTrait;
+    use UserDetailTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -60,4 +62,11 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    protected $with = ['details'];
+
+    public function details()
+    {
+        return $this->hasOne(UserDetail::class, 'user_id', 'id');
+    }
 }

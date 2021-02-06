@@ -2,11 +2,17 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Menu;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
+
+    public function __construct()
+    {
+        $this->menu = new Menu;
+    }
     /**
      * The root template that's loaded on the first page visit.
      *
@@ -37,7 +43,9 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         return array_merge(parent::share($request), [
-            //
+            'menu' => $request->user()
+            ? $this->menu->getAccessMenu()
+            : null,
         ]);
     }
 }

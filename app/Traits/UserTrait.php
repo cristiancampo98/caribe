@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use App\Models\RoleUser;
+use Illuminate\Support\Facades\Auth;
+
 /**
  * 
  */
@@ -40,5 +43,27 @@ trait UserTrait
         
         return $isTrue;
         
+    }
+
+    /*
+     * Valida si el usuario logueado tiene un rol administrador y retorna un boolean
+     *
+     */
+    public function isAdmin(){
+
+        $isAdmin = false;
+
+        foreach (Auth::user()->roles as $key => $value) {
+            if ( $value['full-access'] == 'yes' || $value->id == 2) {
+                $isAdmin = true;
+            }
+        }
+
+        return $isAdmin;
+    }
+
+    public static function getClients(){
+        
+        return RoleUser::where('role_id',3)->get();
     }
 }

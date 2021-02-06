@@ -16,22 +16,23 @@ class CreateUserDetailsTable extends Migration
     {
         Schema::create('user_details', function (Blueprint $table) {
             $table->id();
-            $table->string('number_identification',15)->Nullable();
-            $table->string('type_identification',15)->Nullable();
-            $table->string('sex',15)->Nullable();
-            $table->string('photo_document')->Nullable();
-            $table->string('type_blood',5)->Nullable();
-            $table->string('name_company',50)->Nullable();
-            $table->string('type_pay',15)->Nullable();
-            $table->string('street_address',50)->Nullable();
-            $table->string('street_details',50)->Nullable();
-            $table->string('street_comune',15)->Nullable();
-            $table->string('city')->Nullable();
-            $table->string('deparment')->Nullable();
-            $table->string('country')->Nullable();
-            $table->string('others_email');
-            $table->string('phones');
+            $table->string('number_identification',15)->nullable();
+            $table->string('sex',15)->nullable();
+            $table->string('name_company',50)->nullable();
+            $table->string('type_pay',15)->nullable();
+            $table->string('street_address',50)->nullable();
+            $table->string('street_details',50)->nullable();
+            $table->string('street_comune',15)->nullable();
+            $table->string('city')->nullable();
+            $table->string('deparment')->nullable();
+            $table->string('country')->nullable();
+            $table->string('others_email')->nullable();
+            $table->string('phones')->nullable();
             $table->foreignId('user_id') ->constrained()
+            ->onDelete('cascade');
+            $table->foreignId('type_blood_id')->nullable()->constrained()
+            ->onDelete('cascade');
+            $table->foreignId('type_identification_id')->nullable()->constrained()
             ->onDelete('cascade');
             $table->timestamps();
         });

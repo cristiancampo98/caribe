@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMultimediasTable extends Migration
+class CreateVehicleUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateMultimediasTable extends Migration
      */
     public function up()
     {
-        Schema::create('multimedias', function (Blueprint $table) {
+        Schema::create('vehicle_users', function (Blueprint $table) {
             $table->id();
-            $table->string('path');
-            $table->string('filename');
-            $table->string('model');
-            $table->string('reason');
-            $table->string('foreign_key');
-            $table->integer('model_id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('vehicle_id')->constrained()->onDelete('cascade');
+            $table->string('carrier',100)->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateMultimediasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('multimedias');
+        Schema::dropIfExists('vehicle_users');
     }
 }

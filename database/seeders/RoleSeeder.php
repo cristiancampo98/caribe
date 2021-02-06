@@ -35,6 +35,27 @@ class RoleSeeder extends Seeder
 		    	'description' => 'Acceso a pedidos',
 		    	'full-access' => 'no',
 		    	'public' => 1,
+		    ],
+		    [
+		    	'name' => 'Secretaria', 
+		    	'slug' => 'secretary',
+		    	'description' => 'Pedidos y remisiones',
+		    	'full-access' => 'no',
+		    	'public' => 1,
+		    ],
+		    [
+		    	'name' => 'Asistente', 
+		    	'slug' => 'assistant',
+		    	'description' => 'remisiones',
+		    	'full-access' => 'no',
+		    	'public' => 1,
+		    ],
+		    [
+		    	'name' => 'Contador', 
+		    	'slug' => 'accounter',
+		    	'description' => 'Reportes',
+		    	'full-access' => 'no',
+		    	'public' => 1,
 		    ]
 		]);
     }

@@ -9,7 +9,7 @@
             :href="previousPageUrl" 
             class="page-link"
             >
-            Prev
+            Anterior
          </InertiaLink>
       </li>
       <li 
@@ -38,7 +38,7 @@
             :href="nextPageUrl" 
             class="page-link"
             >
-            Next
+            Siguiente
          </InertiaLink>
       </li>
    </ul>

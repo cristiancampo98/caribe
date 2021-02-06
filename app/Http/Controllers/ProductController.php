@@ -46,14 +46,17 @@ class ProductController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:100',
-            'reference' => 'required|string|max:50',
+            'reference' => 'nullable|string|max:50',
             'unit_measure_id' => 'required|numeric|gt:0',
-            'price' => 'required|numeric|min:1',
+            'price' => 'nullable|numeric|min:0',
         ]);
 
         $product = self::storeProduct($request->all());
 
-        self::storeMultimedia($request->file('photos'), 'products', 'product', 'product_id', $product->id);
+        if (!$request->filled('photos')) {
+
+            self::storeMultimedia($request->file('photos'), 'products', 'product', 'img_product','product_id', $product->id);
+        }
 
         return redirect()->route('product.index');
     }

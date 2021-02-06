@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\MultimediaTrait;
-use App\Traits\ProductTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
     use HasFactory;
-    use MultimediaTrait;
-    use ProductTrait;
 
     protected $table = 'products';
 

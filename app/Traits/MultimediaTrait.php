@@ -19,11 +19,9 @@ trait MultimediaTrait
 		model_id: id del registro que cargo los archivos ejemplo 1
 	]
 	*/
-	public function storeMultimedia($files, $folder, $model, $foreign_key, $model_id)
+	public static function storeMultimedia($files, $folder, $model, $foreign_key, $model_id)
 	{
-		
 		foreach ($files as $key => $value) {
-
 			Multimedia::create([
 				'path' => $value->storeAs('public/' .$folder , $value->getClientOriginalName()),
 				'filename' => $value->getClientOriginalName(),
@@ -32,6 +30,21 @@ trait MultimediaTrait
 				'model_id' => $model_id
 			]);	
 		}
+	}
+
+	/*
+	 * Realiza la misma funcion de guardar archivos pero recibe un solo archivo
+	 * @params: cumple con los mismos parametros de la funcion storeMultimedia
+	 */
+	public static function storeSingleFileMultimedia($file, $folder, $model, $foreign_key, $model_id)
+	{
+		return Multimedia::create([
+			'path' => $file->storeAs('public/' .$folder , $file->getClientOriginalName()),
+			'filename' => $file->getClientOriginalName(),
+			'model' => $model,
+			'foreign_key' => $foreign_key,
+			'model_id' => $model_id
+		]);	
 	}
 
     

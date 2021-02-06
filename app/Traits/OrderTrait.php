@@ -22,7 +22,7 @@ trait OrderTrait
 	/*
 	 * Valida el rol del usuario para retornar todas o solo las ordenes del usuario logueado
 	 */
-	public function getOrdersByRole(){
+	public static function getOrdersByRole(){
 
 		$isAdmin = Auth::user()->isAdmin();
 		$orders = [];
@@ -36,19 +36,19 @@ trait OrderTrait
 		return $orders;
 	}
 
-	public function getClientsToOrder(){
+	public static function getClientsToOrder(){
 
 		$isAdmin = Auth::user()->isAdmin();
 
 		if ($isAdmin) {
-			return $this->user->getClients();
+			return User::getClients();
 		}
 
 		return false;
 
 	}
 
-	public function storeOrder($data){
+	public static function storeOrder($data){
 		return DB::transaction(function () use ($data ) {
 
             $date = Carbon::now('America/Bogota');
@@ -59,7 +59,7 @@ trait OrderTrait
                 'city' => $data['city'],
                 'note' => $data['note'],
                 'status' => 'Pendiente',
-                'total' => $this->getTotalOrder($data['order_details']),
+                'total' => self::getTotalOrder($data['order_details']),
                 'created_by' => Auth::user()->id,
                 'created_at' => $date,
                 'updated_at' => $date
@@ -79,7 +79,7 @@ trait OrderTrait
         });
 	}
 
-	public function getTotalOrder($data)
+	public static function getTotalOrder($data)
 	{
 		$total = 0;
 

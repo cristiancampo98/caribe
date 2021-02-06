@@ -62,7 +62,7 @@ trait UserTrait
         return $isAdmin;
     }
 
-    public function getClients(){
+    public static function getClients(){
         
         return RoleUser::where('role_id',3)->get();
     }

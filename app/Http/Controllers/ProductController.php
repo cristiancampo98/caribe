@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\UnitMeasure;
+use App\Traits\MultimediaTrait;
+use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    protected $product;
-
-    public function __construct(){
-
-        $this->product = new Product;
-    }
+    use ProductTrait,
+        MultimediaTrait;
 
     /**
      * Display a listing of the resource.
@@ -47,15 +44,17 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        
         $this->validate($request, [
             'name' => 'required|string|max:100',
             'reference' => 'required|string|max:50',
             'unit_measure_id' => 'required|numeric|gt:0',
             'price' => 'required|numeric|min:1',
         ]);
-        $product = $this->product->storeProduct($request->all());
-        $this->product->storeMultimedia($request->file('photos'), 'products', 'product', 'product_id', $product->id);
+
+        $product = self::storeProduct($request->all());
+
+        self::storeMultimedia($request->file('photos'), 'products', 'product', 'product_id', $product->id);
+
         return redirect()->route('product.index');
     }
 

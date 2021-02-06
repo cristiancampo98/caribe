@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Product;
+use App\Traits\OrderTrait;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    protected $order;
-
-    public function __construct()
-    {
-        $this->order = new Order;
-    }
+    use OrderTrait;
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +17,7 @@ class OrderController extends Controller
     public function index()
     {
         return inertia('Order/Index', [
-            'orders' => $this->order->getOrdersByRole(),
+            'orders' => self::getOrdersByRole(),
         ]);
     }
 
@@ -36,7 +31,7 @@ class OrderController extends Controller
 
         return inertia('Order/Create', [
             'products' => Product::all(),
-            'clients' => $this->order->getClientsToOrder()
+            'clients' => self::getClientsToOrder()
         ]);
     }
 
@@ -54,7 +49,7 @@ class OrderController extends Controller
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1'
         ]);
-        $this->order->storeOrder($request->all());
+        self::storeOrder($request->all());
 
         return redirect()->route('order.index');
     }

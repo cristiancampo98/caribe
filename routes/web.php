@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\MenuAccessController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
@@ -60,7 +59,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         'user' => UserController::class,
         'client' => ClientController::class
     ]);
-    Route::get('security/getAccessMenu',[MenuAccessController::class, 'getAccessMenu']);
     Route::get('security/{role}/assignPermission',[SecurityController::class, 'assignPermission'])->name('security.assignPermission');
 
 });

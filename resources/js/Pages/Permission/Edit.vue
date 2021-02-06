@@ -8,18 +8,18 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-				<jet-form-section @submitted="updatePermission">
-			        <template #title>
+				<form action="#" method="PATCH" @submit="updatePermission">
+			        <template >
 			            Información del permiso
 			        </template>
 
-			        <template #description>
+			        <template >
 			            Crea un permiso con la información requerida.
 			        </template>
 
-			        <template #form>
+			        <template >
 			            <!-- Profile Photo -->
-			            
+			             
 
 			            <!-- Name -->
 			            <div class="col-span-6 sm:col-span-4">
@@ -58,17 +58,16 @@
 			            
 			        </template>
 
-			        <template #actions>
+			        <template>
 			            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
 			                Guardado.
 			            </jet-action-message>
 
-			            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+			            <button type="submit">
 			                Guardar
-			            </jet-button>
+			            </button>
 			        </template>
-			    </jet-form-section>
-
+			   </form> 
             </div>
         </div>
 
@@ -95,16 +94,15 @@
             JetButton,
             AdminLayout,
     	},
-    	props: {
+    	props: ['permission', 'errors'],
     		
-    	},
     	data(){
             return {
                 form: this.$inertia.form({
-                    name: null,
-                    slug: null,
-                    controller: null,
-                    description: null
+                    name: this.permission.name,
+                    slug: this.permission.slug,
+                    controller: this.permission.controller,
+                    description: this.permission.description,
                 }),
             }
         },
@@ -113,12 +111,13 @@
         },
         methods: {
             updatePermission(){
-                this.form.post('permission.update'), {
-                    errorBag: 'updatePermission',
+				this.form.patch(`/permission/${this.permission.id}`, {
+                    errorBag: 'storePermission',
                     preserveScroll: true
-                };
+                })
+				
+                }
             }
         }
 
-    }
 </script>

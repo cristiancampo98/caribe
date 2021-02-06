@@ -86,8 +86,9 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission)
     {
         //
+       
         $permission->update($request->all());
-        return Redirect::route('Permission.index');
+        return redirect()->back();
     }
 
     /**

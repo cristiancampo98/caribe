@@ -4835,7 +4835,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -4853,24 +4852,24 @@ __webpack_require__.r(__webpack_exports__);
     JetButton: _Jetstream_Button__WEBPACK_IMPORTED_MODULE_6__.default,
     AdminLayout: _Layouts_AdminLayout__WEBPACK_IMPORTED_MODULE_0__.default
   },
-  props: {},
+  props: ['permission', 'errors'],
   data: function data() {
     return {
       form: this.$inertia.form({
-        name: null,
-        slug: null,
-        controller: null,
-        description: null
+        name: this.permission.name,
+        slug: this.permission.slug,
+        controller: this.permission.controller,
+        description: this.permission.description
       })
     };
   },
   mounted: function mounted() {},
   methods: {
     updatePermission: function updatePermission() {
-      this.form.post('permission.update'), {
-        errorBag: 'updatePermission',
+      this.form.patch("/permission/".concat(this.permission.id), {
+        errorBag: 'storePermission',
         preserveScroll: true
-      };
+      });
     }
   }
 });
@@ -63000,241 +62999,196 @@ var render = function() {
     [
       _vm._v(" "),
       _c("div", { staticClass: "py-12" }, [
-        _c(
-          "div",
-          { staticClass: "max-w-7xl mx-auto sm:px-6 lg:px-8" },
-          [
-            _c("jet-form-section", {
-              on: { submitted: _vm.updatePermission },
-              scopedSlots: _vm._u([
-                {
-                  key: "title",
-                  fn: function() {
-                    return [
-                      _vm._v(
-                        "\n\t\t\t            Información del permiso\n\t\t\t        "
-                      )
-                    ]
-                  },
-                  proxy: true
-                },
-                {
-                  key: "description",
-                  fn: function() {
-                    return [
-                      _vm._v(
-                        "\n\t\t\t            Crea un permiso con la información requerida.\n\t\t\t        "
-                      )
-                    ]
-                  },
-                  proxy: true
-                },
-                {
-                  key: "form",
-                  fn: function() {
-                    return [
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 sm:col-span-4" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "name", value: "Nombre" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "name",
-                              type: "text",
-                              autocomplete: "name"
-                            },
-                            model: {
-                              value: _vm.form.name,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "name", $$v)
-                              },
-                              expression: "form.name"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.name }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 sm:col-span-4" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "slug", value: "Identificador único" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "slug",
-                              type: "text",
-                              autocomplete: "slug"
-                            },
-                            model: {
-                              value: _vm.form.slug,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "slug", $$v)
-                              },
-                              expression: "form.slug"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("p", { staticClass: "text-sm text-blue-600" }, [
-                            _vm._v(
-                              '\n\t\t\t                \tNota: El identificador único debe corresponder siempre a el "name" de una ruta.\n\t\t\t                '
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.slug }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 sm:col-span-4" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "controller", value: "Controlador" }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input", {
-                            staticClass: "mt-1 block w-full",
-                            attrs: {
-                              id: "controller",
-                              type: "text",
-                              autocomplete: "controller"
-                            },
-                            model: {
-                              value: _vm.form.controller,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "controller", $$v)
-                              },
-                              expression: "form.controller"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("p", { staticClass: "text-sm text-blue-600" }, [
-                            _vm._v(
-                              "\n\t\t\t                \tNota: Digita el nombre del controlador "
-                            ),
-                            _c("strong", [_vm._v("Sí")]),
-                            _vm._v(
-                              " hay mas permisos para el mismo. Por ejemplo: Controlador => "
-                            ),
-                            _c("u", [_vm._v("permission")]),
-                            _vm._v(
-                              "  Permisos => ['permission.index', 'permission.create', ...].\n\t\t\t                "
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.controller }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "col-span-6 sm:col-span-4" },
-                        [
-                          _c("jet-label", {
-                            attrs: { for: "description", value: "Descripción" }
-                          }),
-                          _vm._v(" "),
-                          _c("textarea", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.form.description,
-                                expression: "form.description"
-                              }
-                            ],
-                            staticClass: "mt-1 block w-full rounded-md",
-                            attrs: {
-                              id: "description",
-                              autocomplete: "description"
-                            },
-                            domProps: { value: _vm.form.description },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.$set(
-                                  _vm.form,
-                                  "description",
-                                  $event.target.value
-                                )
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("jet-input-error", {
-                            staticClass: "mt-2",
-                            attrs: { message: _vm.form.errors.description }
-                          })
-                        ],
-                        1
-                      )
-                    ]
-                  },
-                  proxy: true
-                },
-                {
-                  key: "actions",
-                  fn: function() {
-                    return [
-                      _c(
-                        "jet-action-message",
-                        {
-                          staticClass: "mr-3",
-                          attrs: { on: _vm.form.recentlySuccessful }
+        _c("div", { staticClass: "max-w-7xl mx-auto sm:px-6 lg:px-8" }, [
+          _c(
+            "form",
+            {
+              attrs: { action: "#", method: "PATCH" },
+              on: { submit: _vm.updatePermission }
+            },
+            [
+              [
+                _vm._v(
+                  "\n\t\t\t            Información del permiso\n\t\t\t        "
+                )
+              ],
+              _vm._v(" "),
+              [
+                _vm._v(
+                  "\n\t\t\t            Crea un permiso con la información requerida.\n\t\t\t        "
+                )
+              ],
+              _vm._v(" "),
+              [
+                _c(
+                  "div",
+                  { staticClass: "col-span-6 sm:col-span-4" },
+                  [
+                    _c("jet-label", {
+                      attrs: { for: "name", value: "Nombre" }
+                    }),
+                    _vm._v(" "),
+                    _c("jet-input", {
+                      staticClass: "mt-1 block w-full",
+                      attrs: { id: "name", type: "text", autocomplete: "name" },
+                      model: {
+                        value: _vm.form.name,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "name", $$v)
                         },
-                        [
-                          _vm._v(
-                            "\n\t\t\t                Guardado.\n\t\t\t            "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "jet-button",
-                        {
-                          class: { "opacity-25": _vm.form.processing },
-                          attrs: { disabled: _vm.form.processing }
+                        expression: "form.name"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("jet-input-error", {
+                      staticClass: "mt-2",
+                      attrs: { message: _vm.form.errors.name }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-span-6 sm:col-span-4" },
+                  [
+                    _c("jet-label", {
+                      attrs: { for: "slug", value: "Identificador único" }
+                    }),
+                    _vm._v(" "),
+                    _c("jet-input", {
+                      staticClass: "mt-1 block w-full",
+                      attrs: { id: "slug", type: "text", autocomplete: "slug" },
+                      model: {
+                        value: _vm.form.slug,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "slug", $$v)
                         },
-                        [
-                          _vm._v(
-                            "\n\t\t\t                Guardar\n\t\t\t            "
-                          )
-                        ]
+                        expression: "form.slug"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "text-sm text-blue-600" }, [
+                      _vm._v(
+                        '\n\t\t\t                \tNota: El identificador único debe corresponder siempre a el "name" de una ruta.\n\t\t\t                '
                       )
-                    ]
+                    ]),
+                    _vm._v(" "),
+                    _c("jet-input-error", {
+                      staticClass: "mt-2",
+                      attrs: { message: _vm.form.errors.slug }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-span-6 sm:col-span-4" },
+                  [
+                    _c("jet-label", {
+                      attrs: { for: "controller", value: "Controlador" }
+                    }),
+                    _vm._v(" "),
+                    _c("jet-input", {
+                      staticClass: "mt-1 block w-full",
+                      attrs: {
+                        id: "controller",
+                        type: "text",
+                        autocomplete: "controller"
+                      },
+                      model: {
+                        value: _vm.form.controller,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "controller", $$v)
+                        },
+                        expression: "form.controller"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "text-sm text-blue-600" }, [
+                      _vm._v(
+                        "\n\t\t\t                \tNota: Digita el nombre del controlador "
+                      ),
+                      _c("strong", [_vm._v("Sí")]),
+                      _vm._v(
+                        " hay mas permisos para el mismo. Por ejemplo: Controlador => "
+                      ),
+                      _c("u", [_vm._v("permission")]),
+                      _vm._v(
+                        "  Permisos => ['permission.index', 'permission.create', ...].\n\t\t\t                "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("jet-input-error", {
+                      staticClass: "mt-2",
+                      attrs: { message: _vm.form.errors.controller }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "col-span-6 sm:col-span-4" },
+                  [
+                    _c("jet-label", {
+                      attrs: { for: "description", value: "Descripción" }
+                    }),
+                    _vm._v(" "),
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.form.description,
+                          expression: "form.description"
+                        }
+                      ],
+                      staticClass: "mt-1 block w-full rounded-md",
+                      attrs: { id: "description", autocomplete: "description" },
+                      domProps: { value: _vm.form.description },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.form, "description", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("jet-input-error", {
+                      staticClass: "mt-2",
+                      attrs: { message: _vm.form.errors.description }
+                    })
+                  ],
+                  1
+                )
+              ],
+              _vm._v(" "),
+              [
+                _c(
+                  "jet-action-message",
+                  {
+                    staticClass: "mr-3",
+                    attrs: { on: _vm.form.recentlySuccessful }
                   },
-                  proxy: true
-                }
-              ])
-            })
-          ],
-          1
-        )
+                  [
+                    _vm._v(
+                      "\n\t\t\t                Guardado.\n\t\t\t            "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c("button", { attrs: { type: "submit" } }, [
+                  _vm._v("\n\t\t\t                Guardar\n\t\t\t            ")
+                ])
+              ]
+            ],
+            2
+          )
+        ])
       ])
     ]
   )

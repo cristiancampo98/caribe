@@ -20,6 +20,7 @@ class Menu extends Model
     	'description',
     	'icon',
     	'available',
+        'isDirect',
     	'position'
     ];
 

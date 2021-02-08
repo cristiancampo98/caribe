@@ -14,7 +14,7 @@
 	                    	<span  class="inline-flex rounded-md">
 	                            <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
 	                            	<div class="bg-white shadow-sm mr-3 p-2 rounded-lg">
-										<img src="/img/home.svg">
+										<i></i>
 									</div>
 	                                {{ item.name }}
 

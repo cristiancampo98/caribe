@@ -1,8 +1,6 @@
 <template>
 	<div class="w-64 p-6 hidden md:block border-r border-gray-200">
-		<inertia-link :href="route('dashboard')">
-			<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="Logo empresa">
-		</inertia-link>
+		<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="...">
 		<h6 class="font-bold mb-4">Menu</h6>
 		<ul class="mb-8" v-if="$page.props.menu">
 			<div v-for="(item, index) in $page.props.menu" 
@@ -16,7 +14,7 @@
 	                    	<span  class="inline-flex rounded-md">
 	                            <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
 	                            	<div class="bg-white shadow-sm mr-3 p-2 rounded-lg">
-										<img src="/img/home.svg">
+										<i></i>
 									</div>
 	                                {{ item.name }}
 
@@ -73,8 +71,17 @@ export default {
 			menu : []
 		}
 	},
+	created() {
+		this.getAccessMenu();
+	},
 	methods: {
-		
+		getAccessMenu(){
+			axios.get('/security/getAccessMenu')
+    		.then(res => {
+				this.menu = res.data;
+			})
+			.finally( () => { this.isLoading = false })
+		},
 	}
 }
 </script>

@@ -14,7 +14,11 @@ class MenuController extends Controller
      */
     public function index()
     {
-        return inertia('Menu/Index');
+        $menus = Menu::paginate(300);
+        
+        return inertia('Menu/Index', [
+            'menus' => $menus
+        ]);
     }
 
     /**
@@ -55,9 +59,12 @@ class MenuController extends Controller
      * @param  \App\Models\Menu  $menu
      * @return \Illuminate\Http\Response
      */
-    public function show(Menu $menu)
+    public function show($id)
     {
         //
+        return inertia('Menu/Show', [
+            'menus' => Menu::find($id),
+        ]);
     }
 
     /**
@@ -69,6 +76,7 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         //
+        return inertia('Menu/Edit', ['menu' => $menu]);
     }
 
     /**
@@ -81,6 +89,8 @@ class MenuController extends Controller
     public function update(Request $request, Menu $menu)
     {
         //
+        $menu->update($request->all());
+        return redirect()->back();
     }
 
     /**

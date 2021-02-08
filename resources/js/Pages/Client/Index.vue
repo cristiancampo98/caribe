@@ -38,8 +38,9 @@
                                 <td-responsive-component>
                                     {{item.users.email}}
                                 </td-responsive-component>
-                                <td-responsive-component >
-                                    {{item.users.status}}
+                                <td-responsive-component>
+                                    <span :class="item.users.classStatus">{{item.users.status}}</span>
+                                    
                                 </td-responsive-component>
                                 <td-responsive-component>
                                     <jet-dropdown align="right" width="48">
@@ -64,6 +65,11 @@
                                             :href="route(option.route, {client: item.id})" :as="option.as" method="option.method">
                                                 {{option.name}}
                                             </jet-dropdown-link>
+                                            <button type="button"
+                                            class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                            @click="updateStatusUser(item)">
+                                                {{item.users.status == 'Activo' ? 'Inactivar' : 'Activar'}}
+                                            </button>
 
                                         </template>
                                     </jet-dropdown>
@@ -116,8 +122,8 @@
                 titles: ['#','Nombre','Empresa','Dirección','Ciudad','Correo','Estado'],
                 showTable: false,
                 options: [
-                    {name: 'Editar', route:'client.edit', method: 'get' , as: ""},
-                    {name: 'Ver', route:'client.show', method: 'get' , as: ""},
+                    {name: 'Editar', route:'client.edit'},
+                    {name: 'Ver', route:'client.show'},
                 ]
             }
         },
@@ -139,10 +145,6 @@
                         this.clients[i].users.details.city  = this.clients[i].users.details.city 
                         ? this.clients[i].users.details.city 
                         : 'N/A';
-
-                        this.clients[i].users.details.email  = this.clients[i].users.details.email 
-                        ? this.clients[i].users.details.email 
-                        : 'N/A';
                           
                     }else{
                         this.clients[i].users.details = {
@@ -155,9 +157,22 @@
                     this.clients[i].users.status = this.clients[i].users.status
                     ? 'Activo'
                     : 'Inactivo';
+
+                    this.clients[i].users.classStatus = this.clients[i].users.status == 'Activo' 
+                    ? 'text-white bg-green-500 p-1 rounded-md'
+                    : 'text-white bg-red-500 p-1 rounded-md';
                 }
                 this.showTable = true;
             },
+            updateStatusUser(item){
+                axios.put('/updateStatus/'+item.id+'/user')
+                .then(res => {
+                    item.users.status = res.data.user.status ? 'Activo' : 'Inactivo';
+                    item.users.classStatus = res.data.user.status 
+                    ? 'text-white bg-green-500 p-1 rounded-md'
+                    : 'text-white bg-red-500 p-1 rounded-md';
+                })
+            }
         }
     }
 </script>

@@ -2,19 +2,19 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear cliente
+               Editar Usuario
             </h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-				<jet-form-section @submitted="updateClient">
+				<jet-form-section @submitted="updateUser">
 			        <template #title>
-			            Información de cliente
+			            Información de usuario
 			        </template>
 
 			        <template #description>
-			            Crea un cliente con la información requerida.
+			            Edita un usuario con la información requerida
 			        </template>
 
 			        <template #form v-if="showFormEdit">
@@ -51,7 +51,7 @@
 			                <jet-input-error :message="form.errors.type_identification_id" class="mt-2" />
 			            </div>
 			            <!-- sex -->
-			            <div class="col-span-6 lg:col-span-1">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="sex" value="Sexo" />
 			                <v-select 
 			            	class="mt-1"
@@ -62,7 +62,7 @@
 			                <jet-input-error :message="form.errors.sex" class="mt-2" />
 			            </div>
 			            <!-- type blood -->
-			            <div class="col-span-6 lg:col-span-1">
+			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="type_blood_id" value="Tipo de sangre" />
 			                <v-select 
 			            	class="mt-1"
@@ -74,25 +74,8 @@
 			            	:clearable="false"></v-select>
 			                <jet-input-error :message="form.errors.type_blood_id" class="mt-2" />
 			            </div>
-			            <!-- name company -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="name_company" value="Empresa" />
-			                <jet-input id="name_company" type="text" class="mt-1 block w-full" v-model="form.name_company" autocomplete="name_company" />
-			                <jet-input-error :message="form.errors.name_company" class="mt-2" />
-			            </div>
-			            <!-- type pay -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="type_pay" value="Tipo de pago" />
-			                <v-select 
-			            	class="mt-1"
-			            	id="type_pay"
-			            	v-model="form.type_pay"
-			            	:clearable="false"
-			            	:options="['Contado','Crédito','Especial']"></v-select>
-			                <jet-input-error :message="form.errors.type_pay" class="mt-2" />
-			            </div>
 			            <!-- steet address -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="street_address" value="Dirección" />
 			                <jet-input id="street_address" type="text" class="mt-1 block w-full" v-model="form.street_address" autocomplete="street_address" />
 			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
@@ -136,24 +119,18 @@
 			            </div>
 			            
 			            <!-- others_email -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="others_email" value="Otros correos" />
 			                <textarea id="others_email" class="mt-1 block w-full rounded-md" v-model="form.others_email"></textarea>
 			                <jet-input-error :message="form.errors.others_email" class="mt-2" />
 			            </div>
 			            <!-- phones -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="phones" value="Otros telefonos" />
 			                <textarea id="phones"  class="mt-1 block w-full rounded-md" v-model="form.phones"></textarea>
 			                <jet-input-error :message="form.errors.phones" class="mt-2" />
 			            </div>
-			             <!-- vehicles -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="vehicles" value="Vehículos" />
-			                <textarea id="vehicles"  class="uppercase mt-1 block w-full rounded-md" v-model="form.vehicles"></textarea>
-			                <jet-input-error :message="form.errors.vehicles" class="mt-2" />
-			                <p class="text-sm text-blue-500">Nota: Ingrese las placas de los vehículos separados por comas. Ejemplo: Placa1,Placa2, ...</p>
-			            </div>
+			             
 			            <!-- photo document -->
 			            <div class="col-span-6 lg:col-span-2">
 			            	<label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -161,22 +138,6 @@
 			            		<input type="file" id="photo" ref="photo" @change="uploadDocument" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
 			            	</label>
 			            	<span v-if="uploadedDocument" class="ml-4 text-green-500">¡Hecho!</span>
-			            </div>
-			            <!-- rut document -->
-			            <div class="col-span-6 lg:col-span-2">
-			            	<label for="rut" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-			            		<span>Subir RUT</span>
-			            		<input type="file"  id="rut"  ref="rut" @change="uploadRut" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
-			            	</label>
-			            	<span v-if="uploadedRut" class="ml-4 text-green-500">¡Hecho!</span>
-			            </div>
-			            <!-- logo -->
-			            <div class="col-span-6 lg:col-span-2">
-			            	<label for="logo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-			            		<span>Subir Logo</span>
-			            		<input type="file"  id="logo"  ref="logo" @change="uploadLogo" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
-			            	</label>
-			            	<span v-if="uploadedLogo" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 
 			        </template>
@@ -222,7 +183,7 @@
             vSelect
     	},
     	props: {
-    		client: {
+    		user: {
     			type: Object
     		},
     		types_blood: {
@@ -236,17 +197,13 @@
             return {
                 form: this.$inertia.form({
                 	_method: 'PUT',
-                    name: this.client.name,
-                    email: this.client.email,
+                    name: this.user.name,
+                    email: this.user.email,
                     number_identification: null,
                     type_identification_id: null,
                     sex: null,
                     photo_document: null,
-                    rut_document: null,
-                    logo: null,
                     type_blood_id: null,
-                    name_company: null,
-                    type_pay: null,
                     street_address: null,
                     street_details: null,
                     street_comune: null,
@@ -255,46 +212,34 @@
                     country: null,
                     others_email: null,
                     phones: null,
-                    vehicles: null
-
+                    name_company: null,
+                    type_pay: null
                 }),
                 uploadedDocument: false,
-                uploadedRut: false,
-                uploadedLogo: false,
                 deparments: [],
                 citys: [],
                 showFormEdit: false
             }
         },
         mounted(){
-        	this.clientHasDetail();
+        	this.userHasDetail();
         	this.loadFileColombiaJson();
         },
         methods: {
-            updateClient(){
+            updateUser(){
             	if (this.$refs.photo) {
                     this.form.photo_document = this.$refs.photo.files[0]
                 }
-                if (this.$refs.rut) {
-                    this.form.rut_document = this.$refs.rut.files[0]
-                }
-                if (this.$refs.logo) {
-                    this.form.logo = this.$refs.logo.files[0]
-                }
-                this.form.post(route('client.update', { id: this.client.id }), {
-                    errorBag: 'updateClient',
+               
+                this.form.post(route('user.update', { user: this.user.id }), {
+                    errorBag: 'updateUser',
                     preserveScroll: true
                 });
             },
             uploadDocument(){
             	this.uploadedDocument = true;
             },
-            uploadRut(){
-            	this.uploadedRut = true;
-            },
-            uploadLogo(){
-            	this.uploadedLogo = true;
-            },
+           
             loadFileColombiaJson(){
             	axios.get('/default/colombia-json-master/colombia.json')
             	.then( res => {
@@ -305,28 +250,24 @@
             	this.citys = value.ciudades
             	this.form.deparment = value.departamento
             },
-            clientHasDetail(){
-            	if (this.client.details) {
-            		this.form.number_identification = this.client.details.number_identification;
-                    this.form.type_identification_id = this.client.details.type_identification_id;
-                    this.form.sex = this.client.details.sex;
-                    this.form.photo_document = this.client.details.photo_document;
-                    this.form.rut_document = this.client.details.rut_document;
-                    this.form.type_blood_id = this.client.details.type_blood_id;
-                    this.form.name_company = this.client.details.name_company;
-                    this.form.type_pay = this.client.details.type_pay;
-                    this.form.street_address = this.client.details.street_address;
-                    this.form.street_details = this.client.details.street_details;
-                    this.form.street_comune = this.client.details.street_comune;
-                    this.form.city = this.client.details.city;
-                    this.form.deparment = this.client.details.deparment;
-                    this.form.country = this.client.details.country;
-                    this.form.others_email = this.client.details.others_email;
-                    this.form.phones = this.client.details.phones;
+            userHasDetail(){
+            	if (this.user.details) {
+            		this.form.number_identification = this.user.details.number_identification;
+                    this.form.type_identification_id = this.user.details.type_identification_id;
+                    this.form.sex = this.user.details.sex;
+                    this.form.photo_document = this.user.details.photo_document;
+                    this.form.type_blood_id = this.user.details.type_blood_id;
+                    this.form.street_address = this.user.details.street_address;
+                    this.form.street_details = this.user.details.street_details;
+                    this.form.street_comune = this.user.details.street_comune;
+                    this.form.city = this.user.details.city;
+                    this.form.deparment = this.user.details.deparment;
+                    this.form.country = this.user.details.country;
+                    this.form.others_email = this.user.details.others_email;
+                    this.form.phones = this.user.details.phones;
             	}
             	this.showFormEdit = true;
             }
         }
-
     }
 </script>

@@ -30,4 +30,16 @@ class UserDetail extends Model
     	'phones',
         'user_id'
     ];
+
+    protected $with = ['typeBlood','typeIdentification'];
+
+    public function typeBlood()
+    {
+        return $this->belongsTo(TypeBlood::class, 'type_blood_id', 'id');
+    }
+
+    public function typeIdentification()
+    {
+        return $this->belongsTo(TypeIdentification::class, 'type_identification_id', 'id');
+    }
 }

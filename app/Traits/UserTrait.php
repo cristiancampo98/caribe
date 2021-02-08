@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\RoleUser;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * 
@@ -65,5 +66,14 @@ trait UserTrait
     public static function getClients(){
         
         return RoleUser::where('role_id',3)->get();
+    }
+
+    public static function storeUser()
+    {
+        $user = (new self)->fill(request()->all());
+        $user->password = Hash::make('12345678');
+        $user->save();
+        $user->roles()->sync(request()->get('roles_id'));
+        return $user;
     }
 }

@@ -60,7 +60,9 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        //
+        return inertia('Client/Show', [
+            'client' => self::getClient($id),
+        ]);
     }
 
     /**

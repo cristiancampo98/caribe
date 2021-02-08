@@ -9,7 +9,7 @@ class Vehicle extends Model
 {
     use HasFactory;
     protected $table = 'vehicles';
-    protected $fillable = ['license_plate','brand','state'];
+    protected $fillable = ['license_plate','brand','state','reason'];
     protected $with = ['users'];
     
     public function users()

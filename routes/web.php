@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
@@ -13,7 +14,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ClientController;
+use App\Http\Controllers\UserStorageController;
+use App\Http\Controllers\VehicleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -57,8 +59,19 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'role' => RoleController::class,
         'roleUser' => RoleUserController::class,
         'user' => UserController::class,
-        'client' => ClientController::class
+        'client' => ClientController::class,
+        'vehicle' => VehicleController::class
     ]);
     Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);
     Route::get('security/{role}/assignPermission', [SecurityController::class, 'assignPermission'])->name('security.assignPermission');
+
+    Route::put('updateStatus/{id}/user', [UserController::class, 'updateStatus'])->name('updateStatus.user');
+    Route::get('editstatus/{vehicle}/vehicle', [VehicleController::class, 'editStatus'])->name('editStatus.vehicle');
+    Route::put('updateStatus/{vehicle}/vehicle', [VehicleController::class, 'updateStatus'])->name('updateStatus.vehicle');
+
+    // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
+
+    Route::get('getPaginateAllUsers/users',[UserStorageController::class, 'getPaginateAllUsers']);
+
+    // End TODO API
 });

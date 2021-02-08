@@ -2,8 +2,8 @@
 	<div class="w-64 p-6 hidden md:block border-r border-gray-200">
 		<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="...">
 		<h6 class="font-bold mb-4">Menu</h6>
-		<ul class="mb-8">
-			<div v-for="(item, index) in menu" 
+		<ul class="mb-8" v-if="$page.props.menu">
+			<div v-for="(item, index) in $page.props.menu" 
 			:key="index"
 			class="hover:bg-white px-1 py-0.5 rounded-md" 
 			>
@@ -50,6 +50,10 @@
 				</inertia-link>
 			</div>
 		</ul>
+		<div v-else class="text-sm text-red-500">
+			No hay opciones. <br>
+			Comunicate con el soporte.
+		</div>
 	</div>
 </template>
 <script>

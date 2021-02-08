@@ -15,7 +15,6 @@
         <!-- Scripts -->
         @routes
         <script src="{{ mix('js/app.js') }}" defer></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     </head>
     <body class="font-sans antialiased bg-gray-100">
 

@@ -17,6 +17,7 @@ class CreateVehiclesTable extends Migration
             $table->id();
             $table->string('license_plate',15)->unique();
             $table->string('brand',20)->nullable();
+            $table->text('reason')->nullable();
             $table->boolean('state');
             $table->timestamps();
         });

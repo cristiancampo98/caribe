@@ -22,25 +22,30 @@
 			            <!-- Name -->
 			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="name" value="Nombre" />
-			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
+			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" maxlength="100" />
 			                <jet-input-error :message="form.errors.name" class="mt-2" />
 			            </div>
 			            <!-- Reference -->
 			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="reference" value="Referencia" />
-			                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" />
+			                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" maxlength="50" />
 			                <jet-input-error :message="form.errors.reference" class="mt-2" />
 			            </div>
 			            <!-- Unit measure -->
 			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="unit_measure_id" value="Unidad medida" />
-			                <jet-input id="unit_measure_id" type="text" class="mt-1 block w-full" v-model="form.unit_measure_id" autocomplete="unit_measure_id" />
+			                <select v-model="form.unit_measure_id" class="mt-1 block w-full rounded-lg" required>
+			                	<option value="0" disabled> Seleccione una opción</option>
+							  	<option v-for="option in units_measure" v-bind:value="option.id">
+								    {{ option.name }}
+							  	</option>
+							</select>
 			                <jet-input-error :message="form.errors.unit_measure_id" class="mt-2" />
 			            </div>
 			            <!-- Price -->
 			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="price" value="Precio" />
-			                <jet-input id="price" type="text" class="mt-1 block w-full" v-model="form.price" autocomplete="price" />
+			                <jet-input id="price" type="number" class="mt-1 block w-full" v-model.number="form.price" autocomplete="price" />
 			                <jet-input-error :message="form.errors.price" class="mt-2" />
 			            </div>
 			            <!-- Description -->
@@ -50,7 +55,7 @@
 			                <jet-input-error :message="form.errors.description" class="mt-2" />
 			            </div>
 			            <div class="col-span-6 lg:col-span-6">
-			            	<drap-zone-component title="Fotos producto" @setFiles="getFiles"/>
+			            	<drap-zone-component accept=".jpg,.jpeg,.png" types="JPG,GIF,PNG" title="Fotos producto" @setFiles="getFiles"/>
 			            	 <p class="text-sm text-red-500">
 			                	Nota: Cualquier archivo distinto a los indicados sera ignorado.</strong>.
 			                </p>
@@ -97,12 +102,18 @@
             AdminLayout,
             DrapZoneComponent
     	},
+    	props: {
+    		units_measure: {
+    			type: [Object,Array],
+    			required: true
+    		}
+    	},
     	data(){
             return {
                 form: this.$inertia.form({
                     name: null,
                     reference: null,
-                    unit_measure_id: null,
+                    unit_measure_id: 0,
                     price: 0,
                     description: null,
                     photos: []

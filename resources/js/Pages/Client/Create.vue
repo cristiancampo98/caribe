@@ -2,7 +2,7 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear rol
+                Crear cliente
             </h2>
         </template>
         <div class="py-12">
@@ -21,23 +21,18 @@
 
 			            <!-- Name -->
 			            <div class="col-span-6 sm:col-span-4">
-			                <jet-label for="name" value="Nombre" />
+			                <jet-label for="name" value="Nombre Completo" />
 			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
 			                <jet-input-error :message="form.errors.name" class="mt-2" />
 			            </div>
 			            <!-- email -->
 			            <div class="col-span-6 sm:col-span-4">
-			                <jet-label for="email" value="Identificador único" />
+			                <jet-label for="email" value="Correo" />
 			                <jet-input id="email" type="text" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
 			                <jet-input-error :message="form.errors.email" class="mt-2" />
+                            <p class="text-sm text-blue-500">Nota: La contraseña por defecto de los clientes es : 12345678 </p>
 			            </div>
-			            <!-- password -->
-			             <div class="col-span-6 sm:col-span-4">
-			                <jet-label for="password" value="Contraseña" />
-			                <jet-input id="password" type="text" class="mt-1 block w-full" v-model="form.password" />
-			                <jet-input-error :message="form.errors.password" class="mt-2" />
-			            </div>
-			            
+
 			        </template>
 
 			        <template #actions>
@@ -80,11 +75,8 @@
     	data(){
             return {
                 form: this.$inertia.form({
-                    name: null,
-                    slug: null,
-                    description: null,
-                    full_access: 'no',
-                    public: 0,
+                    name: '',
+                    email: '',
                 }),
             }
         },
@@ -93,7 +85,7 @@
         },
         methods: {
             storeClient(){
-                this.form.post(route('role.store'), {
+                this.form.post(route('client.store'), {
                     errorBag: 'storeClient',
                     preserveScroll: true
                 });

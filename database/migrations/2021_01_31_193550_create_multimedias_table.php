@@ -18,6 +18,7 @@ class CreateMultimediasTable extends Migration
             $table->string('path');
             $table->string('filename');
             $table->string('model');
+            $table->string('reason');
             $table->string('foreign_key');
             $table->integer('model_id');
             $table->timestamps();

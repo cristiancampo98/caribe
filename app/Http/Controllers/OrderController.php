@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Models\Product;
+use App\Traits\OrderTrait;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    use OrderTrait;
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +16,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Order/Index', [
+            'orders' => self::getOrdersByRole(),
+        ]);
     }
 
     /**
@@ -24,7 +28,11 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+
+        return inertia('Order/Create', [
+            'products' => Product::all(),
+            'clients' => self::getClientsToOrder()
+        ]);
     }
 
     /**
@@ -35,7 +43,15 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'user_id' => 'required|numeric|min:1' ,
+            'shipping_address' => 'required|string|max:100' ,
+            'city' => 'required|string|max:100' ,
+            'order_details' => 'required|array|min:1'
+        ]);
+        self::storeOrder($request->all());
+
+        return redirect()->route('order.index');
     }
 
     /**

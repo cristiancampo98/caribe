@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\MultimediaTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Multimedia extends Model
 {
     use HasFactory;
+    use MultimediaTrait;
 
     protected $table = 'multimedias';
 
@@ -15,6 +17,7 @@ class Multimedia extends Model
 		'path',
 		'filename',
 		'model',
+		'reason',
 		'foreign_key',
 		'model_id'
 	];

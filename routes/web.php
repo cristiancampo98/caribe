@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\MenuAccessController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
@@ -43,7 +42,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function(){
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::resources([
         'item' => ItemController::class,
@@ -60,9 +59,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         'user' => UserController::class,
         'client' => ClientController::class
     ]);
-    //Route::get('permission/{id}',[PermissionController::class, 'show'])->name('permission.show');
-    Route::post('permission/{permission}',[PermissionController::class, 'update'])->name('permission.update');
-    Route::get('security/getAccessMenu',[MenuAccessController::class, 'getAccessMenu']);
-    Route::get('security/{role}/assignPermission',[SecurityController::class, 'assignPermission'])->name('security.assignPermission');
-
+    Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);
+    Route::get('security/{role}/assignPermission', [SecurityController::class, 'assignPermission'])->name('security.assignPermission');
 });

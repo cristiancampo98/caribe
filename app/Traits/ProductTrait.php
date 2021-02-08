@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
  */
 trait ProductTrait
 {
-	public function storeProduct($data)
+	public static function storeProduct($data)
 	{
 		$product = (new Product)->fill($data);
 		$product->user_id = Auth::id();

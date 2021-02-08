@@ -22,8 +22,8 @@
         #example_wrapper .dataTables_length{
             display: inline-block;
         }
-        .dataTables_info, .dataTables_paginate{
-            display: none;
+        .dataTables_paginate a span{
+            border: 0.5px solid #c7c7c7;
         }
         #example_filter{
             margin: 20px 20px 20px 20px;

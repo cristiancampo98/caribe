@@ -8,13 +8,13 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-				<jet-form-section @submitted="storeMenu">
+				<jet-form-section @submitted="updateMenu">
 			        <template #title>
 			            Información del menú
 			        </template>
 
 			        <template #description>
-			            Crea un menú con la información requerida.
+			            Actualiza el menú con la información requerida.
 			        </template>
 
 			        <template #form>
@@ -128,30 +128,31 @@
             JetButton,
             AdminLayout,
     	},
-    	props: {
-    		units: Array
-    	},
+
+        props: ['menu', 'errors'],
+    		
     	data(){
             return {
-                form: this.$inertia.form({
-                    name: null,
-                    slug: null,
-                    description: null,
-                    icon: 'menu-alt-4',
-                    available: 0,
-                    isDirect: 0
+                 form: this.$inertia.form({
+                    name: this.menu.name,
+                    slug: this.menu.slug,
+                    description: this.menu.description,
+                    icon: this.menu.icon,
+                    available: this.menu.available,
+                    isDirect: this.menu.isDirect,
                 }),
             }
         },
         mounted(){
-        	console.log(this.units)
+        	
         },
         methods: {
-            storeMenu(){
-                this.form.post(route('menu.store'), {
-                    errorBag: 'storeMenu',
+            updateMenu(){
+				this.form.patch(`/menu/${this.menu.id}`, {
+                    errorBag: 'updateMenu',
                     preserveScroll: true
-                });
+                })
+				
             }
         }
 

@@ -7,7 +7,7 @@
                     <!-- Logo -->
                     <div class="flex-shrink-0 flex items-center">
                         <inertia-link :href="route('dashboard')">
-                            <jet-application-mark class="block h-9 w-auto" />
+                           <img class="block h-9 w-auto" src="/images/Logos-01.png" alt="Logo empresa">
                         </inertia-link>
                     </div>
 
@@ -93,11 +93,12 @@
                             <template #content>
                                 <!-- Account Management -->
                                 <div class="block px-4 py-2 text-xs text-gray-400">
-                                    Manage Account
+                                    Administrar cuenta
+
                                 </div>
 
                                 <jet-dropdown-link :href="route('profile.show')">
-                                    Profile
+                                    Perfil
                                 </jet-dropdown-link>
 
                                 <jet-dropdown-link :href="route('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
@@ -109,7 +110,7 @@
                                 <!-- Authentication -->
                                 <form @submit.prevent="logout">
                                     <jet-dropdown-link as="button">
-                                        Logout
+                                        Salir
                                     </jet-dropdown-link>
                                 </form>
                             </template>
@@ -133,7 +134,7 @@
         <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
             <div class="pt-2 pb-3 space-y-1">
                 <jet-responsive-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-                    Dashboard
+                    Administrador
                 </jet-responsive-nav-link>
             </div>
 
@@ -151,7 +152,7 @@
                 </div>
                 <div class="mt-3 space-y-1">
                     <jet-responsive-nav-link :href="route('profile.show')" :active="route().current('profile.show')">
-                        Profile
+                        Perfil
                     </jet-responsive-nav-link>
 
                     <jet-responsive-nav-link :href="route('api-tokens.index')" :active="route().current('api-tokens.index')" v-if="$page.props.jetstream.hasApiFeatures">
@@ -161,7 +162,7 @@
                     <!-- Authentication -->
                     <form method="POST" @submit.prevent="logout">
                         <jet-responsive-nav-link as="button">
-                            Logout
+                            Salir
                         </jet-responsive-nav-link>
                     </form>
 
@@ -170,16 +171,17 @@
                         <div class="border-t border-gray-200"></div>
 
                         <div class="block px-4 py-2 text-xs text-gray-400">
-                            Manage Team
+                            Administrar cuenta equipo
+
                         </div>
 
                         <!-- Team Settings -->
                         <jet-responsive-nav-link :href="route('teams.show', $page.props.user.current_team)" :active="route().current('teams.show')">
-                            Team Settings
+                            Configuración
                         </jet-responsive-nav-link>
 
                         <jet-responsive-nav-link :href="route('teams.create')" :active="route().current('teams.create')">
-                            Create New Team
+                            Crear equipo
                         </jet-responsive-nav-link>
 
                         <div class="border-t border-gray-200"></div>

@@ -20,4 +20,14 @@ class Order extends Model
     	'total',
     	'created_by'
     ];
+
+    protected $with = ['client','creator'];
+
+    public function client(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function creator(){
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 }

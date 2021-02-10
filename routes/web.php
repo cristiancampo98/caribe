@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientStorageController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
 use App\Http\Controllers\ProductController;
@@ -72,6 +74,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
 
     Route::get('getPaginateAllUsers/users',[UserStorageController::class, 'getPaginateAllUsers']);
+    Route::get('getAllOrders/order',[OrderStorageController::class, 'getAllOrders']);
+     Route::get('getClients/client',[ClientStorageController::class, 'getClients']);
 
     // End TODO API
 });

@@ -16,9 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return inertia('Order/Index', [
-            'orders' => self::getOrdersByRole(),
-        ]);
+        return inertia('Order/Index');
     }
 
     /**

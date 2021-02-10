@@ -45,7 +45,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:100',
+            'name' => 'required|string|max:100|unique:products',
             'reference' => 'nullable|string|max:50',
             'unit_measure_id' => 'required|numeric|gt:0',
             'price' => 'nullable|numeric|min:0',

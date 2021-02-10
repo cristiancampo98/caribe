@@ -20,28 +20,60 @@
 			        <template #form>
 
 			            <!-- user id or cliente -->
-			            <div class="col-span-6 lg:col-span-2" v-if="clients.length">
+			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="user_id" value="Cliente" />
-			                <select v-model="form.user_id" id="user_id" class="mt-1 block w-full rounded-lg" required>
-			                	<option value="0" disabled> Seleccione una opción</option>
-							  	<option v-for="option in clients" v-bind:value="option.user_id">
-								    {{ option.users.name }}
-							  	</option>
-							</select>
+			                <v-select 
+					        label="name" 
+					        :filterable="false" 
+					        :options="clients" 
+					        v-model="form.user_id"
+					        :reduce= "clients => clients.id"
+					        @search="onSearch">
+							    <template slot="no-options">
+							      Escribe el nombre de un cliente o empresa
+							    </template>
+							    <template slot="option" slot-scope="option">
+							      <div class="d-center">
+							        <p> Nombre: {{ option.name }}</p>
+							        <cite>Empresa: {{ option.name_company }}</cite>
+							        </div>
+							    </template>
+							    <template slot="selected-option" slot-scope="option">
+							      <div class="selected d-center">
+							      	 <p>{{ option.name }}</p>
+							      </div>
+							    </template>
+							</v-select>
 			                <jet-input-error :message="form.errors.user_id" class="mt-2" />
-			            </div>
+			            </div><!-- 
 			            <div class="col-span-6 lg:col-span-2" v-else>
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
+			            </div> -->
+			             <div class="col-span-6 lg:col-span-3">
+			                <jet-label for="deparment" value="Departamento" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="deparment"
+			            	label="departamento"
+			            	:options="deparments"
+			            	:clearable="false"
+			            	@input="showCitys"></v-select>
 			            </div>
 			            <!-- city -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-3" >
 			                <jet-label for="city" value="Ciudad" />
-			               	<jet-input id="city" type="text" class="mt-1 block w-full" v-model="form.city" required />
+			               	<v-select 
+			               	v-if="form.city || citys.length"
+			            	class="mt-1"
+			            	id="city"
+			            	label="ciudades"
+			            	v-model="form.city"
+			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
 			            <!-- shipping address -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="shipping_address" value="Dirección envío" />
 			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
 			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
@@ -52,6 +84,34 @@
 			               	<textarea id="note" class="mt-1 block w-full rounded-lg" v-model="form.note"></textarea>
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
+			           	<!--  consignment_number-->
+			            <div class="col-span-6 lg:col-span-3">
+			            	<jet-label for="consignment_number" value="Consignación" />
+			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment.consignment_number" />
+			            </div>
+			            <!-- imagen -->
+			            <div class="col-span-6 lg:col-span-3">
+			            	<label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            		<span>Subir imagen</span>
+			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			            	</label>
+			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
+			            </div>
+			            <!-- pse_urlpse_url -->
+			            <div class="col-span-6 lg:col-span-3">
+			            	<jet-label for="pse_url" value="Link PSE" />
+			            	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.consignment.pse_url" />
+			            </div>
+			            <!-- pse_number -->
+			            <div class="col-span-6 lg:col-span-3">
+			            	<jet-label for="pse_number" value="PSE # radicado" />
+			            	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.consignment.pse_number" />
+			            </div>
+
+			           <div class="col-span-6 lg:col-span-6">
+			           	<h3>Pedido</h3>
+			            <p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
+			           	</div>
 			            <!-- productos -->
 			            <div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="product_id" value="Producto" />
@@ -77,11 +137,6 @@
 			            <button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
 			            	Agregar
 			            </button>
-
-
-			            
-
-			            
 			        </template>
 
 			        <template #actions>
@@ -130,7 +185,6 @@
 
             </div>
         </div>
-
 	</admin-layout>
 
 	
@@ -165,10 +219,7 @@
 
     	},
     	props: {
-    		clients: {
-    			type: [Object, Array, Boolean],
-    			required: true
-    		},
+    		
     		products: {
     			type: [Object, Array],
     			required: true
@@ -186,7 +237,13 @@
                     city: null,
                     note: null,
                     total: 0,
-                    order_details: []
+                    order_details: [],
+                    consignment: {
+                    	consignment_number: null,
+	                    pse_url: null,
+	                    pse_number: null,
+	                    imagen: null
+                    }
                 }),
                 product_detail: [],
                 quantity: 1,
@@ -198,15 +255,25 @@
                 	'Basico',
                 	'Descuento',
                 	'Neto'
-                ]
+                ],
+                clients: [],
+                deparments: [],
+                citys: [],
+                uploadedImagen: false
 
             }
         },
         mounted(){
-
+        	this.loadFileColombiaJson()
         },
         methods: {
+        	uploadImagen(){
+
+        	},
             storeOrder(){
+            	if (this.$refs.imagen) {
+                    this.form.consignment.imagen = this.$refs.imagen.files[0]
+                }
             	if (! this.clients) {
             		this.form.user_id = this.user.id
             	}
@@ -214,6 +281,15 @@
                     errorBag: 'storeOrder',
                     preserveScroll: true
                 });
+            },
+            loadFileColombiaJson(){
+            	axios.get('/default/colombia-json-master/colombia.json')
+            	.then( res => {
+            		this.deparments = res.data;
+            	})
+            },
+            showCitys(value){
+            	this.citys = value.ciudades
             },
             addToCar(){
             	if (this.quantity < 1 || this.discount < 0) {
@@ -256,7 +332,21 @@
             deleteToCar(index){
             	//Elimina el producto de la tabla
             	this.form.order_details.splice(index,1)
-            }
+            },
+            onSearch(search, loading) {
+		      if(search.length >= 3) {
+		        loading(true);
+		        this.search(loading, search, this);
+		      }
+		    },
+		    search: _.debounce((loading, search, vm) => {
+		      axios.get(
+		        `/getClients/client?q=${search}`
+		      ).then(res => {
+		      	vm.clients = res.data;
+		        loading(false);
+		      });
+		    }, 350)
         }
 
     }

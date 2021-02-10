@@ -22,54 +22,97 @@
             			<template #attribute>Estado</template>
             			<template #description>{{client.status ? 'Activo' : 'Inactivo'}}</template>
             		</item-list-component>
-            		<item-list-component class="bg-gray-100">
-            			<template #attribute >Tipo de pago</template>
-            			<template #description>{{client.details.type_pay}}</template>	
-            		</item-list-component>
-            		<item-list-component>
-            			<template #attribute>Dirección</template>
-            			<template #description>{{client.details.street_address}}</template>
-            		</item-list-component>
-            		<item-list-component class="bg-gray-100">
-            			<template #attribute >Ciudad</template>
-            			<template #description>{{client.details.city}}</template>
-            		</item-list-component>
-            		<item-list-component>
-            			<template #attribute>Departamento</template>
-            			<template #description>{{client.details.deparment}}</template>
-            		</item-list-component>
-            		<item-list-component class="bg-gray-100">
-            			<template #attribute >País</template>
-            			<template #description>{{client.details.country}}</template>
-            		</item-list-component>
-            		<item-list-component>
-            			<template #attribute>Telefonos</template>
-            			<template #description>{{client.details.phones}}</template>
-            		</item-list-component>
-            		<item-list-component class="bg-gray-100">
-            			<template #attribute>Correos</template>
-            			<template #description>{{client.details.others_email}}</template>
-            		</item-list-component>
-            		<item-list-component>
-            			<template #attribute>Tipo identificación</template>
-            			<template #description>{{client.details.type_identification.description}}</template>
-            		</item-list-component>
-            		<item-list-component  class="bg-gray-100">
-            			<template #attribute>Número de identificación</template>
-            			<template #description>{{client.details.number_identification}}</template>
-            		</item-list-component>
-            		<item-list-component>
-            			<template #attribute>Sexo</template>
-            			<template #description>{{client.details.sex}}</template>
-            		</item-list-component>
-            		<item-list-component class="bg-gray-100">
-            			<template #attribute >Tipo de sangre</template>
-            			<template #description>{{client.details.type_blood.description}}</template>	
-            		</item-list-component>
-            		
+                    <div v-if="client.details">
+                        <item-list-component class="bg-gray-100">
+                			<template #attribute >Tipo de pago</template>
+                			<template #description>
+                                {{client.details.type_pay 
+                                    ? client.details.type_pay
+                                    :'Sin seleccionar'}}
+                            </template>	
+                		</item-list-component>
+                		<item-list-component>
+                			<template #attribute>Dirección</template>
+                			<template #description>
+                                {{client.details.street_address
+                                    ? client.details.street_address
+                                    : 'N/A'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component class="bg-gray-100">
+                			<template #attribute >Ciudad</template>
+                			<template #description>
+                                {{client.details.city
+                                    ? client.details.city
+                                    : 'Sin seleccionar'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component>
+                			<template #attribute>Departamento</template>
+                			<template #description>
+                                {{client.details.deparment
+                                    ? client.details.deparment
+                                    : 'Sin seleccionar'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component class="bg-gray-100">
+                			<template #attribute >País</template>
+                			<template #description>
+                                {{client.details.country 
+                                    ? lient.details.country
+                                    : 'Sin seleccionar'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component>
+                			<template #attribute>Telefonos</template>
+                			<template #description>
+                                {{client.details.phones
+                                    ? client.details.phones
+                                    : 'N/A'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component class="bg-gray-100">
+                			<template #attribute>Correos</template>
+                			<template #description>
+                                {{client.details.others_email
+                                    ? client.details.others_email
+                                    : 'N/A'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component>
+                			<template #attribute>Tipo identificación</template>
+                			<template #description>
+                                {{client.details.type_identification
+                                    ?client.details.type_identification.description 
+                                    : 'N/A' }}
+                            </template>
+                		</item-list-component>
+                		<item-list-component  class="bg-gray-100">
+                			<template #attribute>Número de identificación</template>
+                			<template #description>
+                                {{client.details.number_identification
+                                    ? client.details.number_identification
+                                    : 'N/A'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component>
+                			<template #attribute>Sexo</template>
+                			<template #description>
+                                {{client.details.sex 
+                                    ? client.details.sex
+                                    : 'N/A'}}
+                            </template>
+                		</item-list-component>
+                		<item-list-component class="bg-gray-100">
+                			<template #attribute >Tipo de sangre</template>
+                			<template #description>
+                                {{client.details.type_blood
+                                    ? client.details.type_blood.description
+                                    : 'N/A'}}
+                                </template>
+                		</item-list-component>
+                    </div>
             	</description-list-component>
-
-				
             </div>
         </div>
 

@@ -14,6 +14,7 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
+        $this->setPermissions('consignment','Consignaciones');
     	$this->setPermissions('client','Clientes');
         $this->setPermissions('menu','Menús');
         $this->setPermissions('order','Pedidos');

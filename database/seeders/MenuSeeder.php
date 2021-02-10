@@ -9,6 +9,7 @@ class MenuSeeder extends Seeder
 {
 
 	protected $modules = [
+		['Consignaciones', 'consignment.index', 1],
 		['Clientes', 'client.index', 1],
 		['Productos', 'product.index', 1],
 		['Pedidos', 'order.index', 1],

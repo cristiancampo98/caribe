@@ -52,7 +52,7 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="(menu, index) in menus.data">
+                    <tr v-for="(menu, index) in menus">
                         <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900">{{menu.id}}</div>
                       </td>
@@ -116,7 +116,7 @@
     import $ from 'jquery';
     export default {
         mounted(){
-            console.log(this.menus.data),
+            console.log(this.menus),
             this.mytable()
         },
         props: {

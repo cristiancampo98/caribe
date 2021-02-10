@@ -63,7 +63,7 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    protected $with = ['details'];
+    protected $with = ['details','roles'];
 
     public function details()
     {

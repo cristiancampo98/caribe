@@ -53,7 +53,12 @@
 			            <!-- sex -->
 			            <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="sex" value="Sexo" />
-			                <jet-input id="sex" type="text" class="mt-1 block w-full" v-model="form.sex" autocomplete="sex" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="sex"
+			            	v-model="form.sex"
+			            	:clearable="false"
+			            	:options="['Hombre','Mujer','Otro']"></v-select>
 			                <jet-input-error :message="form.errors.sex" class="mt-2" />
 			            </div>
 			            <!-- type blood -->
@@ -78,7 +83,12 @@
 			            <!-- type pay -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="type_pay" value="Tipo de pago" />
-			                <jet-input id="type_pay" type="text" class="mt-1 block w-full" v-model="form.type_pay" autocomplete="type_pay" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="type_pay"
+			            	v-model="form.type_pay"
+			            	:clearable="false"
+			            	:options="['Contado','Crédito','Especial']"></v-select>
 			                <jet-input-error :message="form.errors.type_pay" class="mt-2" />
 			            </div>
 			            <!-- steet address -->

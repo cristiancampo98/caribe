@@ -14,7 +14,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::paginate(300);
+        $menus = Menu::all();
         
         return inertia('Menu/Index', [
             'menus' => $menus

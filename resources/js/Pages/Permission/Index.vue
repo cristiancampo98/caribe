@@ -47,7 +47,7 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="(permission, index) in permissions.data">
+                    <tr v-for="(permission, index) in permissions">
                         <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900">{{permission.id}}</div>
                       </td>
@@ -113,7 +113,7 @@
     import $ from 'jquery';
 export default {
         mounted(){
-            console.log(this.permissions.data),
+            console.log(this.permissions),
             this.mytable()
         },
         props: {
@@ -125,7 +125,10 @@ export default {
         
         data(){
             return{
-                
+                pagination: {
+                current: 1,
+                total: 0
+              }
             }
         },
         components: {
@@ -135,6 +138,7 @@ export default {
             Links,
         },
         methods: {
+          
           mytable(){
             $(function(){
             $('#example').DataTable({

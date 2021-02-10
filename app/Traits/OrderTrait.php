@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Traits\MultimediaTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,12 +14,7 @@ use Illuminate\Support\Facades\DB;
  */
 trait OrderTrait
 {
-	protected $user;
-
-	public function __construct()
-	{
-		$this->user = new User;
-	}
+	use MultimediaTrait;
 	/*
 	 * Valida el rol del usuario para retornar todas o solo las ordenes del usuario logueado
 	 */
@@ -30,7 +26,7 @@ trait OrderTrait
 		$orders = Order::where('user_id', Auth::id())->get();
 
 		if ($isAdmin) {
-			$orders = Order::all();
+			$orders = Order::paginate(request()->get('lenght'));
 		}
 
 		return $orders;
@@ -49,6 +45,7 @@ trait OrderTrait
 	}
 
 	public static function storeOrder($data){
+		
 		return DB::transaction(function () use ($data ) {
 
             $date = Carbon::now('America/Bogota');
@@ -64,6 +61,25 @@ trait OrderTrait
                 'created_at' => $date,
                 'updated_at' => $date
             ]);
+            if (request()->has('consignment')) {
+            	$consignment_id = DB::table('consignments')->insertGetId([
+            		'consignment_number' => $data['consignment']['consignment_number'],
+            		'pse_url' => $data['consignment']['pse_url'],
+            		'pse_number' => $data['consignment']['pse_number'],
+            		'order_id' => $order_id
+            	]);
+
+            	if(request()->file('consignment')) {
+            		self::storeSingleFileMultimedia(
+            			request()->file('consignment')['imagen'], 
+		                'consignments', 
+		                'consignment', 
+		                'consignment', 
+		                'consignment_id', 
+		                $consignment_id
+            		);
+            	}
+            }
 
             foreach ($data['order_details'] as $value) {
                 DB::table('order_details')->insert([

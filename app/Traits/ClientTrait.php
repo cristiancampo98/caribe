@@ -6,6 +6,7 @@ use App\Models\RoleUser;
 use App\Models\User;
 use App\Traits\MultimediaTrait;
 use App\Traits\VehicleTrait;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Iluminate\Http\Request;
 
@@ -91,5 +92,20 @@ trait ClientTrait
 	public static function getClients(){
         
         return RoleUser::where('role_id',3)->get();
+    }
+
+    public static function getClientsToOrder(){
+    	return DB::table('users')
+    	->join('user_details', 'users.id','user_details.user_id')
+    	->join('role_users', 'users.id','role_users.user_id')
+    	->where('role_id',3)
+    	->where('users.name', 'like', '%'.request()->get('q').'%')
+    	->orWhere('user_details.name_company', 'like', '%'.request()->get('q').'%')
+    	->where('role_id',3)
+    	->select(
+    		'users.id as id',
+    		'users.name as name',
+    		'user_details.name_company as name_company'
+    	)->get();
     }
 }

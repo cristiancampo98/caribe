@@ -144,7 +144,7 @@
             getPaginateAllUsers(){
             	axios.get('getPaginateAllUsers/users')
             	.then(res => {
-            		this.users = res.data.users;
+            		this.users = res.data.users.data;
 
             		for (var i = 0; i < this.users.length; i++) {
 

@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Traits\OrderTrait;
+use App\Models\Consignment;
 use Illuminate\Http\Request;
 
-class OrderController extends Controller
+class ConsignmentController extends Controller
 {
-    use OrderTrait;
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +14,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return inertia('Order/Index');
+        //
     }
 
     /**
@@ -26,11 +24,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-
-        return inertia('Order/Create', [
-            'products' => Product::all(),
-            'clients' => self::getClientsToOrder()
-        ]);
+        //
     }
 
     /**
@@ -41,24 +35,16 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'user_id' => 'required|numeric|min:1' ,
-            'shipping_address' => 'required|string|max:100' ,
-            'city' => 'required|string|max:100' ,
-            'order_details' => 'required|array|min:1'
-        ]);
-        self::storeOrder($request->all());
-
-        return redirect()->route('order.index');
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show(Consignment $consignment)
     {
         //
     }
@@ -66,10 +52,10 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Order $order)
+    public function edit(Consignment $consignment)
     {
         //
     }
@@ -78,10 +64,10 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Consignment $consignment)
     {
         //
     }
@@ -89,10 +75,10 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy(Consignment $consignment)
     {
         //
     }

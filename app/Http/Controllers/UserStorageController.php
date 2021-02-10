@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 
 class UserStorageController extends Controller
 {
-    public function getPaginateAllUsers()
+    public function getPaginateAllUsers(Request $request)
     {
     	return response()->json([
-    		'users' => User::all(),
+    		'users' => User::paginate(3),
     	], 200);
+    	
     }
 }

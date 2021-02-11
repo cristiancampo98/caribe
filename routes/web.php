@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ClientStorageController;
+use App\Http\Controllers\ConsignmentController;
+use App\Http\Controllers\ConsignmentStorageController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
@@ -62,7 +64,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'roleUser' => RoleUserController::class,
         'user' => UserController::class,
         'client' => ClientController::class,
-        'vehicle' => VehicleController::class
+        'vehicle' => VehicleController::class,
+        'consignment' => ConsignmentController::class
     ]);
     Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);
     Route::get('security/{role}/assignPermission', [SecurityController::class, 'assignPermission'])->name('security.assignPermission');
@@ -73,10 +76,28 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
 
-    Route::get('getPaginateAllUsers/users',[UserStorageController::class, 'getPaginateAllUsers']);
-    Route::get('getClientsPaginate/client',[ClientStorageController::class, 'getClientsPaginate']);
-    Route::get('getAllOrders/order',[OrderStorageController::class, 'getAllOrders']);
-    Route::get('getClients/client',[ClientStorageController::class, 'getClients']);
+    Route::get('getPaginateAllUsers/users',
+        [UserStorageController::class, 'getPaginateAllUsers']
+    );
+    Route::get('getAllOrders/order',
+        [OrderStorageController::class, 'getAllOrders']
+    );
+    Route::get('getOrderByConsecutiveOrClient/order',
+        [OrderStorageController::class, 'getOrderByConsecutiveOrClient']
+    );
+    Route::get('getAllConsignments/consignments',
+        [ConsignmentStorageController::class, 'getAllConsignments']
+    );
+    
+    Route::get('getConsignment/consignments',
+        [ConsignmentStorageController::class, 'getConsignment']
+    );
+    Route::get('getClients/client',
+        [ClientStorageController::class, 'getClients']
+    );
+    Route::get('getClientsPaginate/client',
+        [ClientStorageController::class, 'getClientsPaginate']
+    );
 
     // End TODO API
 });

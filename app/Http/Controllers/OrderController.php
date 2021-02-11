@@ -29,7 +29,6 @@ class OrderController extends Controller
 
         return inertia('Order/Create', [
             'products' => Product::all(),
-            'clients' => self::getClientsToOrder()
         ]);
     }
 
@@ -58,9 +57,11 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        return inertia('Order/Show', [
+            'order' => self::findOrder($id)
+        ]);
     }
 
     /**
@@ -69,9 +70,13 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(Order $order)
+    public function edit($id)
     {
-        //
+        return inertia('Order/Edit', [
+            'order' => self::findOrder($id),
+            'products' => Product::all(),
+
+        ]);
     }
 
     /**
@@ -81,9 +86,17 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'user_id' => 'required|numeric|min:1' ,
+            'shipping_address' => 'required|string|max:100' ,
+            'city' => 'required|string|max:100' ,
+            'order_details' => 'required|array|min:1'
+        ]);
+        $order = self::updateOrder($request, $id);
+        return redirect()->route('order.index');
+
     }
 
     /**
@@ -92,7 +105,7 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy($id)
     {
         //
     }

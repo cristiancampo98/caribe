@@ -23,7 +23,7 @@ trait MultimediaTrait
 	{
 		foreach ($files as $key => $value) {
 			Multimedia::create([
-				'path' => $value->storeAs('public/' .$folder , $value->getClientOriginalName()),
+				'path' => $value->storePubliclyAs( '/storage/'.$folder , $value->getClientOriginalName(), 'public'),
 				'filename' => $value->getClientOriginalName(),
 				'model' => $model,
 				'reason' => $reason,
@@ -40,13 +40,22 @@ trait MultimediaTrait
 	public static function storeSingleFileMultimedia($file, $folder, $model, $reason, $foreign_key, $model_id)
 	{
 		return Multimedia::create([
-			'path' => $file->storeAs('public/' .$folder , $file->getClientOriginalName()),
+			'path' => $file->storePubliclyAs('/storage/'.$folder , $file->getClientOriginalName(), 'public'),
 			'filename' => $file->getClientOriginalName(),
 			'model' => $model,
 			'reason' => $reason,
 			'foreign_key' => $foreign_key,
 			'model_id' => $model_id
 		]);	
+	}
+
+	public static function getMultimediaByParams($model, $foreign_key, $model_id, $reason)
+	{
+		return Multimedia::where('model',$model)
+        ->where('foreign_key',$foreign_key)
+        ->where('model_id',$model_id)
+        ->where('reason',$reason)
+        ->get();
 	}
 
     

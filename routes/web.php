@@ -95,6 +95,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getClients/client',
         [ClientStorageController::class, 'getClients']
     );
+    Route::get('getClientsPaginate/client',
+        [ClientStorageController::class, 'getClientsPaginate']
+    );
 
     // End TODO API
 });

@@ -13,4 +13,14 @@ class ClientStorageController extends Controller
     {
     	return self::getClientsToOrder();
     }
+
+    public function getClientsPaginate()
+    {
+        return self::getAllClientsPaginate();
+    }
+
+    public function getDocuments()
+    {
+        return self::getMultimediaByParams();
+    }
 }

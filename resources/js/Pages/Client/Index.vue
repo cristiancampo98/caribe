@@ -20,7 +20,7 @@
                         class="w-20 bg-white"
                         v-model="lenght"
                         :options="pages"
-                        @input="getPaginateOrders"
+                        @input="getPaginateClients"
                         :clearable="false"></v-select>
                     </div>
                 </div>
@@ -123,7 +123,6 @@
             JetDropdownLink
         },
         mounted(){
-            this.getPaginateOrders();
             this.getPaginateClients();
         },
         data() {
@@ -144,18 +143,6 @@
             }
         },
         methods: {
-            getPaginateOrders(){
-                var url = '/getAllOrders/order';
-                var param = '?lenght='+this.lenght;
-                var total_url = url + param;
-                axios.get(total_url)
-                .then(res => {
-                    this.options = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => this.loading = true);
-
-            },
             validateDataClients(){
                 
                 for (var i = 0; i < this.clients.length; i++) {

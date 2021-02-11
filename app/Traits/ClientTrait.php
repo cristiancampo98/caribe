@@ -46,8 +46,7 @@ trait ClientTrait
 				self::storeVehicleFromClient(request()->get('vehicles'),$id);
 			}
 
-			if (request()->has('photo_document')) {
-
+			if (request()->file('photo_document')) {
 				self::storeSingleFileMultimedia(
 					request()->file('photo_document'), 
 					'documents', 
@@ -58,7 +57,7 @@ trait ClientTrait
 				);
 			}
 
-			if (request()->has('rut_document')) {
+			if (request()->file('rut_document')) {
 
 				self::storeSingleFileMultimedia(
 					request()->file('rut_document'), 
@@ -70,7 +69,7 @@ trait ClientTrait
 				);
 			}
 
-			if (request()->has('logo')) {
+			if (request()->file('logo')) {
 
 				self::storeSingleFileMultimedia(
 					request()->file('logo'), 
@@ -89,9 +88,14 @@ trait ClientTrait
 		return false;
 	}
 
-	public static function getClients(){
+	public static function getAllClients(){
         
         return RoleUser::where('role_id',3)->get();
+    }
+
+	public static function getAllClientsPaginate(){
+        
+        return RoleUser::where('role_id',3)->paginate(request()->get('lenght'));
     }
 
     public static function getClientsToOrder(){

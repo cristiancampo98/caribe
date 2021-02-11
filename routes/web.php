@@ -74,8 +74,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
 
     Route::get('getPaginateAllUsers/users',[UserStorageController::class, 'getPaginateAllUsers']);
+    Route::get('getClientsPaginate/client',[ClientStorageController::class, 'getClientsPaginate']);
     Route::get('getAllOrders/order',[OrderStorageController::class, 'getAllOrders']);
-     Route::get('getClients/client',[ClientStorageController::class, 'getClients']);
+    Route::get('getClients/client',[ClientStorageController::class, 'getClients']);
 
     // End TODO API
 });

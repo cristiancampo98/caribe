@@ -18,9 +18,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return inertia('Client/Index', [
-            'clients' => self::getClients(),
-        ]);
+        return inertia('Client/Index');
     }
 
     /**
@@ -62,6 +60,9 @@ class ClientController extends Controller
     {
         return inertia('Client/Show', [
             'client' => self::getClient($id),
+            'photo_document' => self::getMultimediaByParams('users', 'user_id', $id, 'photo_document'),
+            'rut_document' => self::getMultimediaByParams('users', 'user_id', $id, 'rut_document'),
+            'logo' => self::getMultimediaByParams('users', 'user_id', $id, 'logo')
         ]);
     }
 
@@ -77,6 +78,9 @@ class ClientController extends Controller
             'client' => self::getClient($id),
             'types_identification' => TypeIdentification::where('available',1)->get(),
             'types_blood' => TypeBlood::where('available',1)->get(),
+            'photo_document' => self::getMultimediaByParams('users', 'user_id', $id, 'photo_document'),
+            'rut_document' => self::getMultimediaByParams('users', 'user_id', $id, 'rut_document'),
+            'logo' => self::getMultimediaByParams('users', 'user_id', $id, 'logo')
         ]);
     }
 

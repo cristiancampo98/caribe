@@ -28,7 +28,7 @@ class ItemSeeder extends Seeder
 			    	'name' => $value[0], 
 			    	'route' => $value[1],
 			    	'available' => 1,
-			    	'menu_id' => 5
+			    	'menu_id' => 6
 			    ],
 			]);
     	}

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Consignment;
+use App\Traits\ConsignmentTrait;
 use Illuminate\Http\Request;
+
 
 class ConsignmentController extends Controller
 {
+    use ConsignmentTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +17,7 @@ class ConsignmentController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Consignment/Index');
     }
 
     /**
@@ -24,7 +27,7 @@ class ConsignmentController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Consignment/Create');
     }
 
     /**
@@ -35,7 +38,12 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'order_id' => 'required|numeric'
+        ]);
+
+        self::storeConsignment();
+        return redirect()->route('consignment.index');
     }
 
     /**
@@ -44,9 +52,11 @@ class ConsignmentController extends Controller
      * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function show(Consignment $consignment)
+    public function show($id)
     {
-        //
+        return inertia('Consignment/Show', [
+            'consignment' => self::findConsignment($id)
+        ]);
     }
 
     /**
@@ -55,9 +65,11 @@ class ConsignmentController extends Controller
      * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function edit(Consignment $consignment)
+    public function edit($id)
     {
-        //
+        return inertia('Consignment/Edit', [
+            'consignment' => self::findConsignment($id)
+        ]);
     }
 
     /**
@@ -67,9 +79,12 @@ class ConsignmentController extends Controller
      * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Consignment $consignment)
+    public function update(Request $request, $id)
     {
-        //
+        self::updateConsignment($id);
+
+        return redirect()->route('consignment.index');
+        
     }
 
     /**
@@ -78,7 +93,7 @@ class ConsignmentController extends Controller
      * @param  \App\Models\Consignment  $consignment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Consignment $consignment)
+    public function destroy($id)
     {
         //
     }

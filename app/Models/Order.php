@@ -21,7 +21,10 @@ class Order extends Model
     	'created_by'
     ];
 
-    protected $with = ['client','creator'];
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
+    }
 
     public function client(){
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -30,4 +33,6 @@ class Order extends Model
     public function creator(){
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
+
+    
 }

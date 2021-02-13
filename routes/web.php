@@ -92,11 +92,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getConsignment/consignments',
         [ConsignmentStorageController::class, 'getConsignment']
     );
+    Route::get('getMultimediaConsignmentsByOrder',
+        [ConsignmentStorageController::class, 'getMultimediaConsignmentsByOrder']
+    );
     Route::get('getClients/client',
         [ClientStorageController::class, 'getClients']
     );
     Route::get('getClientsPaginate/client',
         [ClientStorageController::class, 'getClientsPaginate']
+    );
+
+    Route::put('cancel/{id}/order',
+        [OrderController::class, 'cancel']
+    );
+    Route::put('updateStatusOrder/{id}/order',
+        [OrderController::class, 'updateStatusOrder']
     );
 
     // End TODO API

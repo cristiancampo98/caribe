@@ -1,5 +1,5 @@
 <template>
-    <admin-layout>
+    <admin-layout :status="status">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Pedidos
@@ -23,8 +23,6 @@
                     :clearable="false"></v-select>
                 </div>
             </div>
-            
-                
             <table-responsive-component v-if="loading">
                 <template #title>
                     <tr>
@@ -40,6 +38,9 @@
                         </td-responsive-component>
                         <td-responsive-component>
                             {{item.client.name}}
+                        </td-responsive-component>
+                        <td-responsive-component>
+                            {{item.client.email}}
                         </td-responsive-component>
                         <td-responsive-component>
                             {{item.status}}
@@ -76,11 +77,23 @@
                                     :href="route(option.route, {order: item.id})" :as="option.as" method="option.method">
                                         {{option.name}}
                                     </jet-dropdown-link>
-                                    <!-- <button type="button"
+                                    <button type="button"
+                                    v-if="item.status != 'cancelado'"
                                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    @click="updateStatusUser(item)">
-                                        {{item.users.status == 'Activo' ? 'Inactivar' : 'Activar'}}
-                                    </button> -->
+                                    @click="updateStatusOrder(item)">
+                                        {{item.status == 'activo' ? 'Finalizar' : 'Activar'}}
+                                    </button>
+                                    <button type="button"
+                                    v-if="!item.consignments.length"
+                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                    @click="openModalDestroy(item)">
+                                        Cancelar
+                                    </button>
+                                    <button type="button"
+                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                    @click="openModalConsignment(item)">
+                                        Agregar Consignación
+                                    </button>
 
                                 </template>
                             </jet-dropdown>
@@ -91,6 +104,49 @@
             <paginate-component 
             :package="package"
             @updatingData="updateData"></paginate-component>
+            <!-- modal delete -->
+            <vs-dialog width="300px" not-center v-model="modal">
+                <template #header>
+                  <h4 class="not-margin">
+                    ¿Por qué se <b>cancelará</b> este pedido?
+                  </h4>
+                </template>
+                <div class="grid grid-cols-3">
+                  <textarea v-model="form.note" class="rounded-md col-span-3"></textarea>
+                </div>
+                <template #footer>
+                  <div class="grid grid-cols-2">
+                    <vs-button class="col-span-1" @click="destroyOrder" transparent>
+                      Si,cancelar
+                    </vs-button>
+                    <vs-button class="col-span-1" @click="modal=false" dark transparent>
+                      Cerrar
+                    </vs-button>
+                    
+                  </div>
+                </template>
+            </vs-dialog>    
+            <!-- end modal delete -->
+            <!-- form consignment -->
+             <vs-dialog auto-width not-center v-model="modalConsignment">
+                <template #header>
+                  <h4 class="mr-8">
+                    Crea un consignación para este pedido con la información requerida.
+                  </h4>
+                </template>
+                <form-consignment
+                @updatingNotifications="updateNotifications"
+                :order_id="order_id"/>
+                <template #footer>
+                  <div class="grid grid-cols-2">
+                    <vs-button class="col-span-2" @click="modalConsignment=false" dark transparent>
+                      Cerrar
+                    </vs-button>
+                    
+                  </div>
+                </template>
+             </vs-dialog>
+            <!-- end form consignment -->
         </div>
     </admin-layout>
 </template>
@@ -105,6 +161,7 @@
     import PaginateComponent from '@/Components/Paginate'
     import JetDropdown from '@/Jetstream/Dropdown'
     import JetDropdownLink from '@/Jetstream/DropdownLink'
+    import FormConsignment from './Modal/AddConsigment.vue'
     import vSelect from "vue-select"
     import 'vue-select/dist/vue-select.css'
     
@@ -120,28 +177,42 @@
             PaginateComponent,
             JetDropdown,
             JetDropdownLink,
+            FormConsignment,
             vSelect
             
         },
+        props:['info'],
         data () {
             return {
+                status: {},
                 loading: false,
                 lenght: 5,
                 page: this.lenght,
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Cliente','Estado','Nota','Creador','Creado','Opciones'],
+                titles: ['#','Cliente','Email','Estado','Nota','Creador','Creado','Opciones'],
                 options: [],
                 package: [],
                 actions: [
                     {name: 'Editar', route:'order.edit'},
                     {name: 'Ver', route:'order.show'},
-                ]
+                ],
+                modal: false,
+                modalConsignment:false,
+                form:{
+                    note:null,
+                    id:null
+                },
+                order_id:false
+
             }
         },
-        mounted(){
+        created(){
             this.getPaginateOrders();
+            if (this.info) {
+                this.status = {type: 'info', text: this.info};
+            }
         },
         methods: {
             getPaginateOrders(){
@@ -159,7 +230,51 @@
             updateData(data){
                 this.options = data.data;
                 this.package = data;
+            },
+            updateNotifications(data){
+                this.modalConsignment = false;
+                this.status = data;
+            },
+            openModalConsignment(item){
+                this.modalConsignment = true;
+                this.order_id = item.id;
+            },
+            openModalDestroy(item){
+                if (item.status == 'cancelado') {
+                    this.status = {type: 'warning' ,text: 'Este pedido ya se encuentra cancelado'}
+                }else{
+                    this.form.id = item.id;
+                    this.modal = true;
+                }
+            },
+            destroyOrder(item){
+                axios.put('cancel/'+this.form.id+'/order',{
+                    delete_note: this.form.note
+                })
+                .then( res => {
+                    this.modal = false;
+                    this.status = {type: res.data.type ,text: res.data.text}
+                    this.options.map(item => {
+                        if(item.id == this.form.id){
+                            item.status = 'cancelado';
+                        }
+                    })
+                })
+                .catch( error => {
+                    //error.response.data.errors
+                    this.status = {type: 'error' ,text: 'Error, escribe el motivo para cancelar.'}  
+                });
+            },
+            updateStatusOrder(item){
+                axios.put('updateStatusOrder/'+item.id+'/order')
+                .then( res => {
+                    if (res.data.order) {
+                        item.status = res.data.order.status;
+                    }
+                    this.status = {type: res.data.type ,text: res.data.text}
+                });
             }
+
         }
     }
 </script>

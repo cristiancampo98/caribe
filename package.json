@@ -28,8 +28,9 @@
     },
     "dependencies": {
         "@moesaid/cleopatra": "^1.1.1",
+        "boxicons": "^2.0.7",
         "datatables": "^1.10.18",
-        "vuesax": "^4.0.1-alpha.25",
-        "vue-select": "^3.11.2"
+        "vue-select": "^3.11.2",
+        "vuesax": "^4.0.1-alpha.25"
     }
 }

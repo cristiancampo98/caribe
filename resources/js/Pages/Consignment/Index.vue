@@ -1,5 +1,5 @@
 <template>
-    <admin-layout>
+    <admin-layout :status="status">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Consignaciones
@@ -128,6 +128,7 @@
         },
         data () {
             return {
+                status:{},
                 loading: false,
                 lenght: 5,
                 page: this.lenght,
@@ -141,6 +142,14 @@
                     {name: 'Editar', route:'consignment.edit'},
                     {name: 'Ver', route:'consignment.show'},
                 ]
+            }
+        },
+        created(){
+            if (this.info) {
+                this.status = {type: 'info', text: this.info};
+            }
+            if (this.error) {
+                this.status = {type: 'error', text: this.error};
             }
         },
         mounted(){

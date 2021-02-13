@@ -42,8 +42,25 @@ class ConsignmentController extends Controller
             'order_id' => 'required|numeric'
         ]);
 
-        self::storeConsignment();
-        return redirect()->route('consignment.index');
+        $data = self::storeConsignment();
+
+
+        if ($data) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'type' => 'success',
+                    'text' => 'Se creo la consignación satisfactoriamente'
+                ],200);
+            }
+            return redirect()->back()->with('success','Se creo la consignación satisfactoriamente');
+        }
+        if ($request->ajax()) {
+            return response()->json([
+                'type' => 'error',
+                'text' => 'Sucedió un error, no se pudo crear la consignación'
+            ],200);
+        }
+        return redirect()->back()->with('error','Sucedió un error, no se pudo crear la consignación');
     }
 
     /**

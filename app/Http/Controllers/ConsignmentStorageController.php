@@ -13,5 +13,10 @@ class ConsignmentStorageController extends Controller
 	{
 		return self::getAllConsignmentsByRol();
 	}
+
+	public function getMultimediaConsignmentsByOrder()
+	{
+		return self::getMultimediaConsignmentsByOrderTrait();
+	}
     
 }

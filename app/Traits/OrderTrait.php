@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Traits\ConsignmentTrait;
 use App\Traits\MultimediaTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 trait OrderTrait
 {
 	use MultimediaTrait;
+	use ConsignmentTrait;
 	/*
 	 * Valida el rol del usuario para retornar todas o solo las ordenes del usuario logueado
 	 */
@@ -28,7 +30,8 @@ trait OrderTrait
 		if ($isAdmin) {
 			$orders = Order::with([
 				'client',
-				'creator'
+				'creator',
+				'consignments'
 			])->paginate(request()->get('lenght'));
 		}
 
@@ -52,7 +55,7 @@ trait OrderTrait
                 'created_at' => $date,
                 'updated_at' => $date
             ]);
-            if (request()->has('consignment')) {
+            if (self::validateWhenConsignmentIsFilled($data['consignment'])) {
             	$consignment_id = DB::table('consignments')->insertGetId([
             		'consignment_number' => $data['consignment']['consignment_number'],
             		'pse_url' => $data['consignment']['pse_url'],
@@ -67,7 +70,7 @@ trait OrderTrait
             			request()->file('consignment')['imagen'], 
 		                'consignments', 
 		                'consignment', 
-		                'consignment', 
+		                'consignment_file', 
 		                'consignment_id', 
 		                $consignment_id
             		);
@@ -118,7 +121,8 @@ trait OrderTrait
 		->with([
 			'orderDetails.product',
 			'client',
-			'creator'
+			'creator',
+			'consignments'
 		])
 		->first();
 
@@ -151,5 +155,67 @@ trait OrderTrait
 		    );
 		}
 		return $order;
+	}
+
+	public static function cancelOrder($id, $data)
+	{
+		$order = self::findOrder($id);
+		if (count($order->consignments)) {
+			return response()->json([
+				'type' => 'info',
+                'text' => 'No se puede cancelar este pedido porque ya existen consignaciones'
+            ],200);
+		}
+
+		$data = $order->update([
+			'delete_note' => $data['delete_note'],
+			'status' => 'cancelado'
+		]);
+
+		if ($data) {
+			return response()->json([
+				'type' => 'success',
+                'text' => 'El pedido se cancelo satisfactoriamente'
+            ],200);
+		}else{
+			return response()->json([
+				'type' => 'error',
+                'text' => 'Sucedió un error, no se pudo cancelar'
+            ],200);
+		}
+	}
+
+	public static function updateStatusOrderTrait($id)
+	{
+		$order = self::findOrder($id);
+		if ($order->status == 'cancelado') {
+			return response()->json([
+				'type' => 'info',
+                'text' => 'Este pedido se encuentra cancelado'
+            ],200);
+		}
+
+		if ($order->status == 'activo') {
+			$order->status = 'finalizado';
+			$text = 'El pedido se encuentra Finalizado';
+		}else{
+			$order->status = 'activo';
+			$text = 'El pedido se encuentra Activo';
+		}
+
+		if ($order->save()) {
+			return response()->json([
+				'order' => $order,
+				'type' => 'success',
+	            'text' => $text
+	        ],200);
+		}
+
+		return response()->json([
+			'type' => 'error',
+            'text' => 'Sucedió un error, no se pudo actualizar'
+        ],200);
+		
+
 	}
 }

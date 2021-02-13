@@ -15,17 +15,23 @@ trait ConsignmentTrait
 
 	public static function storeConsignment()
 	{
-		$data = Consignment::create( request()->all());
-		if (request()->hasFile('imagen')) {
-			self::storeSingleFileMultimedia(
-				request()->file('imagen'), 
-				'consignments', 
-				'consignment', 
-				'consignment', 
-				'user_id', 
-				$data->id
-			);
+		if (self::validateWhenConsignmentIsFilled(request()->all())) {
+			$data = Consignment::create( request()->all());
+			if (request()->hasFile('imagen')) {
+				self::storeSingleFileMultimedia(
+					request()->file('imagen'), 
+					'consignments', 
+					'consignment', 
+					'consignment_file', 
+					'consignment_id', 
+					$data->id
+				);
+			}
+			return $data;
 		}
+		return false;
+
+		
 	}
 
 	public static function getAllConsignmentsByRol()
@@ -58,6 +64,25 @@ trait ConsignmentTrait
 	{
 		return Consignment::find($id)
 		->update(request()->all());
+	}
+
+	public static function getMultimediaConsignmentsByOrderTrait()
+	{
+		$consignments = Consignment::where('order_id', request()->get('id'))
+		->select('id')
+		->get()
+		->pluck('id');
+		
+		return self::getMultimediaByWhereIn($consignments,'consignment_id');
+	}
+
+	public static function validateWhenConsignmentIsFilled($data)
+	{
+		if ($data['consignment_number'] || $data['pse_url'] 
+			|| $data['pse_number'] || isset($data['imagen'])) {
+			return true;
+		}
+		return false;
 	}
 	
 }

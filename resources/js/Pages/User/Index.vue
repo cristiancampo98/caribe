@@ -12,6 +12,18 @@
                         Crear usuario
                     </jet-button>
                 </jet-nav-link>
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-3">
+                        <label for="lenght">Paginar: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 bg-white"
+                        v-model="lenght"
+                        :options="pages"
+                        @input="getPaginateAllUsers"
+                        :clearable="false"></v-select>
+                    </div>
+                </div>
                     <table-responsive-component v-if="showTable">
                     <template #title>
                         <tr>
@@ -87,7 +99,6 @@
                                     </template>
                                 </jet-dropdown>
                             </td-responsive-component>
-
                         </tr>
                     </template>
                 </table-responsive-component>
@@ -103,6 +114,9 @@
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
+    import PaginateComponent from '@/Components/Paginate'
+    import vSelect from "vue-select"
+    import 'vue-select/dist/vue-select.css'
     import JetDropdown from '@/Jetstream/Dropdown'
     import JetDropdownLink from '@/Jetstream/DropdownLink'
 
@@ -114,6 +128,8 @@
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
+            vSelect,
+            PaginateComponent,
             JetDropdown,
             JetDropdownLink
         },
@@ -122,12 +138,16 @@
         },
         mounted(){
             this.getPaginateAllUsers();
-            
         },
         data() {
             return {
                 titles: ['#','Nombre','No. Documento','Dirección','Ciudad','Correo','Roles','Estado'],
                 showTable: false,
+                lenght: 5,
+                page: this.lenght,
+                pages:[
+                    5,10,20
+                ],
                 options: [
                     {name: 'Editar', route:'user.edit'},
                     {name: 'Ver', route:'user.show'},
@@ -142,9 +162,21 @@
         },
         methods: {
             getPaginateAllUsers(){
-            	axios.get('getPaginateAllUsers/users')
-            	.then(res => {
-            		this.users = res.data.users.data;
+                var url = '/getPaginateAllUsers/users';
+                var param = '?lenght='+this.lenght;
+                var total_url = url + param;
+                axios.get(total_url)
+                .then(res => {
+                    this.users = res.data.users.data;
+                    this.package = res.data
+                })
+                .finally( () => {
+                    this.loading = true
+                    this.validateDataUsers()
+                });
+
+            },
+            validateDataUsers(){
 
             		for (var i = 0; i < this.users.length; i++) {
 
@@ -179,8 +211,6 @@
 	                    : 'text-white bg-red-500 p-1 rounded-md';
 	                }
 	                this.showTable = true;
-            	});
-                
             },
             updateStatusUser(item){
                 axios.put('/updateStatus/'+item.id+'/user')

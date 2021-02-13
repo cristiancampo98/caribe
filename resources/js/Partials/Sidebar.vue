@@ -69,8 +69,6 @@ export default {
 	},
 	data () {
 		return {
-			isLoading : false,
-			menu : []
 		}
 	},
 	created() {

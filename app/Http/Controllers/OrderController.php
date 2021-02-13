@@ -16,6 +16,9 @@ class OrderController extends Controller
      */
     public function index()
     {
+    	if (request()->session()->has('info')) {
+    		return inertia('Order/Index')->with('info', request()->session()->get('info'));
+    	}
         return inertia('Order/Index');
     }
 
@@ -72,11 +75,16 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        return inertia('Order/Edit', [
-            'order' => self::findOrder($id),
-            'products' => Product::all(),
-
+    	$order = self::findOrder($id);
+    	if(count($order->consignments)){
+    		return redirect()->route('order.index')->with('info','No es posible editar este pedido porque tiene consignaciones');
+    	}
+    	return inertia('Order/Edit', [
+            'order' => $order,
+            'products' => Product::all()
         ]);
+
+       
     }
 
     /**
@@ -99,6 +107,20 @@ class OrderController extends Controller
 
     }
 
+    public function updateStatusOrder($id)
+    {
+        return self::updateStatusOrderTrait($id);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $this->validate($request,[
+            'delete_note' => 'required|string|max:255'
+        ]);
+        
+        return self::cancelOrder($id, $request->all());
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -109,4 +131,5 @@ class OrderController extends Controller
     {
         //
     }
+
 }

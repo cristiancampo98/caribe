@@ -19,8 +19,4 @@ class ClientStorageController extends Controller
         return self::getAllClientsPaginate();
     }
 
-    public function getDocuments()
-    {
-        return self::getMultimediaByParams();
-    }
 }

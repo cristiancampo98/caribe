@@ -20,6 +20,7 @@ use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserStorageController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\VehicleStorageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -97,6 +98,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
     Route::get('getClientsPaginate/client',
         [ClientStorageController::class, 'getClientsPaginate']
+    );
+    Route::get('getPaginateAllVehicles/vehicles',
+        [VehicleStorageController::class, 'getVehiclesPaginate']
     );
 
     // End TODO API

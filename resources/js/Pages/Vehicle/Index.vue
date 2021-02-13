@@ -13,6 +13,18 @@
                     </jet-button>
                 </jet-nav-link>
                 <div v-if="Object.keys(vehicles).length">
+                    <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-3">
+                        <label for="lenght">Paginar: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 bg-white"
+                        v-model="lenght"
+                        :options="pages"
+                        @input="getPaginateAllVehicles"
+                        :clearable="false"></v-select>
+                    </div>
+                </div>
                     <table-responsive-component>
                         <template #title>
                             <tr>
@@ -67,8 +79,8 @@
                             </tr>
                         </template>
                     </table-responsive-component>
-                    
                 </div>
+                <div v-else>No hay datos</div>
             </div>
         </div>
     </admin-layout>
@@ -81,6 +93,9 @@
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
+    import PaginateComponent from '@/Components/Paginate'
+    import vSelect from "vue-select"
+    import 'vue-select/dist/vue-select.css'
     import JetDropdown from '@/Jetstream/Dropdown'
     import JetDropdownLink from '@/Jetstream/DropdownLink'
 
@@ -92,30 +107,48 @@
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
+            vSelect,
+            PaginateComponent,
             JetDropdown,
             JetDropdownLink
         },
         props: {
-            vehicles: {
-                type: [Object, Array],
-                required: true
-            }
 
         },
         mounted(){
-            
+            this.getPaginateAllVehicles();
         },
         data() {
             return {
             	titles: ['#','Placa','Marca','Estado'],
+                lenght: 5,
+                page: this.lenght,
+                pages:[
+                    5,10,20
+                ],
             	options: [
                     {name: 'Editar', route:'vehicle.edit'},
                     {name: 'Ver', route:'vehicle.show'},
                     {name: 'Actualizar estado', route:'editStatus.vehicle'},
-                ]
+                ],
+                vehicles: []
             }
         },
         methods: {
+            getPaginateAllVehicles(){
+                var url = '/getPaginateAllVehicles/vehicles';
+                var param = '?lenght='+this.lenght;
+                var total_url = url + param;
+                axios.get(total_url)
+                .then(res => {
+                    this.vehicles = res.data.data;
+                    this.package = res.data
+                })
+                .finally( () => {
+                    this.loading = true
+                });
+
+            },
         }
     }
 </script>

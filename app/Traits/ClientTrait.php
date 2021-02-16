@@ -6,6 +6,7 @@ use App\Models\RoleUser;
 use App\Models\User;
 use App\Traits\MultimediaTrait;
 use App\Traits\VehicleTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Iluminate\Http\Request;
@@ -111,5 +112,28 @@ trait ClientTrait
     		'users.name as name',
     		'user_details.name_company as name_company'
     	)->get();
+    }
+
+    public static function getClientWithOrdersTrait()
+    {
+    	$clients =  User::where('name','like','%'. request()->get('q').'%')
+    	->without('details','roles')
+    	->with('vehicles')
+    	->select('id','name')
+		->get();
+
+		if (count($clients)) {
+			return response()->json([
+				'clients' => $clients,
+				'type' => 'success',
+				'text' => 'La consulta se realizó con exito'
+			],200);
+		}
+		return response()->json([
+			'clients' => [],
+			'type' => 'error',
+			'text' => 'No se encontró el cliente'
+			
+		],200);
     }
 }

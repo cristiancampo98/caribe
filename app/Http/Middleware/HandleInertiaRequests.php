@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -46,6 +47,7 @@ class HandleInertiaRequests extends Middleware
             'menu' => $request->user()
             ? $this->menu->getAccessMenu()
             : null,
+            'isAdmin' => Auth::id() ? Auth::user()->isAdmin() : false,
         ]);
     }
 }

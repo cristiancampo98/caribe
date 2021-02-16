@@ -70,4 +70,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserDetail::class, 'user_id', 'id');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
+
+    public function vehicles()
+    {
+        return $this->belongsToMany(Vehicle::class,'vehicle_users','user_id','vehicle_id')
+        ->withPivot('id','carrier');
+    }
 }

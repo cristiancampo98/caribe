@@ -1,7 +1,7 @@
 <template>
 	<!-- This example requires Tailwind CSS v2.0+ -->
 	<div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-		<div class="flex-1 flex justify-between sm:hidden">
+		<div v-if="package.data" class="flex-1 flex justify-between sm:hidden">
 			<a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:text-gray-500">
 				Anterior
 			</a>
@@ -10,7 +10,7 @@
 			</a>
 		</div>
 		<div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-			<div>
+			<div v-if="package.data">
 				<p class="text-sm text-gray-700">
 					Mostrando
 					<span class="font-medium">{{package.from}}</span>
@@ -21,8 +21,11 @@
 					resultados
 				</p>
 			</div>
+			<div v-else>
+				<p class="text-sm text-gray-700">No hay registros.</p>
+			</div>
 			<div>
-				<nav class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
+				<nav v-if="package.data" class="relative z-0 inline-flex shadow-sm -space-x-px" aria-label="Pagination">
 					<button v-if="package.current_page != 1" @click="prevPageUrl" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
 						<span class="sr-only">Anterior</span>
 						<!-- Heroicon name: solid/chevron-left -->

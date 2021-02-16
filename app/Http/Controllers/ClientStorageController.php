@@ -19,4 +19,8 @@ class ClientStorageController extends Controller
         return self::getAllClientsPaginate();
     }
 
+    public function getClientWithOrders(){
+    	return self::getClientWithOrdersTrait();
+    }
+
 }

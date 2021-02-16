@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UnitMeasure;
+use App\Models\Product;
 use App\Traits\MultimediaTrait;
 use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
@@ -19,8 +20,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return inertia('Product/Index',[
-            
+        $products = Product::all();
+        
+        return inertia('Product/Index', [
+            'products' => $products
         ]);
     }
 
@@ -67,9 +70,12 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($id)
     {
         //
+        return inertia('Product/Show', [
+            'product' => Product::find($id),
+        ]);
     }
 
     /**
@@ -81,6 +87,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         //
+        
+        return inertia('Product/Edit', ['units_measure' => UnitMeasure::where('available',1)->get(), 'product' => $product]);
     }
 
     /**
@@ -93,6 +101,8 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //
+        $product->update($request->all());
+        return \Redirect::back();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Traits\ConsignmentTrait;
 use App\Traits\MultimediaTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 trait OrderTrait
 {
 	use MultimediaTrait;
+	use ConsignmentTrait;
 	/*
 	 * Valida el rol del usuario para retornar todas o solo las ordenes del usuario logueado
 	 */
@@ -26,22 +28,14 @@ trait OrderTrait
 		$orders = Order::where('user_id', Auth::id())->get();
 
 		if ($isAdmin) {
-			$orders = Order::paginate(request()->get('lenght'));
+			$orders = Order::with([
+				'client',
+				'creator',
+				'consignments'
+			])->paginate(request()->get('lenght'));
 		}
 
 		return $orders;
-	}
-
-	public static function getClientsToOrder(){
-
-		$isAdmin = Auth::user()->isAdmin();
-
-		if ($isAdmin) {
-			return User::getClients();
-		}
-
-		return false;
-
 	}
 
 	public static function storeOrder($data){
@@ -55,18 +49,20 @@ trait OrderTrait
                 'shipping_address' => $data['shipping_address'],
                 'city' => $data['city'],
                 'note' => $data['note'],
-                'status' => 'Pendiente',
+                'status' => 'activo',
                 'total' => self::getTotalOrder($data['order_details']),
                 'created_by' => Auth::user()->id,
                 'created_at' => $date,
                 'updated_at' => $date
             ]);
-            if (request()->has('consignment')) {
+            if (self::validateWhenConsignmentIsFilled($data['consignment'])) {
             	$consignment_id = DB::table('consignments')->insertGetId([
             		'consignment_number' => $data['consignment']['consignment_number'],
             		'pse_url' => $data['consignment']['pse_url'],
             		'pse_number' => $data['consignment']['pse_number'],
-            		'order_id' => $order_id
+            		'order_id' => $order_id,
+            		'created_at' => Carbon::now('America/Bogota'),
+            		'updated_at' => Carbon::now('America/Bogota'),
             	]);
 
             	if(request()->file('consignment')) {
@@ -74,7 +70,7 @@ trait OrderTrait
             			request()->file('consignment')['imagen'], 
 		                'consignments', 
 		                'consignment', 
-		                'consignment', 
+		                'consignment_file', 
 		                'consignment_id', 
 		                $consignment_id
             		);
@@ -104,6 +100,122 @@ trait OrderTrait
 		}
 
 		return $total;
+	}
+
+	public static function getOrderByConsecutiveOrClientTrait()
+	{
+		return DB::table('orders')
+		->join('users','orders.user_id','users.id')
+		->where('orders.status','activo')
+		->where('orders.id',request()->get('q'))
+		->orWhere('users.name','like','%'. request()->get('q') .'%')
+		->where('orders.status','activo')
+		->select('orders.id as id','users.name as name')
+		->get();
+
+	}
+
+	public static function findOrder($id)
+	{
+		$order = Order::where('id',$id)
+		->with([
+			'orderDetails.product',
+			'client',
+			'creator',
+			'consignments'
+		])
+		->first();
+
+		return $order;
+	}
+
+	public static function updateOrder($data, $id)
+	{
+		$order = Order::find($id);
+		if ($data->get('user_id')) {
+			$order->update($data->all());
+		}else{
+			$user_id = $order->user_id;
+			$order->fill($data->all());
+			$order->user_id = $user_id;
+			$order->save();
+		}
+
+		foreach ($data->order_details as $key => $value) {
+			DB::table('order_details')
+		    ->updateOrInsert(
+		        [
+		        	'order_id' => $id, 
+		        	'product_id' => $value['product_id']
+		        ],
+		        [
+		        	'quantity' => $value['quantity'],
+		        	'discount' => $value['discount']
+		        ]
+		    );
+		}
+		return $order;
+	}
+
+	public static function cancelOrder($id, $data)
+	{
+		$order = self::findOrder($id);
+		if (count($order->consignments)) {
+			return response()->json([
+				'type' => 'info',
+                'text' => 'No se puede cancelar este pedido porque ya existen consignaciones'
+            ],200);
+		}
+
+		$data = $order->update([
+			'delete_note' => $data['delete_note'],
+			'status' => 'cancelado'
+		]);
+
+		if ($data) {
+			return response()->json([
+				'type' => 'success',
+                'text' => 'El pedido se cancelo satisfactoriamente'
+            ],200);
+		}else{
+			return response()->json([
+				'type' => 'error',
+                'text' => 'Sucedió un error, no se pudo cancelar'
+            ],200);
+		}
+	}
+
+	public static function updateStatusOrderTrait($id)
+	{
+		$order = self::findOrder($id);
+		if ($order->status == 'cancelado') {
+			return response()->json([
+				'type' => 'info',
+                'text' => 'Este pedido se encuentra cancelado'
+            ],200);
+		}
+
+		if ($order->status == 'activo') {
+			$order->status = 'finalizado';
+			$text = 'El pedido se encuentra Finalizado';
+		}else{
+			$order->status = 'activo';
+			$text = 'El pedido se encuentra Activo';
+		}
+
+		if ($order->save()) {
+			return response()->json([
+				'order' => $order,
+				'type' => 'success',
+	            'text' => $text
+	        ],200);
+		}
+
+		return response()->json([
+			'type' => 'error',
+            'text' => 'Sucedió un error, no se pudo actualizar'
+        ],200);
+		
 
 	}
 }

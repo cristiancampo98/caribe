@@ -12,6 +12,18 @@
                         Crear Cliente
                     </jet-button>
                 </jet-nav-link>
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-3">
+                        <label for="lenght">Paginar: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 bg-white"
+                        v-model="lenght"
+                        :options="pages"
+                        @input="getPaginateClients"
+                        :clearable="false"></v-select>
+                    </div>
+                </div>
                 <div v-if="Object.keys(clients).length">
                     <table-responsive-component v-if="showTable">
                         <template #title>
@@ -40,7 +52,6 @@
                                 </td-responsive-component>
                                 <td-responsive-component>
                                     <span :class="item.users.classStatus">{{item.users.status}}</span>
-                                    
                                 </td-responsive-component>
                                 <td-responsive-component>
                                     <jet-dropdown align="right" width="48">
@@ -60,7 +71,7 @@
                                                 Opciones
                                             </div>
 
-                                            <jet-dropdown-link v-for="(option,key) in options"
+                                            <jet-dropdown-link v-for="(option,key) in actions"
                                             :key="key"
                                             :href="route(option.route, {client: item.id})" :as="option.as" method="option.method">
                                                 {{option.name}}
@@ -70,15 +81,15 @@
                                             @click="updateStatusUser(item)">
                                                 {{item.users.status == 'Activo' ? 'Inactivar' : 'Activar'}}
                                             </button>
-
                                         </template>
                                     </jet-dropdown>
                                 </td-responsive-component>
-
                             </tr>
                         </template>
                     </table-responsive-component>
-                    
+                    <paginate-component 
+                    :package="package"
+                    @updatingData="updateData"></paginate-component>
                 </div>
             </div>
         </div>
@@ -92,6 +103,9 @@
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
+    import PaginateComponent from '@/Components/Paginate'
+    import vSelect from "vue-select"
+    import 'vue-select/dist/vue-select.css'
     import JetDropdown from '@/Jetstream/Dropdown'
     import JetDropdownLink from '@/Jetstream/DropdownLink'
 
@@ -103,37 +117,37 @@
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
+            vSelect,
+            PaginateComponent,
             JetDropdown,
             JetDropdownLink
         },
-        props: {
-            clients: {
-                type: [Object, Array],
-                required: true
-            }
-
-        },
         mounted(){
-            this.validateDataClients();
-            
+            this.getPaginateClients();
         },
         data() {
             return {
                 titles: ['#','Nombre','Empresa','Dirección','Ciudad','Correo','Estado'],
                 showTable: false,
-                options: [
+                loading: false,
+                lenght: 5,
+                page: this.lenght,
+                pages:[
+                    5,10,20
+                ],
+                actions: [
                     {name: 'Editar', route:'client.edit'},
                     {name: 'Ver', route:'client.show'},
-                ]
+                ],
+                clients: []
             }
         },
         methods: {
             validateDataClients(){
-
+                
                 for (var i = 0; i < this.clients.length; i++) {
 
                     if (this.clients[i].users.details) {
-
                         this.clients[i].users.details.name_company  = this.clients[i].users.details.name_company 
                         ? this.clients[i].users.details.name_company 
                         : 'N/A';
@@ -147,6 +161,7 @@
                         : 'N/A';
                           
                     }else{
+
                         this.clients[i].users.details = {
                             name_company : 'N/A',
                             street_address : 'N/A',
@@ -172,6 +187,25 @@
                     ? 'text-white bg-green-500 p-1 rounded-md'
                     : 'text-white bg-red-500 p-1 rounded-md';
                 })
+            },
+            getPaginateClients(){
+                var url = '/getClientsPaginate/client';
+                var param = '?lenght='+this.lenght;
+                var total_url = url + param;
+                axios.get(total_url)
+                .then(res => {
+                    this.clients = res.data.data;
+                    this.package = res.data
+                })
+                .finally( () => {
+                    this.loading = true
+                    this.validateDataClients()
+                });
+
+            },
+            updateData(data){
+                this.options = data.data;
+                this.package = data;
             }
         }
     }

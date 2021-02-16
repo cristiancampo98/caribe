@@ -123,7 +123,6 @@
     import $ from 'jquery';
     export default {
          mounted(){
-            console.log(this.products),
             this.mytable()
         },
         components: {
@@ -135,7 +134,9 @@
             products: {}
         },
         data() {
-           
+           return {
+            
+           }
         },
         methods: {
             mytable(){

@@ -270,4 +270,26 @@ trait OrderTrait
 			'text' => 'No se encontraron pedidos'
 		],200);
 	}
+
+	public static function getOrdersByUserIdWithConsignmentsTrait()
+	{
+		$orders = Order::where('user_id', request()->get('id'))
+					->whereHas('consignments')
+					->where('status','activo')
+					->get();
+
+		if (count($orders)) {
+			return response()->json([
+				'orders' => $orders,
+				'type' => 'success',
+				'text' => 'Se encontraron ' . count($orders). ' pedidos'
+			],200);
+		}
+
+		return response()->json([
+			'orders' => $orders,
+			'type' => 'info',
+			'text' => 'No se encontraron pedidos'
+		],200);
+	}
 }

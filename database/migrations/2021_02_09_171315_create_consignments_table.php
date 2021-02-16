@@ -16,8 +16,7 @@ class CreateConsignmentsTable extends Migration
         Schema::create('consignments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained();
-            $table->foreignId('remission_id')->nullable()->constrained();
-            $table->string('consignment_number')->nullable();
+            $table->string('consignment_number')->unique();
             $table->string('pse_url')->nullable();
             $table->string('pse_number')->nullable();
             $table->timestamps();

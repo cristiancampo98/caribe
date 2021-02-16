@@ -38,8 +38,20 @@ class VehicleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   
+        $this->validate($request, [
+            'license_plate' => 'required|string|max:10'
+        ]);
+        
+        $response = self::storeVehicleFromRemission();
+
+        if ($response) {
+            return redirect()->back()
+                    ->with('success', 'El vehiculo se agrego con éxito');
+        }
+        return redirect()->back()
+                    ->with('error', 'Sucedió un error, no se pudo agregar el vehículo');
+        
     }
 
     /**

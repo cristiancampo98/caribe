@@ -22,6 +22,6 @@ class OrderStorageController extends Controller
 
     public function getOrdersByUserId()
     {
-    	return self::getOrdersByUserIdTrait();
+    	return self::getOrdersByUserIdWithConsignmentsTrait();
     }
 }

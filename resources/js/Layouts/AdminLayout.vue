@@ -43,6 +43,7 @@ export default {
         }
 	},
 	mounted(){
+        console.log(this.$page.props)
 		if (this.status.type && this.status.text) {
 			this.getNotification();	
 		}

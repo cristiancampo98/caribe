@@ -35,7 +35,14 @@ class RemissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'delivered' => 'required|numeric|min:1',
+            'order_detail_id' => 'required|numeric|min:1',
+            'vehicle_user_id' => 'required|numeric|min:1',
+            'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+        ]);
+
+        
     }
 
     /**

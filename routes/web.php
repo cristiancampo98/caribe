@@ -9,6 +9,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\OrderDetailStorageController;
 use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
@@ -86,6 +87,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getOrderByConsecutiveOrClient/order',
         [OrderStorageController::class, 'getOrderByConsecutiveOrClient']
     );
+    Route::get('getOrdersByUserId/order',
+        [OrderStorageController::class, 'getOrdersByUserId']
+    );
+    Route::get('getOrderDetailsByOrderId/orderDetail',
+        [OrderDetailStorageController::class, 'getOrderDetailsByOrderId']
+    );
     Route::get('getAllConsignments/consignments',
         [ConsignmentStorageController::class, 'getAllConsignments']
     );
@@ -99,6 +106,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getClients/client',
         [ClientStorageController::class, 'getClients']
     );
+    Route::get('getClientWithOrders/client',
+        [ClientStorageController::class, 'getClientWithOrders']
+    );
     Route::get('getClientsPaginate/client',
         [ClientStorageController::class, 'getClientsPaginate']
     );
@@ -111,6 +121,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
     Route::put('updateStatusOrder/{id}/order',
         [OrderController::class, 'updateStatusOrder']
+    );
+    Route::get('sendEmailUpdate/{id}/order',
+        [OrderController::class, 'sendEmailUpdate']
     );
 
     // End TODO API

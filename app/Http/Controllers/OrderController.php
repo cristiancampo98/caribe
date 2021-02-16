@@ -19,6 +19,12 @@ class OrderController extends Controller
     	if (request()->session()->has('info')) {
     		return inertia('Order/Index')->with('info', request()->session()->get('info'));
     	}
+        if (request()->session()->has('success')) {
+            return inertia('Order/Index')->with('success', request()->session()->get('success'));
+        }
+         if (request()->session()->has('error')) {
+            return inertia('Order/Index')->with('error', request()->session()->get('error'));
+        }
         return inertia('Order/Index');
     }
 
@@ -49,9 +55,10 @@ class OrderController extends Controller
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1'
         ]);
-        self::storeOrder($request->all());
+        $response = self::storeOrder($request->all());
 
-        return redirect()->route('order.index');
+        return redirect()->route('order.index')
+            ->with('info','El proceso se realizo con exito');
     }
 
     /**
@@ -96,14 +103,23 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $this->validate($request, [
             'user_id' => 'required|numeric|min:1' ,
             'shipping_address' => 'required|string|max:100' ,
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1'
         ]);
-        $order = self::updateOrder($request, $id);
-        return redirect()->route('order.index');
+
+        $order = self::updateOrder($request, $id);      
+
+        if ($order) {
+            return redirect()->route('order.index')
+            ->with('success','El pedido se actualizó con exito');    
+        }
+        return redirect()->route('order.index')
+        ->with('error','Sucedió un error, no se pudo actualizar');    
+        
 
     }
 
@@ -119,6 +135,11 @@ class OrderController extends Controller
         ]);
         
         return self::cancelOrder($id, $request->all());
+    }
+
+    public function sendEmailUpdate($id)
+    {
+        return self::sendEmailUpdateTrait($id);
     }
 
     /**

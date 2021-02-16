@@ -20,7 +20,7 @@
 			        <template #form>
 
 			            <!-- user id or cliente -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-3" v-if="$page.props.isAdmin">
 			                <jet-label for="user_id" value="Cliente" />
 			                <v-select 
 					        label="name" 
@@ -45,11 +45,11 @@
 							    </template>
 							</v-select>
 			                <jet-input-error :message="form.errors.user_id" class="mt-2" />
-			            </div><!-- 
-			            <div class="col-span-6 lg:col-span-2" v-else>
+			            </div>
+			            <div class="col-span-6 lg:col-span-3" v-else>
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
-			            </div> -->
+			            </div>
 			             <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
@@ -144,7 +144,7 @@
 			                Guardado.
 			            </jet-action-message>
 
-			            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+			            <jet-button :class="{ 'opacity-25': form.processing }" >
 			                Guardar
 			            </jet-button>
 			        </template>
@@ -274,7 +274,7 @@
             	if (this.$refs.imagen) {
                     this.form.consignment.imagen = this.$refs.imagen.files[0]
                 }
-            	if (! this.clients) {
+            	if (! this.$page.props.isAdmin) {
             		this.form.user_id = this.user.id
             	}
                 this.form.post(route('order.store'), {

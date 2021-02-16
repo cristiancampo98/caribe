@@ -32,7 +32,15 @@ export default {
         PartialSidebar
 	},
 	props: {
-		status: Object
+		status: {
+            type: Object,
+            default: function() {
+                return {
+                    type: null,
+                    text: null
+                }
+            }
+        }
 	},
 	mounted(){
 		if (this.status.type && this.status.text) {

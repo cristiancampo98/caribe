@@ -1,5 +1,5 @@
 <template>
-	<admin-layout>
+	<admin-layout :status="status">
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Crear Pedido
@@ -20,7 +20,7 @@
 			        <template #form>
 
 			            <!-- user id or cliente -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-3" v-if="$page.props.isAdmin">
 			                <jet-label for="user_id" 
 			                :value="`Cliente: ${order.client.name}`" />
 			                <v-select 
@@ -46,11 +46,11 @@
 							    </template>
 							</v-select>
 			                <jet-input-error :message="form.errors.user_id" class="mt-2" />
-			            </div><!-- 
-			            <div class="col-span-6 lg:col-span-2" v-else>
+			            </div>
+			            <div class="col-span-6 lg:col-span-3" v-else>
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
-			            </div> -->
+			            </div>
 			             <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
@@ -122,7 +122,7 @@
 			                Guardado.
 			            </jet-action-message>
 
-			            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+			            <jet-button type="button" @click.native="sendEmail" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
 			                Guardar
 			            </jet-button>
 			        </template>
@@ -158,7 +158,32 @@
 		            		</tr>
 		            	</template>
 		            </table-responsive-component>
-			    	
+		            <vs-dialog width="550px" not-center v-model="confirm">
+				        <template #header>
+				          <h4 class="not-margin">
+				            Enviar notificación por correo a <b>{{order.client.name}}</b>
+				          </h4>
+				        </template>
+
+
+				        <div class="con-content">
+				          <p>
+				            ¿Quieres enviar una notificación al usuario informandole que su pedido ha sido actualizado?. <br>
+				            Enviar una notificación al usuario podrá causar que la operación tarde mas ¿Quieres enviarla?
+				          </p>
+				        </div>
+
+				        <template #footer>
+				          <div class="con-footer">
+				            <vs-button @click="updateOrder(true)" transparent>
+				              Si, enviar notificación
+				            </vs-button>
+				            <vs-button @click="updateOrder(false)" dark transparent>
+				              No enviar notificación
+				            </vs-button>
+				          </div>
+				        </template>
+				    </vs-dialog>
 			    </div>
 
             </div>
@@ -211,6 +236,8 @@
     	},
     	data(){
             return {
+            	status:{},
+            	confirm: false,
                 form: this.$inertia.form({
                 	_method: 'put',
                     user_id: this.order.user_id,
@@ -219,6 +246,7 @@
                     note: this.order.note,
                     total: this.order.total,
                     order_details: [],
+                    send_email:false
                 }),
                 product_detail: [],
                 quantity: 1,
@@ -255,14 +283,31 @@
         			this.form.order_details.push(detail);
         		});
         	},
-            updateOrder(){
+            updateOrder(email){
             	if (! this.clients) {
             		this.form.user_id = this.user.id
             	}
+            	this.form.send_email = email;
+            	const loading = this.$vs.loading({
+            		type: 'circles'
+            	});
                 this.form.post(route('order.update',{id : this.order.id}), {
                     errorBag: 'updateOrder',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: (visit) => { 
+                    	this.confirm = false;
+                    	loading.text = "Procesando..."
+                    },
+				  	onSuccess: () => { 
+				  		loading.text = "¡Hecho!"
+				  	},
+				  	onFinish: () => {
+				  		loading.close()
+				  	},
                 });
+            },
+            sendEmail(){
+            	this.confirm = true;
             },
             loadFileColombiaJson(){
             	axios.get('/default/colombia-json-master/colombia.json')

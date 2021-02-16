@@ -11,7 +11,7 @@
                     Crear pedido
                 </jet-button>
             </jet-nav-link>
-            <div class="grid grid-cols-6 gap-6">
+            <div class="grid grid-cols-6 gap-6" v-if="options">
                 <div class="col-span-3">
                     <label for="lenght">Paginar: </label>
                     <v-select
@@ -78,21 +78,28 @@
                                         {{option.name}}
                                     </jet-dropdown-link>
                                     <button type="button"
-                                    v-if="item.status != 'cancelado'"
+                                    v-if="item.status != 'cancelado' && $page.props.isAdmin"
                                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                     @click="updateStatusOrder(item)">
                                         {{item.status == 'activo' ? 'Finalizar' : 'Activar'}}
                                     </button>
                                     <button type="button"
-                                    v-if="!item.consignments.length"
+                                    v-if="!item.consignments.length && item.status != 'cancelado'"
                                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                     @click="openModalDestroy(item)">
                                         Cancelar
                                     </button>
                                     <button type="button"
+                                    v-if="item.status == 'activo' && $page.props.isAdmin"
                                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                     @click="openModalConsignment(item)">
                                         Agregar Consignación
+                                    </button>
+                                    <button type="button"
+                                    v-if="$page.props.isAdmin"
+                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                    @click="sendEmail(item.id)">
+                                        Notificar
                                     </button>
 
                                 </template>
@@ -181,7 +188,7 @@
             vSelect
             
         },
-        props:['info'],
+        props:['info','success','error'],
         data () {
             return {
                 status: {},
@@ -212,6 +219,12 @@
             this.getPaginateOrders();
             if (this.info) {
                 this.status = {type: 'info', text: this.info};
+            }
+            if (this.success) {
+                this.status = {type: 'success', text: this.success};
+            }
+            if (this.error) {
+                this.status = {type: 'error', text: this.error};
             }
         },
         methods: {
@@ -272,6 +285,19 @@
                         item.status = res.data.order.status;
                     }
                     this.status = {type: res.data.type ,text: res.data.text}
+                });
+            },
+            sendEmail(id){
+                const loading = this.$vs.loading({
+                    type: 'circles',
+                    text: 'Procesando...'
+                });
+                axios.get('sendEmailUpdate/'+id+'/order')
+                .then( res => {
+                    this.status = {type: res.data.type, text: res.data.text}
+                    loading.text = '¡Hecho!';
+                }).finally( () => {
+                    loading.close();
                 });
             }
 

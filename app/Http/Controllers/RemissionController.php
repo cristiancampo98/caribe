@@ -14,7 +14,7 @@ class RemissionController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Remission/Index');
     }
 
     /**
@@ -24,7 +24,7 @@ class RemissionController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Remission/Create');
     }
 
     /**

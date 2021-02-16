@@ -4,11 +4,13 @@ namespace App\Traits;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\UpdatedOrder;
 use App\Traits\ConsignmentTrait;
 use App\Traits\MultimediaTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * 
@@ -25,17 +27,22 @@ trait OrderTrait
 		$isAdmin = Auth::user()->isAdmin();
 		$orders = [];
 
-		$orders = Order::where('user_id', Auth::id())->get();
+		$orders = Order::with([
+			'client',
+			'creator',
+			'consignments'
+		])
+		->where('user_id', Auth::id());
 
 		if ($isAdmin) {
 			$orders = Order::with([
 				'client',
 				'creator',
 				'consignments'
-			])->paginate(request()->get('lenght'));
+			]);
 		}
 
-		return $orders;
+		return $orders->paginate(request()->get('lenght'));
 	}
 
 	public static function storeOrder($data){
@@ -150,11 +157,37 @@ trait OrderTrait
 		        ],
 		        [
 		        	'quantity' => $value['quantity'],
-		        	'discount' => $value['discount']
+		        	'discount' => $value['discount'],
+		        	'status' => 1
 		        ]
 		    );
 		}
+
+		if ($data->get('send_email')) {
+			Notification::route('mail', $order->client->email)
+							->notify(new UpdatedOrder($order));
+		}
 		return $order;
+	}
+
+	public static function sendEmailUpdateTrait($id)
+	{
+		$order = self::findOrder($id);
+
+		if ($order) {
+			Notification::route('mail', $order->client->email)
+							->notify(new UpdatedOrder($order));
+			return response()->json([
+				'type' => 'success',
+				'text' => 'La notificación ha sido enviada.'
+			],200);
+		}
+		return response()->json([
+			'type' => 'error',
+			'text' => 'No se encontró el pedido y la notificación no se envió.'
+		],200);
+
+		
 	}
 
 	public static function cancelOrder($id, $data)
@@ -215,7 +248,26 @@ trait OrderTrait
 			'type' => 'error',
             'text' => 'Sucedió un error, no se pudo actualizar'
         ],200);
-		
+	}
 
+	public static function getOrdersByUserIdTrait()
+	{
+		$orders = Order::where('user_id', request()->get('id'))
+					->where('status','activo')
+					->get();
+
+		if (count($orders)) {
+			return response()->json([
+				'orders' => $orders,
+				'type' => 'success',
+				'text' => 'Se encontraron ' . count($orders). ' pedidos'
+			],200);
+		}
+
+		return response()->json([
+			'orders' => $orders,
+			'type' => 'info',
+			'text' => 'No se encontraron pedidos'
+		],200);
 	}
 }

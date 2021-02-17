@@ -18,6 +18,7 @@ class CreateRemissionsTable extends Migration
             $table->decimal('delivered',3,1);
             $table->foreignId('order_details_id')->nullable()->constrained();
             $table->foreignId('vehicle_users_id')->nullable()->constrained();
+            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });
     }

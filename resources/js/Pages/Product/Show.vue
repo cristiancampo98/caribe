@@ -1,5 +1,5 @@
 <template>
-	<admin-layout>
+	<admin-layout :status="status">
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                Producto seleccionado
@@ -15,21 +15,40 @@
             			<template #description>{{product.name}}</template>
             		</item-list-component>
             		<item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+            			<template #attribute>Referencia</template>
             			<template #description>{{product.reference}}</template>	
             		</item-list-component>
-                   <item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
-            			<template #description>{{product.unit_measure_id}}</template>	
+                   <item-list-component >
+            			<template #attribute>Unidad</template>
+            			<template #description>{{product.units_measure.name}}</template>	
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+            			<template #attribute>Precio</template>
             			<template #description>{{product.price}}</template>	
             		</item-list-component>
-                    <item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+                    <item-list-component >
+            			<template #attribute>Descripción</template>
             			<template #description>{{product.description}}</template>	
             		</item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Creador</template>
+                        <template #description>{{product.creator.name}}</template> 
+                    </item-list-component>
+                     <item-list-component >
+                        <template #attribute>Estado</template>
+                        <template #description>{{product.status ? 'Activo' : 'Inactivo'}}</template>   
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Fecha</template>
+                        <template #description>{{product.created_at}}</template> 
+                    </item-list-component>
+                    <item-list-download-component
+                    v-if="multimedia.lenght"
+                    title="Fotos productos"
+                    :files="multimedia"
+                    @updatingNotifications="updateNotifications"
+                    />
+
             	</description-list-component>
             </div>
         </div>
@@ -42,27 +61,41 @@
 	import AdminLayout from '@/Layouts/AdminLayout'
 	import DescriptionListComponent from '@/Components/DescriptionList'
 	import ItemListComponent from '@/Components/ItemList'
+    import ItemListDownloadComponent from '@/Components/ItemListDownload'
 
     export default {
     	components: {
     		AdminLayout,
     		DescriptionListComponent,
-    		ItemListComponent
-
+    		ItemListComponent,
+            ItemListDownloadComponent
     	},
     	props: {
             product: Object
         }, 
     	data(){
             return {
-              
+                status:{},
+                multimedia: null,
             }
         },
         mounted(){
-        	
+            this.getMultimediaFilesByProduct();
         },
         methods: {
-        }
+            getMultimediaFilesByProduct(){
+                axios.get(`/getMultimediaFilesByProduct/${this.product.id}/products`)
+                .then( res => {
+                    this.multimedia = res.data;
+                })
+                .finally( () => {
 
+                });
+            },
+            updateNotifications(data){
+                console.log(data);
+                this.status = data;
+            }
+        }
     }
 </script>

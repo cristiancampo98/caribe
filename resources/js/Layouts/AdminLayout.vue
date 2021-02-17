@@ -43,7 +43,7 @@ export default {
         }
 	},
 	mounted(){
-        console.log(this.$page.props)
+        this.getStatusFlash();
 		if (this.status.type && this.status.text) {
 			this.getNotification();	
 		}
@@ -105,7 +105,15 @@ export default {
 	            title,
 	            text
 	        })
-      	}
+      	},
+        getStatusFlash(){
+            for (var val in this.$page.props.flash){
+                if (this.$page.props.flash[val]) {
+                    this.status.type = val;;
+                    this.status.text = this.$page.props.flash[val];
+                }
+            }
+        }
     }
 }
 </script>

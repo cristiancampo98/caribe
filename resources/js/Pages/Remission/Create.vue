@@ -60,6 +60,13 @@
             </div>
             <!-- order details table -->
             <div v-if="details.length">
+            	<div v-if="Object.keys(remi.errors).length">
+            		<ul class="bg-red-500 mt-3 p-2 text-white">
+            			<li v-for="error in remi.errors">
+            				{{error}}
+            			</li>
+            		</ul>
+            	</div>
             	<table-responsive-component>
 	                <template #title>
 	                    <tr>
@@ -81,18 +88,19 @@
 	                        	</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
-	                        	0
+	                        	{{total_delivered(item.remissions)}}
+	                        	<span class="text-xs">
+	                        		{{item.product.units_measure.name}}
+	                        	</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	<jet-input type="number" class="mt-1 block w-full"
-	                        	:max="item.quantity"
+	                        	:max="getLimitUp(item.quantity,item.remissions)"
+	                        	step="0.1"
 	                        	min="0"
 	                        	@change.native="validateQuantity(item)"
+	                        	this.del
 	                        	v-model.number="item.cantidad"/>
-	                        </td-responsive-component>
-	                        <td-responsive-component>
-	                        	<jet-input type="date"  
-	                        	v-model="item.fecha"/>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	<v-select v-if="vehicles.length"
@@ -140,7 +148,7 @@
 						      	</vs-tooltip>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
-	                        	<jet-button type="button" @click.native="storeRemission(item)">
+	                        	<jet-button v-if="fullyDispatched(item)" type="button" @click.native="storeRemission(item)">
 	                        		Remisión
 	                        	</jet-button>
 	                        </td-responsive-component>
@@ -269,7 +277,6 @@
                 	'Cantidad',
                 	'Entregado',
                 	'Remisionar',
-                	'Fecha entrega',
                 	'Vehículo',
                 	'Dirección Entrega',
                 	'Consignación'
@@ -290,8 +297,8 @@
                 }),
                 remi: this.$inertia.form({
                     delivered: null,
-            		order_detail_id: null,
-            		vehicle_user_id: null,
+            		order_details_id: null,
+            		vehicle_users_id: null,
             		firm:null
                 })
             }
@@ -336,16 +343,42 @@
                 });
         	},
             storeRemission(item){
-            	
+
+            	this.remi.clearErrors();
+
         		this.remi.delivered = item.cantidad;
-        		this.remi.order_detail_id = item.id;
-        		this.remi.vehicle_user_id = item.vehicle_user;
+        		this.remi.order_details_id = item.id;
+        		this.remi.vehicle_users_id = item.vehicle_user;
 
             	if (this.$refs.firm) {
                     this.remi.firm = this.$refs.firm.files[0]
                 }
+
+                const loading = this.$vs.loading({
+            		type: 'circles'
+            	});
+
                 this.remi.post(route('remission.store'), {
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                    	loading.text = "Procesando..."
+                    },
+				  	onSuccess: () => {
+				  		loading.text = "¡Hecho!";
+				  		this.uploadedImagen = false;
+
+				  		for (var val in this.flash){
+				  			if (this.flash[val]) {
+				  				this.status = {
+				  					type: val,
+				  					text: this.flash[val]
+				  				}
+				  			}
+				  		}
+				  	},
+				  	onFinish: () => {
+				  		loading.close()
+				  	},
                 });
             },
             onSearch(search, loading) {
@@ -396,7 +429,9 @@
 		    	});
 		    },
 		    validateQuantity(item){
-		    	if (item.cantidad < 1 || item.cantidad > item.quantity) {
+		    	var deli = this.total_delivered(item.remissions);
+		    	var total = item.quantity - deli;
+		    	if (item.cantidad < 1 || item.cantidad > total) {
 		    		item.cantidad = 1;
 		    		this.status = {
 		    			type: "warning",
@@ -413,6 +448,24 @@
 		    uploadImagen(){
 		    	this.uploadedImagen = true;
 		    },
+		    total_delivered(remissions){
+		    	console.log(remissions)
+		    	var res = 0;
+        		if (remissions.length) {
+        			remissions.map(item => {
+        				res += parseFloat(item.delivered)
+        			});
+        		}
+        		return res;
+        	},
+        	getLimitUp(original,  remissions){
+        		var deli = this.total_delivered(remissions)
+        		return original - deli;
+        	},
+        	fullyDispatched(item){
+        		var dispatched = this.total_delivered(item.remissions);
+        		return item.quantity - dispatched;
+        	}
         }
 
     }

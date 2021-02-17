@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Multimedia;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 
@@ -63,5 +64,18 @@ trait MultimediaTrait
 		return Multimedia::whereIn('model_id', $data)
 			->where('foreign_key', $foreign_key)
 			->get();
+	}
+
+	public static function downloadTrait($id)
+	{
+		$file = Multimedia::find($id);
+		return Storage::disk('public')->download($file->path);
+	}
+
+	public static function destroyTrait($id)
+	{
+		$file = Multimedia::find($id);
+		Storage::disk('public')->delete($file->path);
+		return $file->delete();
 	}
 }

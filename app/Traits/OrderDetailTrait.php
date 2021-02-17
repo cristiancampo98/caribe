@@ -14,7 +14,7 @@ trait OrderDetailTrait
 	public static function getOrderDetailsByOrderTrait()
 	{
 		$details = OrderDetail::where('order_id', request()->get('id'))
-					->with('product','order.consignments')
+					->with('product','order.consignments','remissions')
 					->get();
 
 		if (count($details)) {

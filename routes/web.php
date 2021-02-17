@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductStorageController;
 use App\Http\Controllers\RemissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
@@ -78,6 +79,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
 
+    Route::put('updateStatus/{id}/product',
+        [ProductController::class, 'updateStatus']
+    );
+
+    Route::get('getPaginateAllProducts/products',
+        [ProductStorageController::class, 'getPaginateAllProducts']
+    );
+
+    Route::get('getMultimediaFilesByProduct/{id}/products',
+        [ProductStorageController::class, 'getMultimediaFilesByProduct']
+    );
+
     Route::get('getPaginateAllUsers/users',
         [UserStorageController::class, 'getPaginateAllUsers']
     );
@@ -124,6 +137,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
     Route::get('sendEmailUpdate/{id}/order',
         [OrderController::class, 'sendEmailUpdate']
+    );
+
+    Route::get('download/{id}/multimedia',
+        [MultimediaController::class, 'download']
     );
 
     // End TODO API

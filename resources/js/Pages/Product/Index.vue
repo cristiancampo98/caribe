@@ -1,165 +1,192 @@
 <template>
-    <admin-layout>
-        <template #header>
+    <admin-layout :status="status">
+         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Productos
+                Listado de productos
             </h2>
         </template>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-
-                	<jet-nav-link :href="route('product.create')" class="m-8">
-                		<jet-button type="button">
-                			Crear producto
-                		</jet-button>
-                	</jet-nav-link>
-
-                  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                <table id="example" class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        ID
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nombre
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Referencia
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Unidad medida
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Precio
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Descripción
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Usuario
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
-                      </th>
-                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"> 
-                        Gestión
-                        <span class="sr-only">Ver</span>
-                      </th>
-                      <th scope="col" class="relative px-6 py-3">
-                        <span class="sr-only">Edit</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="(product, index) in products">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.id}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                          <div class="flex-shrink-0 h-10 w-10">
-                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=60" alt="">
-                          </div>
-                          <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900">
-                              {{product.name}}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.reference}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.unit_measure_id}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.price}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.description}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.user_id}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{product.status}}</div>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <jet-nav-link :href="route('product.show', {product: product.id})">
-                            <jet-button type="button">
-                              Ver
-                            </jet-button>
-                        </jet-nav-link>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <inertia-link :href="route('product.edit', product.id)">
-                                Editar
-                        </inertia-link>
-                      </td>
-                    </tr>
-
-                    <!-- More items... -->
-                  </tbody>
-                </table>
-
-            </div>
-          </div>
-
+           <jet-nav-link :href="route('product.create')" class="m-8">
+                <jet-button type="button">
+                    Crear producto
+                </jet-button>
+            </jet-nav-link>
+           
+            <div v-if="options.length">
+                <div class="grid grid-cols-6 gap-6">
+                    <div class="col-span-3">
+                        <label for="lenght">Paginar: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 bg-white"
+                        v-model="lenght"
+                        :options="pages"
+                        @input="getPaginateOrders"
+                        :clearable="false"></v-select>
+                    </div>
                 </div>
+                 <table-responsive-component>
+                    <template #title>
+                        <tr>
+                            <th-responsive-component 
+                            v-for="(title, key) in titles"
+                            :key="key">{{title}}</th-responsive-component>
+                        </tr>
+                    </template>
+                    <template #content>
+                        <tr v-for="(item, key) in options" :key="key">
+                            <td-responsive-component>
+                                {{item.id}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.name}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.description}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.reference}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.price}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.units_measure.name}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                <jet-dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <span  class="inline-flex rounded-md">
+                                            <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
+                                                <div class="bg-white border border-transparent hover:border-black shadow-sm p-2 rounded-lg">
+                                                    <img src="/img/menu.svg">
+                                                </div>
+                                            </button>
+                                        </span>
+                                    </template>
+                                    <template #content>
+                                        <!-- Account Management -->
+                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                            Opciones
+                                        </div>
+
+                                        <jet-dropdown-link v-for="(option,key) in actions"
+                                        :key="key"
+                                        :href="route(option.route, {id: item.id})" :as="option.as" method="option.method">
+                                            {{option.name}}
+                                        </jet-dropdown-link>
+                                        <button type="button"
+                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        @click="updaStatus(item.id)">
+                                            {{item.status ? 'Inactivar' : 'Activar'}}
+                                        </button>
+                                    </template>
+                                </jet-dropdown>
+                            </td-responsive-component>
+                        </tr>
+                    </template>
+                </table-responsive-component>
+                <paginate-component 
+                :package="package"
+                @updatingData="updateData"></paginate-component>
             </div>
         </div>
     </admin-layout>
 </template>
-
 <script>
     import AdminLayout from '@/Layouts/AdminLayout'
     import JetNavLink from '@/Jetstream/NavLink'
     import JetButton from '@/Jetstream/Button'
-    import datatables from 'datatables'
-    import $ from 'jquery';
+    import TableResponsiveComponent from '@/Components/TableResponsive'
+    import ThResponsiveComponent from '@/Components/THResponsive'
+    import TdResponsiveComponent from '@/Components/TDResponsive'
+    import PaginateComponent from '@/Components/Paginate'
+    import JetDropdown from '@/Jetstream/Dropdown'
+    import JetDropdownLink from '@/Jetstream/DropdownLink'
+    import vSelect from "vue-select"
+    import 'vue-select/dist/vue-select.css'
+
     export default {
-         mounted(){
-            this.mytable()
-        },
         components: {
             AdminLayout,
             JetNavLink,
-            JetButton
+            JetButton,
+            TableResponsiveComponent,
+            ThResponsiveComponent,
+            TdResponsiveComponent,
+            PaginateComponent,
+            JetDropdown,
+            JetDropdownLink,
+            vSelect
+
         },
-        props: {
-            products: {}
+        created() {
+            this.getPaginateOrders();
         },
-        data() {
-           return {
-            
-           }
+        data () {
+            return {
+                status: {},
+                loading: false,
+                lenght: 5,
+                page: this.lenght,
+                pages:[
+                    5,10,20
+                ],
+                titles: ['#','Nombre','Descripción','Referencia','Precio','Medida','Opciones'],
+                options: [],
+                package: [],
+                actions: [
+                    {name: 'Editar', route:'product.edit'},
+                    {name: 'Ver', route:'product.show'},
+                ],
+            }
         },
         methods: {
-            mytable(){
-            $(function(){
-            $('#example').DataTable({
-            responsive: true,
-              "language":{
-                "lengthMenu": "Mostrar _MENU_ registros por pagina",
-                "info": "Mostrando pagina _PAGE_ de _PAGES_",
-                "infoEmpty": "No hay registros disponibles",
-                "infoFiltered": "(filtrada de _MAX_ registros)",
-                "loadingRecords": "Cargando...",
-                "processing":     "Procesando...",
-                "search": "Buscar:",
-                "zeroRecords":    "No se encontraron registros coincidentes",
-                "paginate": {
-                  "next":       "Siguiente",
-                  "previous":   "Anterior"
-                },					
-              }
-            });
-          })
-          }
+            getPaginateOrders(){
+                var url = '/getPaginateAllProducts/products',
+                    param = '?lenght='+this.lenght,
+                    total_url = url + param;
+
+                this.startLoading();
+
+                axios.get(total_url)
+                .then(res => {
+                    this.options = res.data.data;
+                    this.package = res.data
+                })
+                .finally( () => this.endLoading());
+
+            },
+            updateData(data){
+                this.options = data.data;
+                this.package = data;
+            },
+            updaStatus(id){
+                this.startLoading();
+
+                axios.put(`updateStatus/${id}/product`)
+                .then( res => {
+                    this.status = {
+                        type : res.data.type,
+                        text : res.data.text,
+                    }
+                })
+                .finally( () => {
+                    this.endLoading();
+                });
+            },
+            startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+
+            },
+            endLoading(){
+                this.loading.close();
+            }
         }
+
     }
 </script>

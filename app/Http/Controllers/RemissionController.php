@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Remission;
+use App\Traits\RemissionTrait;
 use Illuminate\Http\Request;
 
 class RemissionController extends Controller
 {
+    use RemissionTrait;
     /**
      * Display a listing of the resource.
      *
@@ -37,10 +38,15 @@ class RemissionController extends Controller
     {
         $this->validate($request, [
             'delivered' => 'required|numeric|min:1',
-            'order_detail_id' => 'required|numeric|min:1',
-            'vehicle_user_id' => 'required|numeric|min:1',
+            'order_details_id' => 'required|numeric|min:1',
+            'vehicle_users_id' => 'required|numeric|min:1',
             'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
+
+        $response = self::storeRemission($request);
+
+        return $response ? redirect()->route('remission.index')->with('success','La remisión se creo con éxito')
+                        : redirect()->back()->with('error','Sucedió un error, no se pudo crear la remisión');
 
         
     }
@@ -51,7 +57,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function show(Remission $remission)
+    public function show($id)
     {
         //
     }
@@ -62,7 +68,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function edit(Remission $remission)
+    public function edit($id)
     {
         //
     }
@@ -74,7 +80,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Remission $remission)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -85,7 +91,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Remission $remission)
+    public function destroy($id)
     {
         //
     }

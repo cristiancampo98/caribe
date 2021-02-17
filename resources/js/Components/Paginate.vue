@@ -64,7 +64,8 @@
 		},
 		data() {
 			return {
-				active: false
+				active: false,
+				loading: null,
 			}
 		},
 		computed: {
@@ -77,25 +78,48 @@
 				var total_url = url + params;
 				axios.get(total_url)
 				.then(res => {
+					this.startLoading();
 					this.$emit('updatingData', res.data)
 				})
+				.finally( () => {
+					this.endLoading();
+				});
 			},
 			prevPageUrl() {
 				axios.get(this.package.prev_page_url+'&lenght='+this.package.per_page)
 				.then(res => {
+					this.startLoading();
 					this.$emit('updatingData', res.data)
 				})
+				.finally( () => {
+					this.endLoading();
+				});
 			},
 			nextPageUrl() {
 				axios.get(this.package.next_page_url+'&lenght='+this.package.per_page)
 				.then(res => {
+					this.startLoading();
 					this.$emit('updatingData', res.data)
 				})
+				.finally( () => {
+					this.endLoading();
+				});
 			},
 			classes(page){
 				return page == this.package.current_page
 				? 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50'
 				: 'relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50'
+			},
+			startLoading(){
+				
+				this.loading = this.$vs.loading({
+            		type: 'circles'
+            	});
+            	this.loading.text = "Procesando...";
+
+			},
+			endLoading(){
+				this.loading.close();
 			}
 		}
 	}

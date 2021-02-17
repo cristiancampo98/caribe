@@ -43,7 +43,7 @@
                         <template #description>{{product.created_at}}</template> 
                     </item-list-component>
                     <item-list-download-component
-                    v-if="multimedia.lenght"
+                    v-if="multimedia.length"
                     title="Fotos productos"
                     :files="multimedia"
                     @updatingNotifications="updateNotifications"
@@ -76,7 +76,7 @@
     	data(){
             return {
                 status:{},
-                multimedia: null,
+                multimedia: [],
             }
         },
         mounted(){

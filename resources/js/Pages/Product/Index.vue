@@ -6,13 +6,13 @@
             </h2>
         </template>
         <div class="py-12">
-           <jet-nav-link :href="route('product.create')" class="m-8">
+           <jet-nav-link :href="route('product.create')">
                 <jet-button type="button">
                     Crear producto
                 </jet-button>
             </jet-nav-link>
            
-            <div v-if="options.length">
+            <div v-if="options.length" class="mt-8">
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-3">
                         <label for="lenght">Paginar: </label>

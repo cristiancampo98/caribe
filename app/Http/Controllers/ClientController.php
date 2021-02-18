@@ -59,10 +59,7 @@ class ClientController extends Controller
     public function show($id)
     {
         return inertia('Client/Show', [
-            'client' => self::getClient($id),
-            'photo_document' => self::getMultimediaByParams('users', 'user_id', $id, 'photo_document'),
-            'rut_document' => self::getMultimediaByParams('users', 'user_id', $id, 'rut_document'),
-            'logo' => self::getMultimediaByParams('users', 'user_id', $id, 'logo')
+            'client' => self::getClientWithRelationships($id)
         ]);
     }
 
@@ -94,7 +91,9 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         $client = self::updateClient($id);
-        return redirect()->route('client.index');
+
+        return $client ? redirect()->route('client.index')->with('success','El cliente se actualizó con éxito')
+                : redirect()->back()->with('error','Sucedió un error,el cliente no se actualizó');
     }
 
     /**

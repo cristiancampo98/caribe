@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Traits\OrderTrait;
+use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     use OrderTrait;
+    use ProductTrait;
     /**
      * Display a listing of the resource.
      *
@@ -16,15 +17,6 @@ class OrderController extends Controller
      */
     public function index()
     {
-    	if (request()->session()->has('info')) {
-    		return inertia('Order/Index')->with('info', request()->session()->get('info'));
-    	}
-        if (request()->session()->has('success')) {
-            return inertia('Order/Index')->with('success', request()->session()->get('success'));
-        }
-         if (request()->session()->has('error')) {
-            return inertia('Order/Index')->with('error', request()->session()->get('error'));
-        }
         return inertia('Order/Index');
     }
 
@@ -35,9 +27,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-
         return inertia('Order/Create', [
-            'products' => Product::all(),
+            'products' => self::getAllProductsToOrder(),
         ]);
     }
 
@@ -49,16 +40,21 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        
         $this->validate($request, [
             'user_id' => 'required|numeric|min:1' ,
             'shipping_address' => 'required|string|max:100' ,
             'city' => 'required|string|max:100' ,
-            'order_details' => 'required|array|min:1'
+            'order_details' => 'required|array|min:1',
+            'order_id' => 'nullable|numeric',
+            'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number',
+            'consignment.pse_url' => 'nullable|url',
+            'consignment.pse_number' => 'nullable|numeric'
         ]);
         $response = self::storeOrder($request->all());
 
-        return redirect()->route('order.index')
-            ->with('info','El proceso se realizo con exito');
+        return $response ? redirect()->route('order.index')->with('success','El pedido se guardó con éxito')
+                : redirect()->back()->with('error','Sucedió un error, no se pudo crear el pedido');
     }
 
     /**
@@ -88,7 +84,7 @@ class OrderController extends Controller
     	}
     	return inertia('Order/Edit', [
             'order' => $order,
-            'products' => Product::all()
+            'products' => self::getAllProductsToOrder()
         ]);
 
        

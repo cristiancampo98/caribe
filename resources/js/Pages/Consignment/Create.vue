@@ -42,12 +42,13 @@
 							      </div>
 							    </template>
 							</v-select>
-			                <jet-input-error :message="form.errors.user_id" class="mt-2" />
+			                <jet-input-error :message="form.errors.order_id" class="mt-2" />
 			            </div>
 			           	<!--  consignment_number-->
 			            <div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="consignment_number" value="Consignación" />
 			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment_number" />
+			            	 <jet-input-error :message="form.errors.consignment_number" class="mt-2" />
 			            </div>
 			            <!-- imagen -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -56,16 +57,19 @@
 			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
 			            	</label>
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
+			            	<jet-input-error :message="form.errors.imagen" class="mt-2" />
 			            </div>
 			            <!-- pse_urlpse_url -->
 			            <div class="col-span-6 lg:col-span-3">
 			            	<jet-label for="pse_url" value="Link PSE" />
 			            	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.pse_url" />
+			            	<jet-input-error :message="form.errors.pse_url" class="mt-2" />
 			            </div>
 			            <!-- pse_number -->
 			            <div class="col-span-6 lg:col-span-3">
 			            	<jet-label for="pse_number" value="PSE # radicado" />
 			            	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.pse_number" />
+			            	<jet-input-error :message="form.errors.pse_number" class="mt-2" />
 			            </div>
 			        </template>
 			        <template #actions>

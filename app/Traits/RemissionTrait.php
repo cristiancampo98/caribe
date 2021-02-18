@@ -33,5 +33,17 @@ trait RemissionTrait
 		return $remission;
 	}
 
+	public static function getPaginateAllRemissionsTrait()
+	{
+		return Remission::with(
+							'orderDetail.order',
+							'orderDetail.product',
+							'creator',
+							'carrier.client',
+							'carrier.vehicle'
+						)
+						->paginate(request()->get('lenght'));
+	}
+
     
 }

@@ -16,6 +16,7 @@ use App\Http\Controllers\PermissionRoleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductStorageController;
 use App\Http\Controllers\RemissionController;
+use App\Http\Controllers\RemissionStorageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\SecurityController;
@@ -87,8 +88,20 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [ProductStorageController::class, 'getPaginateAllProducts']
     );
 
+    Route::get('getPaginateAllRemissions/remission',
+        [RemissionStorageController::class, 'getPaginateAllRemissions']
+    );
+
     Route::get('getMultimediaFilesByProduct/{id}/products',
         [ProductStorageController::class, 'getMultimediaFilesByProduct']
+    );
+
+    Route::get('getMultimediaFilesByClient/{id}/client',
+        [ClientStorageController::class, 'getMultimediaFilesByClient']
+    );
+
+    Route::get('getMultimediaFilesByConsignment/{id}/consignment',
+        [ConsignmentStorageController::class, 'getMultimediaFilesByConsignment']
     );
 
     Route::get('getPaginateAllUsers/users',

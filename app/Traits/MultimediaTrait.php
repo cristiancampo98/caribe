@@ -78,4 +78,13 @@ trait MultimediaTrait
 		Storage::disk('public')->delete($file->path);
 		return $file->delete();
 	}
+
+	public static function destroyMasiveMultimediaByParams($data, $foreign_key)
+	{
+		$multimedia = self::getMultimediaByWhereIn($data, $foreign_key);
+		foreach ($multimedia as $key => $value) {
+			Storage::disk('public')->delete($value->path);
+			$value->delete();
+		}
+	}
 }

@@ -62,8 +62,21 @@ trait ConsignmentTrait
 
 	public static function updateConsignment($id)
 	{
-		return Consignment::find($id)
-		->update(request()->all());
+		$consignment =  Consignment::find($id);
+
+		if (request()->hasFile('imagen')) {
+			self::destroyMasiveMultimediaByParams([$id],'consignment_id');
+			self::storeSingleFileMultimedia(
+				request()->file('imagen'), 
+				'consignments', 
+				'consignment', 
+				'consignment_file', 
+				'consignment_id', 
+				$id
+			);
+		}
+
+		return $consignment->update(request()->all());
 	}
 
 	public static function getMultimediaConsignmentsByOrderTrait()
@@ -83,6 +96,29 @@ trait ConsignmentTrait
 			return true;
 		}
 		return false;
+	}
+
+	public static function destroyConsignmentTrait($id)
+	{
+		self::destroyMasiveMultimediaByParams([$id],'consignment_id');
+		return Consignment::find($id)->delete();
+	}
+
+	public static function getMultimediaFilesByConsignmentTrait($id)
+	{
+		return self::getMultimediaByParams(
+			'consignment',
+			'consignment_id', 
+			$id, 
+			'consignment_file'
+		);
+	}
+
+	public function getConsignmentByIdWithRelationship($id)
+	{
+		return Consignment::where('id', $id)
+				->with('order.client')
+				->first();
 	}
 	
 }

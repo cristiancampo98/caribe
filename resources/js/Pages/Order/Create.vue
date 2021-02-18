@@ -18,6 +18,9 @@
 			        </template>
 
 			        <template #form>
+			        	<ul class="col-span-6 bg-red-500 text-white py-2 px-8" v-if="Object.keys(form.errors).length">
+			        		<li type="disc" v-for="error in form.errors">{{error}}</li>
+			        	</ul>
 
 			            <!-- user id or cliente -->
 			            <div class="col-span-6 lg:col-span-3" v-if="$page.props.isAdmin">
@@ -325,9 +328,6 @@
             	}else{
             		this.error_product = true
             	}
-
-            	
-            	console.log(this.form.order_details)
             },
             deleteToCar(index){
             	//Elimina el producto de la tabla

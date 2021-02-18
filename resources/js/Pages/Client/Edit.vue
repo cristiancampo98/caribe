@@ -15,6 +15,13 @@
 
 			        <template #description>
 			            Crea un cliente con la información requerida.
+
+			            <div class="mt-8">
+			            	<ul>
+			            		<li></li>
+			            	</ul>
+			            	
+			            </div>
 			        </template>
 
 			        <template #form v-if="showFormEdit">
@@ -134,12 +141,17 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
+
+			            <div class="col-span-6">
+			            	<p class="text-sm text-blue-500">Nota: En los siguientes tres recuadros podrá ingresar varios datos en cada casilla con la única condición que al final de cada dato exista una coma. Ejemplo: Placa1,Placa2, ... / Email1,Email2, ...</p>
+			            </div>
 			            
 			            <!-- others_email -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="others_email" value="Otros correos" />
 			                <textarea id="others_email" class="mt-1 block w-full rounded-md" v-model="form.others_email"></textarea>
 			                <jet-input-error :message="form.errors.others_email" class="mt-2" />
+
 			            </div>
 			            <!-- phones -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -152,7 +164,6 @@
 			                <jet-label for="vehicles" value="Vehículos" />
 			                <textarea id="vehicles"  class="uppercase mt-1 block w-full rounded-md" v-model="form.vehicles"></textarea>
 			                <jet-input-error :message="form.errors.vehicles" class="mt-2" />
-			                <p class="text-sm text-blue-500">Nota: Ingrese las placas de los vehículos separados por comas. Ejemplo: Placa1,Placa2, ...</p>
 			            </div>
 			            <!-- photo document -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -229,6 +240,15 @@
     			type: Array
     		},
     		types_identification: {
+    			type: Array
+    		},
+    		photo_document: {
+    			type: Array
+    		},
+    		rut_document: {
+    			type: Array
+    		},
+    		logo: {
     			type: Array
     		}
     	},

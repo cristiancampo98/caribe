@@ -18,5 +18,10 @@ class ConsignmentStorageController extends Controller
 	{
 		return self::getMultimediaConsignmentsByOrderTrait();
 	}
+
+	public function getMultimediaFilesByConsignment($id)
+	{
+		return self::getMultimediaFilesByConsignmentTrait($id);
+	}
     
 }

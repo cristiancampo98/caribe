@@ -12,4 +12,14 @@ class VehicleUser extends Model
     protected $table = 'vehicle_users';
 
     protected $fillable = ['user_id','vehicle_id','carrier'];
+
+    public function vehicle()
+    {
+    	return $this->belongsTo(Vehicle::class, 'vehicle_id');
+    }
+
+    public function client()
+    {
+    	return $this->belongsTo(User::class, 'user_id');
+    }
 }

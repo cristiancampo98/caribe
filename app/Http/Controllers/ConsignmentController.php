@@ -38,23 +38,32 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'order_id' => 'required|numeric'
-        ]);
+        if ($request->wantsJson()) {
+            $this->validate($request, [
+            'order_id' => 'required|numeric',
+            'consignment_number' => 'required|unique:consignments,consignment_number',
+            ]);
+        }else {
+            $this->validate($request, [
+                'order_id' => 'required|numeric',
+                'consignment_number' => 'required|unique:consignments,consignment_number',
+                'pse_url' => 'nullable|url',
+                'pse_number' => 'nullable|numeric'
+            ]);
+        }
 
         $data = self::storeConsignment();
 
-
         if ($data) {
-            if ($request->ajax()) {
+            if ($request->wantsJson()) {
                 return response()->json([
                     'type' => 'success',
                     'text' => 'Se creo la consignación satisfactoriamente'
                 ],200);
             }
-            return redirect()->back()->with('success','Se creo la consignación satisfactoriamente');
+            return redirect()->route('consignment.index')->with('success','Se creo la consignación satisfactoriamente');
         }
-        if ($request->ajax()) {
+        if ($request->wantsJson()) {
             return response()->json([
                 'type' => 'error',
                 'text' => 'Sucedió un error, no se pudo crear la consignación'
@@ -72,7 +81,7 @@ class ConsignmentController extends Controller
     public function show($id)
     {
         return inertia('Consignment/Show', [
-            'consignment' => self::findConsignment($id)
+            'consignment' => self::getConsignmentByIdWithRelationship($id)
         ]);
     }
 
@@ -112,6 +121,12 @@ class ConsignmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $response = self::destroyConsignmentTrait($id);
+
+        if (request()->wantsJson()) {
+            $data = $response ? ['type'=>'success','text'=>'Se eliminó la consignación y los archivos con éxito']
+                    : ['type'=>'error','text'=>'Sucedió un error,no se eliminó la consignación y los archivos'];
+            return response()->json($data, 200);
+        }
     }
 }

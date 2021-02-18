@@ -62,6 +62,7 @@ trait OrderTrait
                 'created_at' => $date,
                 'updated_at' => $date
             ]);
+
             if (self::validateWhenConsignmentIsFilled($data['consignment'])) {
             	$consignment_id = DB::table('consignments')->insertGetId([
             		'consignment_number' => $data['consignment']['consignment_number'],
@@ -95,6 +96,8 @@ trait OrderTrait
                     'updated_at' => $date
                 ]);
             }
+
+            return $order_id;
         });
 	}
 

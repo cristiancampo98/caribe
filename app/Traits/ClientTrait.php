@@ -24,6 +24,13 @@ trait ClientTrait
 		return User::find($id);
 	}
 
+	public static function getClientWithRelationships($id)
+	{
+		return User::where('id', $id)
+				->with('orders','vehicles')
+				->first();
+	}
+
 	public static function storeClient()
 	{
 		$user = (new User)->fill(request()->all());
@@ -47,7 +54,7 @@ trait ClientTrait
 				self::storeVehicleFromClient(request()->get('vehicles'),$id);
 			}
 
-			if (request()->file('photo_document')) {
+			if (request()->hasFile('photo_document')) {
 				self::storeSingleFileMultimedia(
 					request()->file('photo_document'), 
 					'documents', 
@@ -58,7 +65,7 @@ trait ClientTrait
 				);
 			}
 
-			if (request()->file('rut_document')) {
+			if (request()->hasFile('rut_document')) {
 
 				self::storeSingleFileMultimedia(
 					request()->file('rut_document'), 
@@ -70,7 +77,7 @@ trait ClientTrait
 				);
 			}
 
-			if (request()->file('logo')) {
+			if (request()->hasFile('logo')) {
 
 				self::storeSingleFileMultimedia(
 					request()->file('logo'), 
@@ -132,8 +139,7 @@ trait ClientTrait
 		return response()->json([
 			'clients' => [],
 			'type' => 'error',
-			'text' => 'No se encontró el cliente'
-			
+			'text' => 'No se encontró el cliente'		
 		],200);
     }
 }

@@ -17,4 +17,21 @@ class Remission extends Model
     	'vehicle_users_id',
     	'created_by'
     ];
+
+    public function orderDetail()
+    {
+    	return $this->belongsTo(OrderDetail::class, 'order_details_id');
+    }
+
+    public function creator()
+    {
+    	return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function carrier()
+    {
+    	return $this->belongsTo(VehicleUser::class, 'vehicle_users_id');
+    }
+
+
 }

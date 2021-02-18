@@ -79,11 +79,11 @@
                                     :href="route(option.route, {id: item.id})" :as="option.as" method="option.method">
                                         {{option.name}}
                                     </jet-dropdown-link>
-                                    <!-- <button type="button"
+                                    <button type="button"
                                     class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    @click="updateStatusUser(item)">
-                                        {{item.users.status == 'Activo' ? 'Inactivar' : 'Activar'}}
-                                    </button> -->
+                                    @click="confirmDestroy(item, key)">
+                                        Eliminar
+                                    </button>
 
                                 </template>
                             </jet-dropdown>
@@ -94,6 +94,31 @@
             <paginate-component 
             :package="package"
             @updatingData="updateData"></paginate-component>
+
+            <vs-dialog width="550px" not-center v-model="modalDestroy">
+                <template #header>
+                  <h4 class="not-margin">
+                    Confirma la <b>eliminación</b>
+                  </h4>
+                </template>
+
+                <div class="con-content">
+                  <p>
+                    ¿Esta seguro que desea eliminar esta consignación? <b>Consecutivo #{{consecutive}}</b>
+                  </p>
+                </div>
+
+                <template #footer>
+                  <div class="con-footer">
+                    <vs-button @click="destroyConsignment()" transparent>
+                      Si, confirmar
+                    </vs-button>
+                    <vs-button @click="modalDestroy=false" dark transparent>
+                      Cancelar
+                    </vs-button>
+                  </div>
+                </template>
+            </vs-dialog>
         </div>
     </admin-layout>
 </template>
@@ -141,7 +166,10 @@
                 actions: [
                     {name: 'Editar', route:'consignment.edit'},
                     {name: 'Ver', route:'consignment.show'},
-                ]
+                ],
+                consecutive: null,
+                modalDestroy: false,
+                key: null
             }
         },
         created(){
@@ -171,6 +199,37 @@
             updateData(data){
                 this.options = data.data;
                 this.package = data;
+            },
+            confirmDestroy(item, key){
+                this.consecutive = item.id;
+                this.modalDestroy = true;
+                this.key = key
+            },
+            destroyConsignment(){
+                this.startLoading();
+                axios.delete(`/consignment/${this.consecutive}`)
+                .then( res => {
+                    this.options.splice(this.key, 1);
+                    this.modalDestroy = false;
+                    this.status = {
+                        type: res.data.type,
+                        text: res.data.text,
+                    }
+                })
+                .finally( () => {
+                    this.endLoading();
+                    this.consecutive = null;
+                    this.key = null;
+                });
+            },
+            startLoading(){
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
             }
         }
     }

@@ -107,5 +107,11 @@ trait ProductTrait
 			'text' => $text
 		], 200);
 	}
+
+	public static function getAllProductsToOrder()
+	{
+		return Product::where('status',1)
+				->get();
+	}
     
 }

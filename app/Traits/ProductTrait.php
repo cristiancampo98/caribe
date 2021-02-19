@@ -97,12 +97,14 @@ trait ProductTrait
 		if ($product->save()) {
 
 			return response()->json([
+				'status' => $product->status,
 				'type' => 'success',
 				'text' => $text
 			], 200);
 		}
 		
 		return response()->json([
+			'status' => $product->status,
 			'type' => 'success',
 			'text' => $text
 		], 200);

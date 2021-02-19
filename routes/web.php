@@ -100,6 +100,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [ClientStorageController::class, 'getMultimediaFilesByClient']
     );
 
+    Route::get('getMultimediaFilesByVehicle/{id}/vehicle',
+        [VehicleStorageController::class, 'getMultimediaFilesByVehicle']
+    );
+
     Route::get('getMultimediaFilesByConsignment/{id}/consignment',
         [ConsignmentStorageController::class, 'getMultimediaFilesByConsignment']
     );

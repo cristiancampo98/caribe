@@ -449,7 +449,6 @@
 		    	this.uploadedImagen = true;
 		    },
 		    total_delivered(remissions){
-		    	console.log(remissions)
 		    	var res = 0;
         		if (remissions.length) {
         			remissions.map(item => {

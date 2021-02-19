@@ -6,25 +6,25 @@
             </h2>
         </template>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <jet-nav-link :href="route('vehicle.create')" class="my-8">
+            
+                <jet-nav-link :href="route('vehicle.create')">
                     <jet-button type="button">
                         Crear vehículo
                     </jet-button>
                 </jet-nav-link>
-                <div v-if="Object.keys(vehicles).length">
+                <div class="mt-8" v-if="Object.keys(options).length">
                     <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-3">
-                        <label for="lenght">Paginar: </label>
-                        <v-select
-                        id="lenght"
-                        class="w-20 bg-white"
-                        v-model="lenght"
-                        :options="pages"
-                        @input="getPaginateAllVehicles"
-                        :clearable="false"></v-select>
+                        <div class="col-span-3">
+                            <label for="lenght">Paginar: </label>
+                            <v-select
+                            id="lenght"
+                            class="w-20 bg-white"
+                            v-model="lenght"
+                            :options="pages"
+                            @input="getPaginate"
+                            :clearable="false"></v-select>
+                        </div>
                     </div>
-                </div>
                     <table-responsive-component>
                         <template #title>
                             <tr>
@@ -35,7 +35,7 @@
                             </tr>
                         </template>
                         <template #content>
-                            <tr v-for="(item, key) in vehicles" :key="key">
+                            <tr v-for="(item, key) in options" :key="key">
                                 <td-responsive-component>{{item.id}}</td-responsive-component>
                                 <td-responsive-component>{{item.license_plate}}</td-responsive-component>
                                 <td-responsive-component>
@@ -66,9 +66,9 @@
                                                 Opciones
                                             </div>
 
-                                            <jet-dropdown-link v-for="(option,key) in options"
+                                            <jet-dropdown-link v-for="(option,key) in actions"
                                             :key="key"
-                                            :href="route(option.route, {vehicle: item.id})" :as="option.as" method="option.method">
+                                            :href="route(option.route, {id: item.id})" :as="option.as" method="option.method">
                                                 {{option.name}}
                                             </jet-dropdown-link>
 
@@ -79,9 +79,12 @@
                             </tr>
                         </template>
                     </table-responsive-component>
+                    <paginate-component 
+                    :package="package"
+                    @updatingData="updateData"></paginate-component>
                 </div>
                 <div v-else>No hay datos</div>
-            </div>
+           
         </div>
     </admin-layout>
 </template>
@@ -116,39 +119,54 @@
 
         },
         mounted(){
-            this.getPaginateAllVehicles();
+            this.getPaginate();
         },
         data() {
             return {
+                loading: false,
             	titles: ['#','Placa','Marca','Estado'],
                 lenght: 5,
                 page: this.lenght,
                 pages:[
                     5,10,20
                 ],
-            	options: [
+            	actions: [
                     {name: 'Editar', route:'vehicle.edit'},
                     {name: 'Ver', route:'vehicle.show'},
                     {name: 'Actualizar estado', route:'editStatus.vehicle'},
                 ],
-                vehicles: []
+                options: []
             }
         },
         methods: {
-            getPaginateAllVehicles(){
+            getPaginate(){
+                this.startLoading();
                 var url = '/getPaginateAllVehicles/vehicles';
                 var param = '?lenght='+this.lenght;
                 var total_url = url + param;
                 axios.get(total_url)
                 .then(res => {
-                    this.vehicles = res.data.data;
+                    this.options = res.data.data;
                     this.package = res.data
                 })
                 .finally( () => {
-                    this.loading = true
+                    this.endLoading();
                 });
-
             },
+            updateData(data){
+                this.options = data.data;
+                this.package = data;
+            },
+            startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
+            }
         }
     }
 </script>

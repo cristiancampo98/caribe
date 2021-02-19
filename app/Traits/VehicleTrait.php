@@ -98,5 +98,12 @@ trait VehicleTrait
         return Vehicle::paginate(request()->get('lenght'));
     }
 
+    public static function getVehicleWithRelationship($id)
+    {
+    	return Vehicle::where('id', $id)
+    			->with('users')
+    			->first();
+    }
+
     
 }

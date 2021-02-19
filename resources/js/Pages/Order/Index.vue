@@ -6,12 +6,12 @@
             </h2>
         </template>
         <div class="py-12">
-           <jet-nav-link :href="route('order.create')" class="m-8">
+           <jet-nav-link :href="route('order.create')">
                 <jet-button type="button">
                     Crear pedido
                 </jet-button>
             </jet-nav-link>
-            <div class="grid grid-cols-6 gap-6" v-if="options">
+            <div class="mt-8" v-if="options.length">
                 <div class="col-span-3">
                     <label for="lenght">Paginar: </label>
                     <v-select
@@ -19,98 +19,99 @@
                     class="w-20 bg-white"
                     v-model="lenght"
                     :options="pages"
-                    @input="getPaginateOrders"
+                    @input="getPaginate"
                     :clearable="false"></v-select>
                 </div>
-            </div>
-            <table-responsive-component v-if="loading">
-                <template #title>
-                    <tr>
-                        <th-responsive-component 
-                        v-for="(title, key) in titles"
-                        :key="key">{{title}}</th-responsive-component>
-                    </tr>
-                </template>
-                <template #content>
-                    <tr v-for="(item, key) in options" :key="key">
-                        <td-responsive-component>
-                            {{item.id}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            {{item.client.name}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            {{item.client.email}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            {{item.status}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            {{item.note}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            {{item.creator.name}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            {{item.created_at}}
-                        </td-responsive-component>
-                        <td-responsive-component>
-                            <jet-dropdown align="right" width="48">
-                                <template #trigger>
-                                    <span  class="inline-flex rounded-md">
-                                        <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
-                                            <div class="bg-white border border-transparent hover:border-black shadow-sm p-2 rounded-lg">
-                                                <img src="/img/menu.svg">
-                                            </div>
+                <table-responsive-component>
+                    <template #title>
+                        <tr>
+                            <th-responsive-component 
+                            v-for="(title, key) in titles"
+                            :key="key">{{title}}</th-responsive-component>
+                        </tr>
+                    </template>
+                    <template #content>
+                        <tr v-for="(item, key) in options" :key="key">
+                            <td-responsive-component>
+                                {{item.id}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.client.name}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.client.email}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.status}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.note}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.creator.name}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.created_at}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                <jet-dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <span  class="inline-flex rounded-md">
+                                            <button type="button" class="inline-flex items-center  text-gray-900 hover:text-blue-400 focus:outline-none transition ease-in-out duration-150">
+                                                <div class="bg-white border border-transparent hover:border-black shadow-sm p-2 rounded-lg">
+                                                    <img src="/img/menu.svg">
+                                                </div>
+                                            </button>
+                                        </span>
+                                    </template>
+
+                                    <template #content>
+                                        <!-- Account Management -->
+                                        <div class="block px-4 py-2 text-xs text-gray-400">
+                                            Opciones
+                                        </div>
+
+                                        <jet-dropdown-link v-for="(option,key) in actions"
+                                        :key="key"
+                                        :href="route(option.route, {order: item.id})" :as="option.as" method="option.method">
+                                            {{option.name}}
+                                        </jet-dropdown-link>
+                                        <button type="button"
+                                        v-if="item.status != 'cancelado' && $page.props.isAdmin"
+                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        @click="updateStatusOrder(item)">
+                                            {{item.status == 'activo' ? 'Finalizar' : 'Activar'}}
                                         </button>
-                                    </span>
-                                </template>
+                                        <button type="button"
+                                        v-if="!item.consignments.length && item.status != 'cancelado'"
+                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        @click="openModalDestroy(item)">
+                                            Cancelar
+                                        </button>
+                                        <button type="button"
+                                        v-if="item.status == 'activo' && $page.props.isAdmin"
+                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        @click="openModalConsignment(item)">
+                                            Agregar Consignación
+                                        </button>
+                                        <button type="button"
+                                        v-if="$page.props.isAdmin"
+                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        @click="sendEmail(item.id)">
+                                            Notificar
+                                        </button>
 
-                                <template #content>
-                                    <!-- Account Management -->
-                                    <div class="block px-4 py-2 text-xs text-gray-400">
-                                        Opciones
-                                    </div>
-
-                                    <jet-dropdown-link v-for="(option,key) in actions"
-                                    :key="key"
-                                    :href="route(option.route, {order: item.id})" :as="option.as" method="option.method">
-                                        {{option.name}}
-                                    </jet-dropdown-link>
-                                    <button type="button"
-                                    v-if="item.status != 'cancelado' && $page.props.isAdmin"
-                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    @click="updateStatusOrder(item)">
-                                        {{item.status == 'activo' ? 'Finalizar' : 'Activar'}}
-                                    </button>
-                                    <button type="button"
-                                    v-if="!item.consignments.length && item.status != 'cancelado'"
-                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    @click="openModalDestroy(item)">
-                                        Cancelar
-                                    </button>
-                                    <button type="button"
-                                    v-if="item.status == 'activo' && $page.props.isAdmin"
-                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    @click="openModalConsignment(item)">
-                                        Agregar Consignación
-                                    </button>
-                                    <button type="button"
-                                    v-if="$page.props.isAdmin"
-                                    class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                    @click="sendEmail(item.id)">
-                                        Notificar
-                                    </button>
-
-                                </template>
-                            </jet-dropdown>
-                        </td-responsive-component>
-                    </tr>
-                </template>
-            </table-responsive-component>
-            <paginate-component 
-            :package="package"
-            @updatingData="updateData"></paginate-component>
+                                    </template>
+                                </jet-dropdown>
+                            </td-responsive-component>
+                        </tr>
+                    </template>
+                </table-responsive-component>
+                <paginate-component 
+                :package="package"
+                @updatingData="updateData"></paginate-component>
+            </div>
+            
             <!-- modal delete -->
             <vs-dialog width="300px" not-center v-model="modal">
                 <template #header>
@@ -188,7 +189,6 @@
             vSelect
             
         },
-        props:['info','success','error'],
         data () {
             return {
                 status: {},
@@ -216,19 +216,11 @@
             }
         },
         created(){
-            this.getPaginateOrders();
-            if (this.info) {
-                this.status = {type: 'info', text: this.info};
-            }
-            if (this.success) {
-                this.status = {type: 'success', text: this.success};
-            }
-            if (this.error) {
-                this.status = {type: 'error', text: this.error};
-            }
+            this.getPaginate();
         },
         methods: {
-            getPaginateOrders(){
+            getPaginate(){
+                 this.startLoading();
                 var url = '/getAllOrders/order';
                 var param = '?lenght='+this.lenght;
                 var total_url = url + param;
@@ -237,7 +229,7 @@
                     this.options = res.data.data;
                     this.package = res.data
                 })
-                .finally( () => this.loading = true);
+                .finally( () => this.endLoading());
 
             },
             updateData(data){
@@ -261,6 +253,7 @@
                 }
             },
             destroyOrder(item){
+                this.startLoading();
                 axios.put('cancel/'+this.form.id+'/order',{
                     delete_note: this.form.note
                 })
@@ -273,34 +266,43 @@
                         }
                     })
                 })
+                .finally( () => this.endLoading())
                 .catch( error => {
                     //error.response.data.errors
                     this.status = {type: 'error' ,text: 'Error, escribe el motivo para cancelar.'}  
                 });
             },
             updateStatusOrder(item){
+                this.startLoading();
                 axios.put('updateStatusOrder/'+item.id+'/order')
                 .then( res => {
                     if (res.data.order) {
                         item.status = res.data.order.status;
                     }
                     this.status = {type: res.data.type ,text: res.data.text}
-                });
+                })
+                .finally( () => this.endLoading() );
             },
             sendEmail(id){
-                const loading = this.$vs.loading({
-                    type: 'circles',
-                    text: 'Procesando...'
-                });
+               this.startLoading();
                 axios.get('sendEmailUpdate/'+id+'/order')
                 .then( res => {
                     this.status = {type: res.data.type, text: res.data.text}
-                    loading.text = '¡Hecho!';
+                    this.loading.text = '¡Hecho!';
                 }).finally( () => {
-                    loading.close();
+                    this.endLoading();
                 });
+            },
+            startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
             }
-
         }
     }
 </script>

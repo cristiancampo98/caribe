@@ -103,7 +103,7 @@ class UserController extends Controller
                 $user->id
             );
         }
-        return redirect()->back();
+        return redirect()->route('user.index')->with('info','El proceso se realizó con éxito');
     }
 
     /**
@@ -121,15 +121,35 @@ class UserController extends Controller
     {
 
         $user = User::find($id);
-        if ($user->status) {
-            $user->status = 0;
-        }else{
-            $user->status = 1;
-        }
-        $user->save();
 
-        return response()->json([
-            'user' => $user,
-        ], 200);
+        if ($user->status) {
+
+            $user->status = 0;
+            $text = 'El cliente se inactivo con éxito';
+        }else{
+
+            $user->status = 1;
+            $text = 'El cliente se activo con éxito';
+        }
+
+        if ($user->save()) {
+            $type = 'success';
+        }else {
+
+            $type = 'error';
+            $text = 'Sucedió un error, el cliente no se actualizó';
+        }
+
+        if (request()->wantsJson()) {
+
+            return  response()->json([
+                'user' => $user,
+                'type' => $type,
+                'text' => $text
+            ],200);
+        }else {
+
+            return redirect()->back()->with($type, $text);
+        }
     }
 }

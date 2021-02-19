@@ -21,7 +21,7 @@
                         class="w-20 bg-white"
                         v-model="lenght"
                         :options="pages"
-                        @input="getPaginateOrders"
+                        @input="getPaginate"
                         :clearable="false"></v-select>
                     </div>
                 </div>
@@ -53,6 +53,9 @@
                             <td-responsive-component>
                                 {{item.units_measure.name}}
                             </td-responsive-component>
+                             <td-responsive-component>
+                                <span :class="getClassStatus(item.status)">{{item.status ? 'Activo' : 'Inactivo'}}</span>
+                            </td-responsive-component>
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
@@ -77,7 +80,7 @@
                                         </jet-dropdown-link>
                                         <button type="button"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        @click="updaStatus(item.id)">
+                                        @click="updateStatus(item)">
                                             {{item.status ? 'Inactivar' : 'Activar'}}
                                         </button>
                                     </template>
@@ -121,7 +124,7 @@
 
         },
         created() {
-            this.getPaginateOrders();
+            this.getPaginate();
         },
         data () {
             return {
@@ -132,7 +135,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Nombre','Descripción','Referencia','Precio','Medida','Opciones'],
+                titles: ['#','Nombre','Descripción','Referencia','Precio','Medida','Estado','Opciones'],
                 options: [],
                 package: [],
                 actions: [
@@ -142,7 +145,7 @@
             }
         },
         methods: {
-            getPaginateOrders(){
+            getPaginate(){
                 var url = '/getPaginateAllProducts/products',
                     param = '?lenght='+this.lenght,
                     total_url = url + param;
@@ -161,11 +164,12 @@
                 this.options = data.data;
                 this.package = data;
             },
-            updaStatus(id){
+            updateStatus(item){
                 this.startLoading();
 
-                axios.put(`updateStatus/${id}/product`)
+                axios.put(`updateStatus/${item.id}/product`)
                 .then( res => {
+                    item.status = res.data.status;
                     this.status = {
                         type : res.data.type,
                         text : res.data.text,
@@ -174,6 +178,11 @@
                 .finally( () => {
                     this.endLoading();
                 });
+            },
+            getClassStatus(status){
+                return status ? 'text-white bg-green-500 p-1 rounded-md'
+                    : 'text-white bg-red-500 p-1 rounded-md';
+
             },
             startLoading(){
                 

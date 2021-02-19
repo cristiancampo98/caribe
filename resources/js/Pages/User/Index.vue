@@ -1,17 +1,18 @@
 <template>
-    <admin-layout>
+    <admin-layout :status="status">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Usuarios
             </h2>
         </template>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <jet-nav-link :href="route('user.create')" class="my-8">
-                    <jet-button type="button">
-                        Crear usuario
-                    </jet-button>
-                </jet-nav-link>
+            <jet-nav-link :href="route('user.create')">
+                <jet-button type="button">
+                    Crear usuario
+                </jet-button>
+            </jet-nav-link>
+            <div class="mt-8" v-if="users.length">
+
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-3">
                         <label for="lenght">Paginar: </label>
@@ -20,11 +21,11 @@
                         class="w-20 bg-white"
                         v-model="lenght"
                         :options="pages"
-                        @input="getPaginateAllUsers"
+                        @input="getPaginate"
                         :clearable="false"></v-select>
                     </div>
                 </div>
-                    <table-responsive-component v-if="showTable">
+                <table-responsive-component v-if="showTable">
                     <template #title>
                         <tr>
                             <th-responsive-component 
@@ -85,7 +86,7 @@
                                             Opciones
                                         </div>
 
-                                        <jet-dropdown-link v-for="(option,key) in options"
+                                        <jet-dropdown-link v-for="(option,key) in actions"
                                         :key="key"
                                         :href="route(option.route, {user: item.id})" :as="option.as" method="option.method">
                                             {{option.name}}
@@ -102,6 +103,9 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <paginate-component 
+                :package="package"
+                @updatingData="updateData"></paginate-component>
             </div>
         </div>
     </admin-layout>
@@ -137,18 +141,19 @@
 
         },
         mounted(){
-            this.getPaginateAllUsers();
+            this.getPaginate();
         },
         data() {
             return {
+                status: {},
                 titles: ['#','Nombre','No. Documento','Dirección','Ciudad','Correo','Roles','Estado'],
-                showTable: false,
+                loading: false,
                 lenght: 5,
                 page: this.lenght,
                 pages:[
                     5,10,20
                 ],
-                options: [
+                actions: [
                     {name: 'Editar', route:'user.edit'},
                     {name: 'Ver', route:'user.show'},
                 ],
@@ -161,65 +166,91 @@
             }
         },
         methods: {
-            getPaginateAllUsers(){
+            getPaginate(){
+                this.showTable = false;
+                this.startLoading();
                 var url = '/getPaginateAllUsers/users';
                 var param = '?lenght='+this.lenght;
                 var total_url = url + param;
                 axios.get(total_url)
                 .then(res => {
-                    this.users = res.data.users.data;
+                    this.users = res.data.data;
                     this.package = res.data
                 })
                 .finally( () => {
-                    this.loading = true
-                    this.validateDataUsers()
+                    this.validateDataUsers();
+                    this.endLoading();
                 });
-
+            },
+            updateData(data){
+                this.showTable = false;
+                this.users = data.data;
+                this.package = data;
+                this.validateDataUsers();
             },
             validateDataUsers(){
 
-            		for (var i = 0; i < this.users.length; i++) {
+        		for (var i = 0; i < this.users.length; i++) {
 
-	                    if (this.users[i].details) {
+                    if (this.users[i].details) {
 
-	                        this.users[i].details.number_identification  = this.users[i].details.number_identification 
-	                        ? this.users[i].details.number_identification 
-	                        : 'N/A';
+                        this.users[i].details.number_identification  = this.users[i].details.number_identification 
+                        ? this.users[i].details.number_identification 
+                        : 'N/A';
 
-	                        this.users[i].details.street_address  = this.users[i].details.street_address 
-	                        ? this.users[i].details.street_address 
-	                        : 'N/A';
+                        this.users[i].details.street_address  = this.users[i].details.street_address 
+                        ? this.users[i].details.street_address 
+                        : 'N/A';
 
-	                        this.users[i].details.city  = this.users[i].details.city 
-	                        ? this.users[i].details.city 
-	                        : 'N/A';
-	                          
-	                    }else{
-	                        this.users[i].details = {
-	                            number_identification : 'N/A',
-	                            street_address : 'N/A',
-	                            city : 'N/A',
-	                            email : 'N/A'
-	                        }
-	                    }
-	                    this.users[i].status = this.users[i].status
-	                    ? 'Activo'
-	                    : 'Inactivo';
+                        this.users[i].details.city  = this.users[i].details.city 
+                        ? this.users[i].details.city 
+                        : 'N/A';
+                          
+                    }else{
+                        this.users[i].details = {
+                            number_identification : 'N/A',
+                            street_address : 'N/A',
+                            city : 'N/A',
+                            email : 'N/A'
+                        }
+                    }
+                    this.users[i].status = this.users[i].status
+                    ? 'Activo'
+                    : 'Inactivo';
 
-	                    this.users[i].classStatus = this.users[i].status == 'Activo' 
-	                    ? 'text-white bg-green-500 p-1 rounded-md'
-	                    : 'text-white bg-red-500 p-1 rounded-md';
-	                }
-	                this.showTable = true;
+                    this.users[i].classStatus = this.users[i].status == 'Activo' 
+                    ? 'text-white bg-green-500 p-1 rounded-md'
+                    : 'text-white bg-red-500 p-1 rounded-md';
+                }
+                this.showTable = true;
             },
             updateStatusUser(item){
+
+                this.startLoading();
+
                 axios.put('/updateStatus/'+item.id+'/user')
                 .then(res => {
                     item.status = res.data.user.status ? 'Activo' : 'Inactivo';
                     item.classStatus = res.data.user.status 
                     ? 'text-white bg-green-500 p-1 rounded-md'
                     : 'text-white bg-red-500 p-1 rounded-md';
+
+                    this.status = {
+                        type: res.data.type,
+                        text: res.data.text,
+                    }
                 })
+                .finally( () => this.endLoading() )
+            },
+            startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
             }
         }
     }

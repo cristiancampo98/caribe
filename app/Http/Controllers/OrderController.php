@@ -47,9 +47,7 @@ class OrderController extends Controller
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1',
             'order_id' => 'nullable|numeric',
-            'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number',
-            'consignment.pse_url' => 'nullable|url',
-            'consignment.pse_number' => 'nullable|numeric'
+            'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number'
         ]);
         $response = self::storeOrder($request->all());
 
@@ -79,9 +77,7 @@ class OrderController extends Controller
     public function edit($id)
     {
     	$order = self::findOrder($id);
-    	if(count($order->consignments)){
-    		return redirect()->route('order.index')->with('info','No es posible editar este pedido porque tiene consignaciones');
-    	}
+    	
     	return inertia('Order/Edit', [
             'order' => $order,
             'products' => self::getAllProductsToOrder()

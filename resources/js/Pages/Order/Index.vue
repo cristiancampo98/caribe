@@ -38,6 +38,9 @@
                             <td-responsive-component>
                                 {{item.client.name}}
                             </td-responsive-component>
+                             <td-responsive-component>
+                                {{item.client.details.type_pay}}
+                            </td-responsive-component>
                             <td-responsive-component>
                                 {{item.client.email}}
                             </td-responsive-component>
@@ -77,12 +80,6 @@
                                             {{option.name}}
                                         </jet-dropdown-link>
                                         <button type="button"
-                                        v-if="item.status != 'cancelado' && $page.props.isAdmin"
-                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        @click="updateStatusOrder(item)">
-                                            {{item.status == 'activo' ? 'Finalizar' : 'Activar'}}
-                                        </button>
-                                        <button type="button"
                                         v-if="!item.consignments.length && item.status != 'cancelado'"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         @click="openModalDestroy(item)">
@@ -111,6 +108,7 @@
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
+            <div v-else>No hay datos</div>
             
             <!-- modal delete -->
             <vs-dialog width="300px" not-center v-model="modal">
@@ -198,7 +196,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Cliente','Email','Estado','Nota','Creador','Creado','Opciones'],
+                titles: ['#','Cliente','Tipo','Email','Estado','Nota','Creador','Creado','Opciones'],
                 options: [],
                 package: [],
                 actions: [

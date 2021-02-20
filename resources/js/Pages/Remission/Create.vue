@@ -84,13 +84,13 @@
 	                        <td-responsive-component>
 	                        	{{item.quantity}} 
 	                        	<span class="text-xs">
-	                        		{{item.product.units_measure.name}}
+	                        		m3
 	                        	</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	{{total_delivered(item.remissions)}}
 	                        	<span class="text-xs">
-	                        		{{item.product.units_measure.name}}
+	                        		m3
 	                        	</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>

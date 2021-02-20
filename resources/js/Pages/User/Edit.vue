@@ -27,7 +27,7 @@
 			            </div>
 			            <!-- email -->
 			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="email" value="Correo" />
+			                <jet-label for="email" value="Correo principal" />
 			                <jet-input id="email" type="text" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
 			                <jet-input-error :message="form.errors.email" class="mt-2" />
 			            </div>
@@ -50,32 +50,8 @@
 			            	:clearable="false"></v-select>
 			                <jet-input-error :message="form.errors.type_identification_id" class="mt-2" />
 			            </div>
-			            <!-- sex -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="sex" value="Sexo" />
-			                <v-select 
-			            	class="mt-1"
-			            	id="sex"
-			            	v-model="form.sex"
-			            	:clearable="false"
-			            	:options="['Hombre','Mujer','Otro']"></v-select>
-			                <jet-input-error :message="form.errors.sex" class="mt-2" />
-			            </div>
-			            <!-- type blood -->
-			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="type_blood_id" value="Tipo de sangre" />
-			                <v-select 
-			            	class="mt-1"
-			            	id="type_blood_id"
-			            	label="acronym"
-			            	:reduce="acronym => acronym.id"
-			            	v-model="form.type_blood_id"
-			            	:options="types_blood"
-			            	:clearable="false"></v-select>
-			                <jet-input-error :message="form.errors.type_blood_id" class="mt-2" />
-			            </div>
 			            <!-- steet address -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="street_address" value="Dirección" />
 			                <jet-input id="street_address" type="text" class="mt-1 block w-full" v-model="form.street_address" autocomplete="street_address" />
 			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
@@ -126,7 +102,7 @@
 			            </div>
 			            <!-- phones -->
 			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="phones" value="Otros telefonos" />
+			                <jet-label for="phones" value="Teléfonos" />
 			                <textarea id="phones"  class="mt-1 block w-full rounded-md" v-model="form.phones"></textarea>
 			                <jet-input-error :message="form.errors.phones" class="mt-2" />
 			            </div>
@@ -136,6 +112,7 @@
 			            	<label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 			            		<span>Subir Identificación</span>
 			            		<input type="file" id="photo" ref="photo" @change="uploadDocument" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
+			            		<p class="text-xs text-gray-500">PDF</p>
 			            	</label>
 			            	<span v-if="uploadedDocument" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
@@ -201,9 +178,7 @@
                     email: this.user.email,
                     number_identification: null,
                     type_identification_id: null,
-                    sex: null,
                     photo_document: null,
-                    type_blood_id: null,
                     street_address: null,
                     street_details: null,
                     street_comune: null,
@@ -254,9 +229,7 @@
             	if (this.user.details) {
             		this.form.number_identification = this.user.details.number_identification;
                     this.form.type_identification_id = this.user.details.type_identification_id;
-                    this.form.sex = this.user.details.sex;
                     this.form.photo_document = this.user.details.photo_document;
-                    this.form.type_blood_id = this.user.details.type_blood_id;
                     this.form.street_address = this.user.details.street_address;
                     this.form.street_details = this.user.details.street_details;
                     this.form.street_comune = this.user.details.street_comune;

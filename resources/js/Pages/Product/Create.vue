@@ -31,23 +31,6 @@
 			                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" maxlength="50" />
 			                <jet-input-error :message="form.errors.reference" class="mt-2" />
 			            </div>
-			            <!-- Unit measure -->
-			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="unit_measure_id" value="Unidad medida" />
-			                <select v-model="form.unit_measure_id" class="mt-1 block w-full rounded-lg" required>
-			                	<option value="0" disabled> Seleccione una opción</option>
-							  	<option v-for="option in units_measure" v-bind:value="option.id">
-								    {{ option.name }}
-							  	</option>
-							</select>
-			                <jet-input-error :message="form.errors.unit_measure_id" class="mt-2" />
-			            </div>
-			            <!-- Price -->
-			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="price" value="Precio" />
-			                <jet-input id="price" type="number" class="mt-1 block w-full" v-model.number="form.price" autocomplete="price" />
-			                <jet-input-error :message="form.errors.price" class="mt-2" />
-			            </div>
 			            <!-- Description -->
 			            <div class="col-span-6 lg:col-span-6">
 			                <jet-label for="description" value="Descripción" />
@@ -103,18 +86,12 @@
             DrapZoneComponent
     	},
     	props: {
-    		units_measure: {
-    			type: [Object,Array],
-    			required: true
-    		}
     	},
     	data(){
             return {
                 form: this.$inertia.form({
                     name: null,
                     reference: null,
-                    unit_measure_id: 0,
-                    price: 0,
                     description: null,
                     photos: []
                 }),

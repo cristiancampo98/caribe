@@ -13,13 +13,13 @@ class CreateTypeBloodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('type_bloods', function (Blueprint $table) {
-            $table->id();
-            $table->string('description',30);
-            $table->string('acronym',5);
-            $table->boolean('available')->default(1);
-            $table->timestamps();
-        });
+        // Schema::create('type_bloods', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('description',30);
+        //     $table->string('acronym',5);
+        //     $table->boolean('available')->default(1);
+        //     $table->timestamps();
+        // });
     }
 
     /**

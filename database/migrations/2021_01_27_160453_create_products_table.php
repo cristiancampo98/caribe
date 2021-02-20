@@ -17,8 +17,6 @@ class CreateProductsTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('reference')->nullable();
-            $table->foreignId('unit_measure_id') ->constrained();
-            $table->double('price')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('user_id') ->constrained();
             $table->boolean('status')->default(1);

@@ -23,7 +23,7 @@
 			        	</ul>
 
 			            <!-- user id or cliente -->
-			            <div class="col-span-6 lg:col-span-3" v-if="$page.props.isAdmin">
+			            <div class="col-span-6 lg:col-span-2" v-if="$page.props.isAdmin">
 			                <jet-label for="user_id" value="Cliente" />
 			                <v-select 
 					        label="name" 
@@ -49,11 +49,11 @@
 							</v-select>
 			                <jet-input-error :message="form.errors.user_id" class="mt-2" />
 			            </div>
-			            <div class="col-span-6 lg:col-span-3" v-else>
+			            <div class="col-span-6 lg:col-span-2" v-else>
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
 			            </div>
-			             <div class="col-span-6 lg:col-span-3">
+			             <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
 			            	class="mt-1"
@@ -64,7 +64,7 @@
 			            	@input="showCitys"></v-select>
 			            </div>
 			            <!-- city -->
-			            <div class="col-span-6 lg:col-span-3" >
+			            <div class="col-span-6 lg:col-span-1" >
 			                <jet-label for="city" value="Ciudad" />
 			               	<v-select 
 			               	v-if="form.city || citys.length"
@@ -76,7 +76,7 @@
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
 			            <!-- shipping address -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="shipping_address" value="Dirección envío" />
 			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
 			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
@@ -88,32 +88,22 @@
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
 			           	<!--  consignment_number-->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="consignment_number" value="Consignación" />
 			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment.consignment_number" />
 			            </div>
 			            <!-- imagen -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-1">
 			            	<label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 			            		<span>Subir imagen</span>
 			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	</label>
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
-			            <!-- pse_urlpse_url -->
-			            <div class="col-span-6 lg:col-span-3">
-			            	<jet-label for="pse_url" value="Link PSE" />
-			            	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.consignment.pse_url" />
-			            </div>
-			            <!-- pse_number -->
-			            <div class="col-span-6 lg:col-span-3">
-			            	<jet-label for="pse_number" value="PSE # radicado" />
-			            	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.consignment.pse_number" />
-			            </div>
-
 			           <div class="col-span-6 lg:col-span-6">
-			           	<h3>Pedido</h3>
-			            <p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
+				           	<h3>Pedido</h3>
+				            <p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
 			           	</div>
 			            <!-- productos -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -129,17 +119,40 @@
 			            </div>
 			            <!-- quantity -->
 			             <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="quantity" value="Cantidad" />
+			                <jet-label for="quantity" value="Cantidad en m3" />
 			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" />
 			            </div>
-			            <!-- Discount -->
-			             <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="discount" value="Descuento" />
-			               	<jet-input id="discount" type="number" class="mt-1 block w-full" min="0" v-model.number="discount" />
-			            </div>
-			            <button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
-			            	Agregar
-			            </button>
+			           <div class="col-span-6 lg:col-span-1">
+				           	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
+				            	Agregar
+				            </button>
+			           	
+			           </div>
+
+			            <div class="col-span-6 lg:col-span-6" v-if="Object.keys(form.order_details).length">
+					    	<table-responsive-component>
+				            	<template #title>
+				            		<tr>
+				            			<th-responsive-component 
+				            			v-for="(title, key) in titles"
+				            			:key="key">{{title}}</th-responsive-component>
+				            			<th-responsive-component></th-responsive-component>
+				            		</tr>
+				            	</template>
+				            	<template #content>
+				            		<tr v-for="(item, key) in form.order_details" :key="key">
+				            			<td-responsive-component>{{item.name}}</td-responsive-component>
+				            			<td-responsive-component>{{item.quantity}}</td-responsive-component>
+				            				<button type="button" @click="deleteToCar(key)" class="bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2">
+				            					Eliminar
+				            				</button>
+				            			</td-responsive-component>
+
+				            		</tr>
+				            	</template>
+				            </table-responsive-component>
+					    	
+					    </div>
 			        </template>
 
 			        <template #actions>
@@ -153,38 +166,7 @@
 			        </template>
 			    </jet-form-section>
 
-			    <div class="mt-8" v-if="Object.keys(form.order_details).length">
-			    	<table-responsive-component>
-		            	<template #title>
-		            		<tr>
-		            			<th-responsive-component 
-		            			v-for="(title, key) in titles"
-		            			:key="key">{{title}}</th-responsive-component>
-		            			<th-responsive-component></th-responsive-component>
-		            		</tr>
-		            	</template>
-		            	<template #content>
-		            		<tr v-for="(item, key) in form.order_details" :key="key">
-		            			<td-responsive-component>{{item.name}}</td-responsive-component>
-		            			<td-responsive-component>{{item.quantity}}</td-responsive-component>
-		            			<td-responsive-component>
-		            				{{item.quantity * item.price}}
-		            			</td-responsive-component>
-		            			<td-responsive-component>{{item.discount}}</td-responsive-component>
-		            			<td-responsive-component>
-		            				{{item.quantity * item.price - item.discount}}
-		            			</td-responsive-component>
-		            			<td-responsive-component>
-		            				<button type="button" @click="deleteToCar(key)" class="bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2">
-		            					Eliminar
-		            				</button>
-		            			</td-responsive-component>
-
-		            		</tr>
-		            	</template>
-		            </table-responsive-component>
-			    	
-			    </div>
+			    
 
             </div>
         </div>
@@ -239,25 +221,20 @@
                     shipping_address: null,
                     city: null,
                     note: null,
-                    total: 0,
+                  
                     order_details: [],
                     consignment: {
                     	consignment_number: null,
-	                    pse_url: null,
-	                    pse_number: null,
+	                  
 	                    imagen: null
                     }
                 }),
                 product_detail: [],
                 quantity: 1,
-                discount: 0,
                 error_product: false,
                 titles: [
                 	'Producto',
-                	'Cantidad',
-                	'Basico',
-                	'Descuento',
-                	'Neto'
+                	'Cantidad en metros cúbicos',
                 ],
                 clients: [],
                 deparments: [],
@@ -295,9 +272,9 @@
             	this.citys = value.ciudades
             },
             addToCar(){
-            	if (this.quantity < 1 || this.discount < 0) {
+            	if (this.quantity < 1) {
             		this.quantity *= -1;
-            		this.discount *= -1;
+            	
             	}
             	//Valida que se haya selecciona un producto
             	if (Object.keys(this.product_detail).length !== 0) {
@@ -307,9 +284,7 @@
             		var pedido = { 
 						product_id: this.product_detail.id,
 						name : this.product_detail.name, 
-						quantity :this.quantity, 
-						price: parseInt(this.product_detail.price),
-						discount: parseInt(this.discount)
+						quantity :this.quantity,
 					}
 	            	
 	            	//Valida que el producto ya se haya agregado anteriormente
@@ -320,7 +295,6 @@
 					if (found) {
 						//Si lo encuentra modifica por los nuevos datos
 						found.quantity = parseInt(this.quantity);
-						found.discount = parseInt(this.discount);
 					}else{
 						//Si no lo encuentra agrega el nuevo producto
 						this.form.order_details.push(pedido);

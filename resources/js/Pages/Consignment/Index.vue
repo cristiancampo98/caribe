@@ -94,6 +94,7 @@
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
+            <div v-else>No hay datos</div>
             <vs-dialog width="550px" not-center v-model="modalDestroy">
                 <template #header>
                   <h4 class="not-margin">

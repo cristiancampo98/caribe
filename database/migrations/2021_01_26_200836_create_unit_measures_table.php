@@ -13,12 +13,12 @@ class CreateUnitMeasuresTable extends Migration
      */
     public function up()
     {
-        Schema::create('unit_measures', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',20);
-            $table->boolean('available');
-            $table->timestamps();
-        });
+        // Schema::create('unit_measures', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name',20);
+        //     $table->boolean('available');
+        //     $table->timestamps();
+        // });
     }
 
     /**

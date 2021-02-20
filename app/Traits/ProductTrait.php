@@ -19,10 +19,10 @@ trait ProductTrait
 		$product->user_id = Auth::id();
 		$product->save();
 
-		if (!$data->filled('photos')) {
+		if (count($data['photos'])) {
 
             self::storeMultimedia(
-            	$data->file('photos'), 
+            	$data['photos'], 
             	'products', 
             	'product', 
             	'img_product',
@@ -49,10 +49,10 @@ trait ProductTrait
 	{
 		$product = self::findProduct($id);
 
-		if (!$data->filled('photos')) {
+		if (count($data['photos'])) {
 
 			self::storeMultimedia(
-				$data->file('photos'), 
+				$data['photos'], 
 				'products', 'product', 
 				'img_product',
 				'product_id', 

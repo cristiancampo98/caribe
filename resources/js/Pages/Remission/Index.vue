@@ -37,16 +37,19 @@
                             <td-responsive-component>
                                 {{item.id}}
                             </td-responsive-component>
+                            <td-responsive-component>
+                                No. {{item.order_detail.order_id}}
+                            </td-responsive-component>
                              <td-responsive-component>
                                 {{item.order_detail.product.name}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.delivered}}
-                                {{item.order_detail.product.units_measure.name}}
+                                m3
                             </td-responsive-component>
                              <td-responsive-component>
                                 {{item.order_detail.quantity}}
-                                {{item.order_detail.product.units_measure.name}}
+                                m3
                             </td-responsive-component>
                            
                             <td-responsive-component>
@@ -59,9 +62,7 @@
                                     </li>
                                 </ul>
                             </td-responsive-component>
-                            <td-responsive-component>
-                                No. {{item.order_detail.order_id}}
-                            </td-responsive-component>
+                          
                            
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -96,6 +97,7 @@
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
+            <div v-else>No hay datos</div>
         </div>
     </admin-layout>
 </template>
@@ -139,7 +141,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Producto','Entregado','Cantidad','Vehiculo','Pedido','Opciones'],
+                titles: ['#','Pedido','Producto','Entregado','Cantidad','Vehiculo','Opciones'],
                 options: [],
                 package: [],
                 actions: [

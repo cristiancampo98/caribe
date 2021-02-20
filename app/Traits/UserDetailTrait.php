@@ -18,8 +18,6 @@ trait UserDetailTrait
 			[
 				"number_identification" => $data['number_identification'],
 				"type_identification_id" => $data['type_identification_id'],
-				"sex" => $data['sex'],
-				"type_blood_id" => $data['type_blood_id'],
 				"name_company" => $data['name_company'],
 				"type_pay" => $data['type_pay'],
 				"street_address" => $data['street_address'],

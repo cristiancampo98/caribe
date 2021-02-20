@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UnitMeasure;
 use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
 
@@ -27,9 +26,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return inertia('Product/Create', [
-            'units_measure' => UnitMeasure::where('available',1)->get(),
-        ]);
+        return inertia('Product/Create');
     }
 
     /**
@@ -43,8 +40,6 @@ class ProductController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:100|unique:products',
             'reference' => 'nullable|string|max:50',
-            'unit_measure_id' => 'required|numeric|gt:0',
-            'price' => 'nullable|numeric|min:0',
         ]);
 
         $product = self::storeProduct($request->all());
@@ -75,7 +70,6 @@ class ProductController extends Controller
     public function edit($id)
     {
         return inertia('Product/Edit', [
-            'units_measure' => UnitMeasure::where('available',1)->get(), 
             'product' => self::findProduct($id)
         ]);
     }

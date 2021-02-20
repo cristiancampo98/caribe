@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TypeBlood;
 use App\Models\TypeIdentification;
 use App\Traits\ClientTrait;
 use Illuminate\Http\Request;
@@ -41,7 +40,8 @@ class ClientController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users'
+            'email' => 'required|string|max:255|email|unique:users,email',
+
         ]);
 
         $user = self::storeClient();
@@ -74,7 +74,6 @@ class ClientController extends Controller
         return inertia('Client/Edit', [
             'client' => self::getClient($id),
             'types_identification' => TypeIdentification::where('available',1)->get(),
-            'types_blood' => TypeBlood::where('available',1)->get(),
             'photo_document' => self::getMultimediaByParams('users', 'user_id', $id, 'photo_document'),
             'rut_document' => self::getMultimediaByParams('users', 'user_id', $id, 'rut_document'),
             'logo' => self::getMultimediaByParams('users', 'user_id', $id, 'logo')
@@ -90,6 +89,13 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'type_pay' => 'required|in:contado,crédito',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255|email|unique:users,email,'.$id,
+            'name_company' => 'required|string|max:50'
+        ]);
+
         $client = self::updateClient($id);
 
         return $client ? redirect()->route('client.index')->with('success','El cliente se actualizó con éxito')

@@ -2,7 +2,7 @@
 	<admin-layout :status="status">
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear Pedido
+                Editar Pedido
             </h2>
         </template>
         <div class="py-12">
@@ -14,7 +14,7 @@
 			        </template>
 
 			        <template #description>
-			            Crea un pedido con la información requerida.
+			            Edita un pedido con la información requerida.
 			        </template>
 
 			        <template #form>
@@ -85,13 +85,15 @@
 			               	<textarea id="note" class="mt-1 block w-full rounded-lg" v-model="form.note"></textarea>
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
-
-			           <div class="col-span-6 lg:col-span-6">
-			           	<h3>Pedido</h3>
-			            <p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
+			            <div class="col-span-6 lg:col-span-6" v-if="order.order_details[0].remissions.length">
+			            	<p class="text-sm">Este pedido ya tiene remisiones por lo tanto  <strong>no será posible editar el detalle del pedido</strong>.</p>
+			            </div>
+			           	<div class="col-span-6 lg:col-span-6" v-if="!order.order_details[0].remissions.length">
+			           		<h3>Pedido</h3>
+			            	<p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
 			           	</div>
 			            <!-- productos -->
-			            <div class="col-span-6 lg:col-span-2">
+			            <div class="col-span-6 lg:col-span-2" v-if="!order.order_details[0].remissions.length">
 			            	<jet-label for="product_id" value="Producto" />
 			            	<v-select 
 			            	class="mt-1"
@@ -103,18 +105,40 @@
 			            	<jet-input-error :message="form.errors.order_details" class="mt-2" />
 			            </div>
 			            <!-- quantity -->
-			             <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="quantity" value="Cantidad" />
+			             <div class="col-span-6 lg:col-span-1" v-if="!order.order_details[0].remissions.length">
+			                <jet-label for="quantity" value="Cantidad en m3" />
 			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" />
 			            </div>
-			            <!-- Discount -->
-			             <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="discount" value="Descuento" />
-			               	<jet-input id="discount" type="number" class="mt-1 block w-full" min="0" v-model.number="discount" />
+			            <div class="col-span-6 lg:col-span-1" v-if="!order.order_details[0].remissions.length">
+			            	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
+				            	Agregar
+				            </button>
 			            </div>
-			            <button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
-			            	Agregar
-			            </button>
+			            <div class="col-span-6 lg:col-span-6" v-if="!order.order_details[0].remissions.length">
+			            	<table-responsive-component v-if="Object.keys(form.order_details).length">
+				            	<template #title>
+				            		<tr>
+				            			<th-responsive-component 
+				            			v-for="(title, key) in titles"
+				            			:key="key">{{title}}</th-responsive-component>
+				            			<th-responsive-component></th-responsive-component>
+				            		</tr>
+				            	</template>
+				            	<template #content>
+				            		<tr v-for="(item, key) in form.order_details" :key="key">
+				            			<td-responsive-component>{{item.name}}</td-responsive-component>
+				            			<td-responsive-component>{{item.quantity}}</td-responsive-component>
+				            			<td-responsive-component>
+				            				<button type="button" @click="deleteToCar(key)" class="bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2">
+				            					Eliminar
+				            				</button>
+				            			</td-responsive-component>
+
+				            		</tr>
+				            	</template>
+				            </table-responsive-component>
+			            </div>
+			           
 			        </template>
 
 			        <template #actions>
@@ -127,64 +151,32 @@
 			            </jet-button>
 			        </template>
 			    </jet-form-section>
-
-			    <div class="mt-8" v-if="Object.keys(form.order_details).length">
-			    	<table-responsive-component>
-		            	<template #title>
-		            		<tr>
-		            			<th-responsive-component 
-		            			v-for="(title, key) in titles"
-		            			:key="key">{{title}}</th-responsive-component>
-		            			<th-responsive-component></th-responsive-component>
-		            		</tr>
-		            	</template>
-		            	<template #content>
-		            		<tr v-for="(item, key) in form.order_details" :key="key">
-		            			<td-responsive-component>{{item.name}}</td-responsive-component>
-		            			<td-responsive-component>{{item.quantity}}</td-responsive-component>
-		            			<td-responsive-component>
-		            				{{item.quantity * item.price}}
-		            			</td-responsive-component>
-		            			<td-responsive-component>{{item.discount}}</td-responsive-component>
-		            			<td-responsive-component>
-		            				{{item.quantity * item.price - item.discount}}
-		            			</td-responsive-component>
-		            			<td-responsive-component>
-		            				<button type="button" @click="deleteToCar(key)" class="bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2">
-		            					Eliminar
-		            				</button>
-		            			</td-responsive-component>
-
-		            		</tr>
-		            	</template>
-		            </table-responsive-component>
-		            <vs-dialog width="550px" not-center v-model="confirm">
-				        <template #header>
-				          <h4 class="not-margin">
-				            Enviar notificación por correo a <b>{{order.client.name}}</b>
-				          </h4>
-				        </template>
+			    <vs-dialog width="550px" not-center v-model="confirm">
+			        <template #header>
+			          <h4 class="not-margin">
+			            Enviar notificación por correo a <b>{{order.client.name}}</b>
+			          </h4>
+			        </template>
 
 
-				        <div class="con-content">
-				          <p>
-				            ¿Quieres enviar una notificación al usuario informandole que su pedido ha sido actualizado?. <br>
-				            Enviar una notificación al usuario podrá causar que la operación tarde mas ¿Quieres enviarla?
-				          </p>
-				        </div>
+			        <div class="con-content">
+			          <p>
+			            ¿Quieres enviar una notificación al usuario informandole que su pedido ha sido actualizado?. <br>
+			            Enviar una notificación al usuario podrá causar que la operación tarde mas ¿Quieres enviarla?
+			          </p>
+			        </div>
 
-				        <template #footer>
-				          <div class="con-footer">
-				            <vs-button @click="updateOrder(true)" transparent>
-				              Si, enviar notificación
-				            </vs-button>
-				            <vs-button @click="updateOrder(false)" dark transparent>
-				              No enviar notificación
-				            </vs-button>
-				          </div>
-				        </template>
-				    </vs-dialog>
-			    </div>
+			        <template #footer>
+			          <div class="con-footer">
+			            <vs-button @click="updateOrder(true)" transparent>
+			              Si, enviar notificación
+			            </vs-button>
+			            <vs-button @click="updateOrder(false)" dark transparent>
+			              No enviar notificación
+			            </vs-button>
+			          </div>
+			        </template>
+			    </vs-dialog>
 
             </div>
         </div>
@@ -244,20 +236,15 @@
                     shipping_address: this.order.shipping_address,
                     city: this.order.city,
                     note: this.order.note,
-                    total: this.order.total,
                     order_details: [],
                     send_email:false
                 }),
                 product_detail: [],
                 quantity: 1,
-                discount: 0,
                 error_product: false,
                 titles: [
                 	'Producto',
-                	'Cantidad',
-                	'Basico',
-                	'Descuento',
-                	'Neto'
+                	'Cantidad en metros cúbicos',
                 ],
                 clients: [],
                 deparments: [],
@@ -277,8 +264,6 @@
         				product_id : item.product_id,
 						name  : item.product.name,
 						quantity  : item.quantity,
-						price : item.product.price,
-						discount : item.discount,
         			}
         			this.form.order_details.push(detail);
         		});
@@ -319,9 +304,8 @@
             	this.citys = value.ciudades
             },
             addToCar(){
-            	if (this.quantity < 1 || this.discount < 0) {
+            	if (this.quantity < 1) {
             		this.quantity *= -1;
-            		this.discount *= -1;
             	}
             	//Valida que se haya selecciona un producto
             	if (Object.keys(this.product_detail).length !== 0) {
@@ -331,9 +315,7 @@
             		var pedido = { 
 						product_id: this.product_detail.id,
 						name : this.product_detail.name, 
-						quantity :this.quantity, 
-						price: parseInt(this.product_detail.price),
-						discount: parseInt(this.discount)
+						quantity :this.quantity,
 					}
 	            	
 	            	//Valida que el producto ya se haya agregado anteriormente
@@ -344,7 +326,6 @@
 					if (found) {
 						//Si lo encuentra modifica por los nuevos datos
 						found.quantity = parseInt(this.quantity);
-						found.discount = parseInt(this.discount);
 					}else{
 						//Si no lo encuentra agrega el nuevo producto
 						this.form.order_details.push(pedido);

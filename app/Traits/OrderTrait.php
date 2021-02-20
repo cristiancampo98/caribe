@@ -57,17 +57,14 @@ trait OrderTrait
                 'city' => $data['city'],
                 'note' => $data['note'],
                 'status' => 'activo',
-                'total' => self::getTotalOrder($data['order_details']),
                 'created_by' => Auth::user()->id,
                 'created_at' => $date,
                 'updated_at' => $date
             ]);
 
-            if (self::validateWhenConsignmentIsFilled($data['consignment'])) {
+            if (isset($data['consignment']['consignment_number'])) {
             	$consignment_id = DB::table('consignments')->insertGetId([
             		'consignment_number' => $data['consignment']['consignment_number'],
-            		'pse_url' => $data['consignment']['pse_url'],
-            		'pse_number' => $data['consignment']['pse_number'],
             		'order_id' => $order_id,
             		'created_at' => Carbon::now('America/Bogota'),
             		'updated_at' => Carbon::now('America/Bogota'),
@@ -90,7 +87,6 @@ trait OrderTrait
                     'order_id' => $order_id,
                     'product_id' => $value['product_id'],
                     'quantity' => $value['quantity'],
-                    'discount' => $value['discount'],
                     'status' => 1,
                     'created_at' => $date,
                     'updated_at' => $date
@@ -99,17 +95,6 @@ trait OrderTrait
 
             return $order_id;
         });
-	}
-
-	public static function getTotalOrder($data)
-	{
-		$total = 0;
-
-		foreach ($data as $key => $value) {
-			$total += ($value['price'] * $value['quantity']) - $value['discount'];
-		}
-
-		return $total;
 	}
 
 	public static function getOrderByConsecutiveOrClientTrait()
@@ -130,9 +115,9 @@ trait OrderTrait
 		$order = Order::where('id',$id)
 		->with([
 			'orderDetails.product',
+			'orderDetails.remissions',
 			'client',
 			'creator',
-			'consignments'
 		])
 		->first();
 
@@ -160,7 +145,6 @@ trait OrderTrait
 		        ],
 		        [
 		        	'quantity' => $value['quantity'],
-		        	'discount' => $value['discount'],
 		        	'status' => 1
 		        ]
 		    );

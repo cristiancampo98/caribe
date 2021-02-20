@@ -14,17 +14,8 @@ class Product extends Model
     protected $fillable = [
 	    'name',
 	    'reference',
-	    'unit_measure_id',
-	    'price',
 	    'description'
     ];
-
-    protected $with = ['units_measure'];
-
-    public function units_measure()
-    {
-        return $this->belongsTo(UnitMeasure::class, 'unit_measure_id', 'id');
-    }
 
     public function creator()
     {

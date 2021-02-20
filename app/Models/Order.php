@@ -18,7 +18,6 @@ class Order extends Model
     	'note',
         'delete_note',
     	'status',
-    	'total',
     	'created_by'
     ];
 

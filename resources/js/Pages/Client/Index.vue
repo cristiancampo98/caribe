@@ -37,6 +37,7 @@
                         <tr v-for="(item, key) in clients" :key="key">
                             <td-responsive-component>{{item.user_id}}</td-responsive-component>
                             <td-responsive-component>{{item.users.name}}</td-responsive-component>
+                            <td-responsive-component>{{item.users.details.type_pay}}</td-responsive-component>
                             <td-responsive-component>
                                 {{item.users.details.name_company}}
                             </td-responsive-component>
@@ -90,6 +91,7 @@
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
+            <div v-else>No hay datos</div>
         </div>
     </admin-layout>
 </template>
@@ -126,7 +128,7 @@
         data() {
             return {
                 status: {},
-                titles: ['#','Nombre','Empresa','Dirección','Ciudad','Correo','Estado'],
+                titles: ['#','Nombre','Tipo','Empresa','Dirección','Ciudad','Correo','Estado'],
                 loading: false,
                 showTable: false,
                 lenght: 5,

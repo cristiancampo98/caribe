@@ -47,12 +47,6 @@
                             <td-responsive-component>
                                 {{item.reference}}
                             </td-responsive-component>
-                            <td-responsive-component>
-                                {{item.price}}
-                            </td-responsive-component>
-                            <td-responsive-component>
-                                {{item.units_measure.name}}
-                            </td-responsive-component>
                              <td-responsive-component>
                                 <span :class="getClassStatus(item.status)">{{item.status ? 'Activo' : 'Inactivo'}}</span>
                             </td-responsive-component>
@@ -93,6 +87,7 @@
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
+            <div v-else>No hay datos</div>
         </div>
     </admin-layout>
 </template>
@@ -135,7 +130,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Nombre','Descripción','Referencia','Precio','Medida','Estado','Opciones'],
+                titles: ['#','Nombre','Descripción','Referencia','Estado','Opciones'],
                 options: [],
                 package: [],
                 actions: [

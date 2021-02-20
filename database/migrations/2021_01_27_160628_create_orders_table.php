@@ -21,7 +21,6 @@ class CreateOrdersTable extends Migration
             $table->text('note')->nullable();
             $table->text('delete_note')->nullable();
             $table->enum('status',['activo','finalizado','cancelado']);
-            $table->double('total');
             $table->foreignId('created_by') ->constrained('users');
             $table->timestamps();
         });

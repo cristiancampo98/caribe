@@ -89,12 +89,6 @@
                     <!-- More items... -->
                   </tbody>
                 </table>
-                <links
-                :urlsArray="paginatedLinks"
-                :previousPageUrl="permissions.prev_page_url"
-                :nextPageUrl="permissions.next_page_url"
-                >
-                </links>
 
             </div>
           </div>
@@ -108,7 +102,6 @@
     import AdminLayout from '@/Layouts/AdminLayout'
     import JetNavLink from '@/Jetstream/NavLink'
     import JetButton from '@/Jetstream/Button'
-    import Links from '@/Pages/links'
     import datatables from 'datatables'
     import $ from 'jquery';
 export default {
@@ -117,25 +110,17 @@ export default {
             this.mytable()
         },
         props: {
-            permissions: Object,
-             "paginatedLinks" : {
-            type : Array,
-          },
+           permissions: Object,
         },
-        
         data(){
             return{
-                pagination: {
-                current: 1,
-                total: 0
-              }
+                
             }
         },
         components: {
             AdminLayout,
             JetNavLink,
-            JetButton,
-            Links,
+            JetButton
         },
         methods: {
           

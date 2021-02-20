@@ -5,7 +5,6 @@ import Vue from 'vue';
 import { App as InertiaApp, plugin as InertiaPlugin } from '@inertiajs/inertia-vue';
 import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css'
-
 import PortalVue from 'portal-vue';
 
 Vue.mixin({ methods: { route } });

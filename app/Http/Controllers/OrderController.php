@@ -16,6 +16,9 @@ class OrderController extends Controller
      */
     public function index()
     {
+    	if (request()->session()->has('info')) {
+    		return inertia('Order/Index')->with('info', request()->session()->get('info'));
+    	}
         return inertia('Order/Index');
     }
 
@@ -29,7 +32,6 @@ class OrderController extends Controller
 
         return inertia('Order/Create', [
             'products' => Product::all(),
-            'clients' => self::getClientsToOrder()
         ]);
     }
 
@@ -58,9 +60,11 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        return inertia('Order/Show', [
+            'order' => self::findOrder($id)
+        ]);
     }
 
     /**
@@ -69,9 +73,18 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(Order $order)
+    public function edit($id)
     {
-        //
+    	$order = self::findOrder($id);
+    	if(count($order->consignments)){
+    		return redirect()->route('order.index')->with('info','No es posible editar este pedido porque tiene consignaciones');
+    	}
+    	return inertia('Order/Edit', [
+            'order' => $order,
+            'products' => Product::all()
+        ]);
+
+       
     }
 
     /**
@@ -81,9 +94,31 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'user_id' => 'required|numeric|min:1' ,
+            'shipping_address' => 'required|string|max:100' ,
+            'city' => 'required|string|max:100' ,
+            'order_details' => 'required|array|min:1'
+        ]);
+        $order = self::updateOrder($request, $id);
+        return redirect()->route('order.index');
+
+    }
+
+    public function updateStatusOrder($id)
+    {
+        return self::updateStatusOrderTrait($id);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $this->validate($request,[
+            'delete_note' => 'required|string|max:255'
+        ]);
+        
+        return self::cancelOrder($id, $request->all());
     }
 
     /**
@@ -92,8 +127,9 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy($id)
     {
         //
     }
+
 }

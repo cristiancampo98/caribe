@@ -14,20 +14,20 @@
             			<template #attribute>Nombre</template>
             			<template #description>{{product.name}}</template>
             		</item-list-component>
-            		<item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+            		<item-list-component class="bg-gray-10">
+            			<template #attribute>Refencia</template>
             			<template #description>{{product.reference}}</template>	
             		</item-list-component>
-                   <item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+                   <item-list-component class="bg-gray-10">
+            			<template #attribute>Unidad de medida</template>
             			<template #description>{{product.unit_measure_id}}</template>	
             		</item-list-component>
-                    <item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+                    <item-list-component class="bg-gray-10">
+            			<template #attribute>Precio</template>
             			<template #description>{{product.price}}</template>	
             		</item-list-component>
-                    <item-list-component class="bg-gray-100">
-            			<template #attribute>Correo</template>
+                    <item-list-component class="bg-gray-10">
+            			<template #attribute>Descripción</template>
             			<template #description>{{product.description}}</template>	
             		</item-list-component>
             	</description-list-component>
@@ -51,7 +51,7 @@
 
     	},
     	props: {
-            product: Object
+            product: {}
         }, 
     	data(){
             return {

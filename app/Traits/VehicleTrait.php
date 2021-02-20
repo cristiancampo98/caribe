@@ -51,7 +51,12 @@ trait VehicleTrait
             $vehicle->state = 1;
         }
         return $vehicle->save();
-
         
 	}
+
+	public static function getVehiclesPaginate(){
+        
+        return Vehicle::paginate(request()->get('lenght'));
+
+    }
 }

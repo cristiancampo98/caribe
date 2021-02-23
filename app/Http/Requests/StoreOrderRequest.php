@@ -29,6 +29,8 @@ class StoreOrderRequest extends FormRequest
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1',
             'order_id' => 'nullable|numeric',
+            'contract' => 'required_if:type_pay,true',
+            'purchaseOrder' => 'required_if:type_pay,true',
             'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number'
         ];
     }
@@ -39,7 +41,10 @@ class StoreOrderRequest extends FormRequest
             'user_id.required'   =>  'Seleccione un cliente',
             'shipping_address.required'      =>  'La dirección de envío es obligatoria',
             'city.required'     =>  'La ciudad es obligatoria',
-            'order_details.required'     =>  'Seleccione un producto'
+            'order_details.required'     =>  'Seleccione un producto',
+            'order_details.array'       =>  'Debes seleccionar uno o más productos',
+            'contract.required_if'     =>      'El contrato es requerido porque el tipo de pago es crédito',
+            'purchaseOrder.required_if'     =>      'El tipo de pago requerido porque el tipo de pago es crédito'
         ];
     }
 }

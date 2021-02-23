@@ -18,6 +18,8 @@ class CreateOrdersTable extends Migration
             $table->foreignId('user_id') ->constrained();
             $table->string('shipping_address',100);
             $table->string('city',100);
+            $table->string('pse_url')->nullable();
+            $table->string('pse_number')->nullable();
             $table->text('note')->nullable();
             $table->text('delete_note')->nullable();
             $table->enum('status',['activo','finalizado','cancelado']);

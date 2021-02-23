@@ -13,4 +13,9 @@ class RemissionStorageController extends Controller
     {
     	return self::getPaginateAllRemissionsTrait();
     }
+
+    public function getMultimediaFilesByRemission($id)
+    {
+    	return self::getMultimediaFilesByRemissionTrait($id);
+    }
 }

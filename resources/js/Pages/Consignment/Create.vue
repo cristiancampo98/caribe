@@ -59,18 +59,7 @@
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
 			            	<jet-input-error :message="form.errors.imagen" class="mt-2" />
 			            </div>
-			            <!-- pse_urlpse_url -->
-			            <div class="col-span-6 lg:col-span-3">
-			            	<jet-label for="pse_url" value="Link PSE" />
-			            	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.pse_url" />
-			            	<jet-input-error :message="form.errors.pse_url" class="mt-2" />
-			            </div>
-			            <!-- pse_number -->
-			            <div class="col-span-6 lg:col-span-3">
-			            	<jet-label for="pse_number" value="PSE # radicado" />
-			            	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.pse_number" />
-			            	<jet-input-error :message="form.errors.pse_number" class="mt-2" />
-			            </div>
+			           
 			        </template>
 			        <template #actions>
 			            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
@@ -114,8 +103,6 @@
             return {
                 form: this.$inertia.form({
                     consignment_number: null,
-                    pse_url: null,
-                    pse_number: null,
                     order_id: null,
                     imagen: null
                 }),

@@ -117,7 +117,8 @@ trait ClientTrait
     	->select(
     		'users.id as id',
     		'users.name as name',
-    		'user_details.name_company as name_company'
+    		'user_details.name_company as name_company',
+    		'user_details.type_pay as type_pay'
     	)->get();
     }
 

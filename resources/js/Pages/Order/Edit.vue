@@ -29,6 +29,7 @@
 					        :options="clients" 
 					        v-model="form.user_id"
 					        :reduce= "clients => clients.id"
+					        @input="getTypePay"
 					        @search="onSearch">
 							    <template slot="no-options">
 							      Escribe el nombre de un cliente o empresa
@@ -85,6 +86,39 @@
 			               	<textarea id="note" class="mt-1 block w-full rounded-lg" v-model="form.note"></textarea>
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
+			             <!-- pse_url -->
+				        <div class="col-span-6 lg:col-span-3">
+				        	<jet-label for="pse_url" value="Link PSE" />
+				        	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.pse_url" />
+				            <jet-input-error :message="form.errors.pse_url" class="mt-2" />
+				        </div>
+				        <!-- pse_number -->
+				        <div class="col-span-6 lg:col-span-3">
+				        	<jet-label for="pse_number" value="PSE # radicado" />
+				        	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.pse_number" />
+				            <jet-input-error :message="form.errors.pse_number" class="mt-2" />
+				        </div>
+			             <!-- contrato -->
+			            <div class="col-span-6 lg:col-span-3" v-if="type_pay == 'crédito'">
+			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            		<span>Subir contrato</span>
+			            		<input type="file"  id="contract"  ref="contract" @change="uploadContract" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            	</label>
+			            	<span v-if="uploadedContract" class="ml-4 text-green-500">¡Hecho!</span>
+			            	<jet-input-error :message="form.errors.contract" class="mt-2" />
+			            </div>
+			             <!-- orden de compra -->
+			            <div class="col-span-6 lg:col-span-3" v-if="type_pay == 'crédito'">
+			            	<label for="purchaseOrder" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            		<span>Subir orden de compra</span>
+			            		<input type="file"  id="purchaseOrder"  ref="purchaseOrder" @change="uploadPurchaseOrder" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            	</label>
+			            	<span v-if="uploadedPurchaseOrder" class="ml-4 text-green-500">¡Hecho!</span>
+			            	<jet-input-error :message="form.errors.purchaseOrder" class="mt-2" />
+			            </div>
+			            
 			            <div class="col-span-6 lg:col-span-6" v-if="order.order_details[0].remissions.length">
 			            	<p class="text-sm">Este pedido ya tiene remisiones por lo tanto  <strong>no será posible editar el detalle del pedido</strong>.</p>
 			            </div>
@@ -224,6 +258,14 @@
     		user: {
     			type: Object,
     			required: true
+    		},
+    		contract_old: {
+    			type: Array,
+    			required: true
+    		},
+    		purchase_order_old: {
+    			type: Array,
+    			required: true
     		}
     	},
     	data(){
@@ -236,8 +278,14 @@
                     shipping_address: this.order.shipping_address,
                     city: this.order.city,
                     note: this.order.note,
+                    pse_url: this.order.pse_url,
+                    pse_number: this.order.pse_number,
+                    contract: null,
+                    purchaseOrder: null,
                     order_details: [],
-                    send_email:false
+                    send_email:false,
+                    type_pay: false,
+                    credit_documents: null
                 }),
                 product_detail: [],
                 quantity: 1,
@@ -249,13 +297,17 @@
                 clients: [],
                 deparments: [],
                 citys: [],
-                uploadedImagen: false
+                uploadedContract: false,
+                uploadedPurchaseOrder: false,
+                type_pay: null,
+                loading: false
 
             }
         },
         mounted(){
         	this.loadFileColombiaJson();
         	this.setProductStorageToFormOrderDetails()
+        	this.type_pay = this.order.client.details.type_pay;
         },
         methods: {
         	setProductStorageToFormOrderDetails(){
@@ -268,26 +320,49 @@
         			this.form.order_details.push(detail);
         		});
         	},
+        	uploadContract(){
+        		this.uploadedContract = true
+        	},
+        	uploadPurchaseOrder(){
+        		this.uploadedPurchaseOrder = true
+        	},
             updateOrder(email){
-            	if (! this.clients) {
+
+                if (this.$refs.contract) {
+                    this.form.contract = this.$refs.contract.files[0]
+                    this.form.credit_documents = false;
+                }
+                if (this.$refs.purchaseOrder) {
+                    this.form.purchaseOrder = this.$refs.purchaseOrder.files[0]
+                    this.form.credit_documents = false;
+                }
+
+                if (this.contract_old.length || this.purchase_order_old.length) {
+            		this.form.credit_documents = true;
+            	}
+
+            	if (this.type_pay == 'crédito') {
+            		this.form.type_pay = true;
+            	}else{
+            		this.form.type_pay = false;
+            	}
+            	if (! this.$page.props.isAdmin) {
             		this.form.user_id = this.user.id
             	}
             	this.form.send_email = email;
-            	const loading = this.$vs.loading({
-            		type: 'circles'
-            	});
+            	
                 this.form.post(route('order.update',{id : this.order.id}), {
                     errorBag: 'updateOrder',
                     preserveScroll: true,
                     onStart: (visit) => { 
                     	this.confirm = false;
-                    	loading.text = "Procesando..."
+                    	this.startLoading();
                     },
 				  	onSuccess: () => { 
-				  		loading.text = "¡Hecho!"
+				  		this.loading.text = "¡Hecho!"
 				  	},
 				  	onFinish: () => {
-				  		loading.close()
+				  		this.endLoading();
 				  	},
                 });
             },
@@ -351,7 +426,23 @@
 		      	vm.clients = res.data;
 		        loading(false);
 		      });
-		    }, 350)
+		    }, 350),
+		    getTypePay(value){
+		    	const found = this.clients.find( item => item.id == value);
+		    	if (found) {
+		    		this.type_pay = found.type_pay;
+		    	}
+		    },
+		    startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
+            },
         }
 
     }

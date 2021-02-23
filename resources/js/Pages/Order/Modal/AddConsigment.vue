@@ -17,16 +17,6 @@
         	</label>
         	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
         </div>
-        <!-- pse_url -->
-        <div class="col-span-6 lg:col-span-3">
-        	<jet-label for="pse_url" value="Link PSE" />
-        	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="pse_url" />
-        </div>
-        <!-- pse_number -->
-        <div class="col-span-6 lg:col-span-3">
-        	<jet-label for="pse_number" value="PSE # radicado" />
-        	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="pse_number" />
-        </div>
         <div class="mt-4">
 
 	        <jet-button>
@@ -59,8 +49,6 @@
     	data(){
             return {
                 consignment_number: null,
-                pse_url: null,
-                pse_number: null,
                 imagen: null,
                 uploadedImagen: false,
                 active: false,
@@ -80,8 +68,6 @@
                 }
                 var data = new FormData()
                 data.append('consignment_number', this.consignment_number )
-                data.append('pse_url', this.pse_url )
-                data.append('pse_number', this.pse_number )
                 data.append('imagen', this.imagen )
                 data.append('order_id', this.order_id )
 

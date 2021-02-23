@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\PaymentLink;
 use App\Notifications\UpdatedOrder;
 use App\Traits\ConsignmentTrait;
 use App\Traits\MultimediaTrait;
@@ -61,6 +62,28 @@ trait OrderTrait
                 'created_at' => $date,
                 'updated_at' => $date
             ]);
+
+            if(request()->hasFile('contract')) {
+        		self::storeSingleFileMultimedia(
+        			request()->file('contract'), 
+	                'documents_orders', 
+	                'order', 
+	                'contract_file', 
+	                'order_id', 
+	                $order_id
+        		);
+        	}
+        	
+        	if(request()->hasFile('purchaseOrder')) {
+        		self::storeSingleFileMultimedia(
+        			request()->file('purchaseOrder'), 
+	                'documents_orders', 
+	                'order', 
+	                'purchase_order_file', 
+	                'order_id', 
+	                $order_id
+        		);
+        	}
 
             if (isset($data['consignment']['consignment_number'])) {
             	$consignment_id = DB::table('consignments')->insertGetId([
@@ -136,6 +159,30 @@ trait OrderTrait
 			$order->save();
 		}
 
+		if(request()->hasFile('contract')) {
+			self::destroyMultimediaByReason('contract_file','order_id',$order->id);
+    		self::storeSingleFileMultimedia(
+    			request()->file('contract'), 
+                'documents_orders', 
+                'order', 
+                'contract_file', 
+                'order_id', 
+                $order->id
+    		);
+    	}
+    	
+    	if(request()->hasFile('purchaseOrder')) {
+    		self::destroyMultimediaByReason('purchase_order_file','order_id',$order->id);
+    		self::storeSingleFileMultimedia(
+    			request()->file('purchaseOrder'), 
+                'documents_orders', 
+                'order', 
+                'purchase_order_file', 
+                'order_id', 
+                $order->id
+    		);
+    	}
+
 		foreach ($data->order_details as $key => $value) {
 			DB::table('order_details')
 		    ->updateOrInsert(
@@ -153,6 +200,11 @@ trait OrderTrait
 		if ($data->get('send_email')) {
 			Notification::route('mail', $order->client->email)
 							->notify(new UpdatedOrder($order));
+		}
+
+		if ($data->get('pse_url')) {
+			Notification::route('mail', $order->client->email)
+							->notify(new PaymentLink($order));
 		}
 		return $order;
 	}
@@ -208,19 +260,16 @@ trait OrderTrait
 	public static function updateStatusOrderTrait($id)
 	{
 		$order = self::findOrder($id);
-		if ($order->status == 'cancelado') {
-			return response()->json([
-				'type' => 'info',
-                'text' => 'Este pedido se encuentra cancelado'
-            ],200);
-		}
+		// if ($order->status == 'cancelado') {
+		// 	return response()->json([
+		// 		'type' => 'info',
+  //               'text' => 'Este pedido se encuentra cancelado'
+  //           ],200);
+		// }
 
-		if ($order->status == 'activo') {
-			$order->status = 'finalizado';
-			$text = 'El pedido se encuentra Finalizado';
-		}else{
+		if ($order->status == 'cancelado') {
 			$order->status = 'activo';
-			$text = 'El pedido se encuentra Activo';
+			$text = 'El pedido se activo con éxito';
 		}
 
 		if ($order->save()) {
@@ -278,5 +327,22 @@ trait OrderTrait
 			'type' => 'info',
 			'text' => 'No se encontraron pedidos'
 		],200);
+	}
+
+	public static function getMultimediaOrderClientCredit($id)
+	{
+		$doc_contract = self::getMultimediaByParams('order', 'order_id', $id, 'contract_file');
+        $doc_purchase_order = self::getMultimediaByParams('order', 'order_id', $id, 'purchase_order_file');
+        $array = [];
+
+        if (count($doc_contract)) {
+            $array[] = $doc_contract[0];
+        }
+
+        if (count($doc_purchase_order)) {
+            $array[] = $doc_purchase_order[0];
+        }
+
+        return $array;
 	}
 }

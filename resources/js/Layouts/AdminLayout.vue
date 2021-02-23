@@ -40,6 +40,9 @@ export default {
                     text: null
                 }
             }
+        },
+        flash: {
+            type: Object
         }
 	},
 	mounted(){
@@ -57,6 +60,10 @@ export default {
     watch: {
         status: function(){
             this.getNotification(); 
+        },
+        flash: function() {
+            console.log(this.flash)
+            this.getStatusFlash();
         }
     },
     methods: {
@@ -107,10 +114,10 @@ export default {
 	        })
       	},
         getStatusFlash(){
-            for (var val in this.$page.props.flash){
-                if (this.$page.props.flash[val]) {
+            for (var val in this.flash){
+                if (this.flash[val]) {
                     this.status.type = val;;
-                    this.status.text = this.$page.props.flash[val];
+                    this.status.text = this.flash[val];
                 }
             }
         }

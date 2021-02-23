@@ -70,13 +70,17 @@ class OrderController extends Controller
     public function edit($id)
     {
     	$order = self::findOrder($id);
-    	
-    	return inertia('Order/Edit', [
-            'order' => $order,
-            'products' => self::getAllProductsToOrder()
-        ]);
 
-       
+        if ($order->status == 'activo') {
+            return inertia('Order/Edit', [
+                'order' => $order,
+                'products' => self::getAllProductsToOrder(),
+                'contract_old' => self::getMultimediaByParams('order','order_id',$id,'contract_file'),
+                'purchase_order_old' => self::getMultimediaByParams('order','order_id',$id,'purchase_order_file'),
+            ]);
+        }
+        
+        return redirect()->back()->with('info','No se puede editar debido a que se canceló o esta finalizado');
     }
 
     /**

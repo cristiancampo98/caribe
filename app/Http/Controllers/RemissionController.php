@@ -41,6 +41,8 @@ class RemissionController extends Controller
             'order_details_id' => 'required|numeric|min:1',
             'vehicle_users_id' => 'required|numeric|min:1',
             'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+            'plate' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'delivery' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $response = self::storeRemission($request);
@@ -59,7 +61,9 @@ class RemissionController extends Controller
      */
     public function show($id)
     {
-        //
+        return inertia('Remission/Show',[
+            'remission' => self::getRemissionByIdWithRelationships($id)
+        ]);
     }
 
     /**

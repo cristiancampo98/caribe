@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use App\Traits\ProductTrait;
+use Faker\Guesser\Name;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -35,13 +37,8 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:100|unique:products',
-            'reference' => 'nullable|string|max:50',
-        ]);
-
         $product = self::storeProduct($request->all());
 
         return redirect()->route('product.index');
@@ -55,7 +52,6 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
         return inertia('Product/Show', [
             'product' => self::getProductWithAllData($id),
         ]);
@@ -83,6 +79,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+       $this->validate($request,[
+
+        'name' => 'required|string|max:100|unique:products,name,'.$id
+
+       ]);
        $response = self::updateProduct($id, $request);
 
        return $response ? redirect()->route('product.index')

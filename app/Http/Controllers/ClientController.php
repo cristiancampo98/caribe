@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
 use App\Models\TypeIdentification;
 use App\Traits\ClientTrait;
 use Illuminate\Http\Request;
@@ -36,13 +38,8 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users,email',
-
-        ]);
 
         $user = self::storeClient();
 
@@ -87,13 +84,12 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateClientRequest $request, $id)
     {
-        $this->validate($request, [
-            'type_pay' => 'required|in:contado,crédito',
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users,email,'.$id,
-            'name_company' => 'required|string|max:50'
+        $this->validate($request,[
+        
+             'email' => 'required|string|max:255|email|unique:users,email,'.$id
+
         ]);
 
         $client = self::updateClient($id);

@@ -28,7 +28,7 @@
 			            <!-- email -->
 			            <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="email" value="Correo" />
-			                <jet-input id="email" type="text" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
+			                <jet-input id="email" type="email" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
 			                <jet-input-error :message="form.errors.email" class="mt-2" />
                             <p class="text-sm text-blue-500">Nota: La contraseña por defecto de los clientes es : 12345678 </p>
 			            </div>

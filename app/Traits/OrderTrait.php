@@ -260,19 +260,16 @@ trait OrderTrait
 	public static function updateStatusOrderTrait($id)
 	{
 		$order = self::findOrder($id);
-		if ($order->status == 'cancelado') {
-			return response()->json([
-				'type' => 'info',
-                'text' => 'Este pedido se encuentra cancelado'
-            ],200);
-		}
+		// if ($order->status == 'cancelado') {
+		// 	return response()->json([
+		// 		'type' => 'info',
+  //               'text' => 'Este pedido se encuentra cancelado'
+  //           ],200);
+		// }
 
-		if ($order->status == 'activo') {
-			$order->status = 'finalizado';
-			$text = 'El pedido se encuentra Finalizado';
-		}else{
+		if ($order->status == 'cancelado') {
 			$order->status = 'activo';
-			$text = 'El pedido se encuentra Activo';
+			$text = 'El pedido se activo con éxito';
 		}
 
 		if ($order->save()) {

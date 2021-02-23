@@ -23,10 +23,14 @@
             			<template #description>{{order.city}}</template>
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
-                        <template #attribute>Nota</template>
+                        <template #attribute>Nota de pedido</template>
                         <template #description>{{order.note}}</template>
                     </item-list-component>
                     <item-list-component>
+                        <template #attribute>Nota de eliminación</template>
+                        <template #description>{{order.delete_note}}</template>
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
                         <template #attribute>Estado</template>
                         <template #description>{{order.status}}</template>
                     </item-list-component>
@@ -46,10 +50,6 @@
                     :files="order_files">
                     </item-list-download-component>
                     <item-list-component class="bg-gray-100">
-                        <template #attribute>Valor</template>
-                        <template #description>{{order.total}}</template>
-                    </item-list-component>
-                    <item-list-component>
                         <template #attribute>Fecha</template>
                         <template #description>{{order.created_at}}</template>
                     </item-list-component>

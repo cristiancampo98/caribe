@@ -145,7 +145,6 @@
                 options: [],
                 package: [],
                 actions: [
-                    {name: 'Editar', route:'remission.edit'},
                     {name: 'Ver', route:'remission.show'},
                 ],
             }

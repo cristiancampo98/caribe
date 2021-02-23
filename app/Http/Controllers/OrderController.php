@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Traits\OrderTrait;
 use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
@@ -38,18 +40,8 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $this->validate($request, [
-            'user_id' => 'required|numeric|min:1' ,
-            'shipping_address' => 'required|string|max:100' ,
-            'city' => 'required|string|max:100' ,
-            'order_details' => 'required|array|min:1',
-            'order_id' => 'nullable|numeric',
-            'contract' => 'required_if:type_pay,true',
-            'purchaseOrder' => 'required_if:type_pay,true',
-            'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number'
-        ]);
         $response = self::storeOrder($request->all());
 
         return $response ? redirect()->route('order.index')->with('success','El pedido se guardó con éxito')
@@ -98,19 +90,8 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateOrderRequest $request, $id)
     {
-        $this->validate($request, [
-            'user_id' => 'required|numeric|min:1' ,
-            'shipping_address' => 'required|string|max:100' ,
-            'city' => 'required|string|max:100' ,
-            'order_details' => 'required|array|min:1',
-            'pse_url' => 'nullable|url',
-            'pse_number' => 'nullable|numeric',
-            'contract' => 'required_if:credit_documents,false',
-            'purchaseOrder' => 'required_if:credit_documents,false',
-        ]);
-
         $order = self::updateOrder($request, $id);      
 
         if ($order) {

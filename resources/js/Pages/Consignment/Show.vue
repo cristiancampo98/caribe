@@ -18,16 +18,6 @@
             			<template #attribute>No. consignación</template>
             			<template #description>{{consignment.consignment_number}}</template>	
             		</item-list-component>
-                   <item-list-component >
-            			<template #attribute>Url PSE</template>
-            			<template #description>
-            				<a class="hover:text-blue-500" :href="consignment.pse_url" target="_blank">{{consignment.pse_url}}</a>
-            			</template>	
-            		</item-list-component>
-                    <item-list-component class="bg-gray-100">
-            			<template #attribute>Número PSE</template>
-            			<template #description>{{consignment.pse_number}}</template>	
-            		</item-list-component>
                     <item-list-component>
                         <template #attribute>Fecha consignación</template>
                         <template #description>{{consignment.created_at}}</template> 

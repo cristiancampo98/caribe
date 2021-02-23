@@ -18,6 +18,8 @@ class Order extends Model
     	'note',
         'delete_note',
     	'status',
+        'pse_url',
+        'pse_number',
     	'created_by'
     ];
 

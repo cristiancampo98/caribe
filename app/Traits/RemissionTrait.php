@@ -15,6 +15,7 @@ trait RemissionTrait
 
 	public static function storeRemission($data)
 	{
+		dd($data);
 		$remission = (new Remission)->fill($data->all());
 		$remission->created_by = Auth::id();
 		$remission->save();

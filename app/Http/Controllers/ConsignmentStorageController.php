@@ -14,9 +14,9 @@ class ConsignmentStorageController extends Controller
 		return self::getAllConsignmentsByRol();
 	}
 
-	public function getMultimediaConsignmentsByOrder()
+	public function getMultimediaConsignmentsByOrder($id)
 	{
-		return self::getMultimediaConsignmentsByOrderTrait();
+		return self::getMultimediaConsignmentsByOrderTrait($id);
 	}
 
 	public function getMultimediaFilesByConsignment($id)

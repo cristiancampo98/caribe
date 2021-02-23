@@ -48,9 +48,6 @@
                                 {{item.status}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.note}}
-                            </td-responsive-component>
-                            <td-responsive-component>
                                 {{item.creator.name}}
                             </td-responsive-component>
                             <td-responsive-component>
@@ -79,17 +76,24 @@
                                         :href="route(option.route, {order: item.id})" :as="option.as" method="option.method">
                                             {{option.name}}
                                         </jet-dropdown-link>
-                                        <button type="button"
-                                        v-if="!item.consignments.length && item.status != 'cancelado'"
+
+                                         <button type="button"
+                                        v-if="item.status == 'cancelado' && $page.props.isAdmin"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        @click="openModalDestroy(item)">
-                                            Cancelar
+                                        @click="updateStatusOrder(item)">
+                                            Activar
                                         </button>
                                         <button type="button"
                                         v-if="item.status == 'activo' && $page.props.isAdmin"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         @click="openModalConsignment(item)">
                                             Agregar Consignación
+                                        </button>
+                                        <button type="button"
+                                        v-if="!item.consignments.length && item.status != 'cancelado'"
+                                        class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        @click="openModalDestroy(item)">
+                                            Cancelar
                                         </button>
                                         <button type="button"
                                         v-if="$page.props.isAdmin"
@@ -196,7 +200,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Cliente','Tipo','Email','Estado','Nota','Creador','Creado','Opciones'],
+                titles: ['#','Cliente','Tipo','Email','Estado','Creador','Creado','Opciones'],
                 options: [],
                 package: [],
                 actions: [

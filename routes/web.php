@@ -108,6 +108,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [ConsignmentStorageController::class, 'getMultimediaFilesByConsignment']
     );
 
+    Route::get('getMultimediaFilesByRemission/{id}/remission',
+        [RemissionStorageController::class, 'getMultimediaFilesByRemission']
+    );
+
+
+
     Route::get('getPaginateAllUsers/users',
         [UserStorageController::class, 'getPaginateAllUsers']
     );
@@ -130,8 +136,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getConsignment/consignments',
         [ConsignmentStorageController::class, 'getConsignment']
     );
-    Route::get('getMultimediaConsignmentsByOrder',
+    Route::get('getMultimediaConsignmentsByOrder/{id}/consignment',
         [ConsignmentStorageController::class, 'getMultimediaConsignmentsByOrder']
+    );
+    Route::get('getMultimediaOrdersById/{id}/order',
+        [OrderStorageController::class, 'getMultimediaOrdersById']
     );
     Route::get('getClients/client',
         [ClientStorageController::class, 'getClients']
@@ -142,6 +151,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getClientsPaginate/client',
         [ClientStorageController::class, 'getClientsPaginate']
     );
+    Route::get('getVehiclesByUserId/{id}/client',
+        [ClientStorageController::class, 'getVehiclesByUserId']
+    );
+    
     Route::get('getPaginateAllVehicles/vehicles',
         [VehicleStorageController::class, 'getVehiclesPaginate']
     );

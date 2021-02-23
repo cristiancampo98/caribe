@@ -47,12 +47,6 @@
                                 {{item.consignment_number}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.pse_url}}
-                            </td-responsive-component>
-                            <td-responsive-component>
-                                {{item.pse_number}}
-                            </td-responsive-component>
-                            <td-responsive-component>
                                 {{item.created_at}}
                             </td-responsive-component>
                             <td-responsive-component>
@@ -160,7 +154,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Cliente','# Pedido','# Consignación','Url','# PSE','Fecha','Opciones'],
+                titles: ['#','Cliente','# Pedido','# Consignación','Fecha','Opciones'],
                 options: [],
                 package: [],
                 actions: [

@@ -24,4 +24,9 @@ class OrderStorageController extends Controller
     {
     	return self::getOrdersByUserIdWithConsignmentsTrait();
     }
+
+    public function getMultimediaOrdersById($id)
+    {
+        return self::getMultimediaOrderClientCredit($id);
+    }
 }

@@ -6,58 +6,57 @@
             </h2>
         </template>
         <div class="py-12">
-            <div class="max-w-md sm:px-6 lg:px-8">
-            	<div class="grid grid-cols-2 gap-4">
-            		<div class="col-span-6 lg:col-span-1">
-		                <jet-label for="user_id" value="Cliente" />
-		                <v-select 
-				        label="name" 
-				        :filterable="false" 
-				        :options="clients" 
-				        v-model="user_id"
-				        :reduce= "clients => clients.id"
-				        @search="onSearch"
-				        @input="loadOrders">
-						    <template slot="no-options">
-						      Escribe el nombre de un cliente
-						    </template>
-						    <template slot="option" slot-scope="option">
-						      <div class="d-center">
-						        <p> Nombre: {{ option.name }}</p>
-						        </div>
-						    </template>
-						    <template slot="selected-option" slot-scope="option">
-						      <div class="selected d-center">
-						      	 <p>{{ option.name }}</p>
-						      </div>
-						    </template>
-						</v-select>
-		                <jet-input-error :message="error_client" class="mt-2" />
-		            </div>
-		            <div class="col-span-6 lg:col-span-1" v-if="orders.length">
-		                <jet-label for="order_id" value="Pedidos" />
-		                <v-select 
-				        label="id" 
-				        :options="orders" 
-				        v-model="order_id"
-				        :reduce= "orders => orders.id"
-				        @input="showDetailOrder">
-						    <template slot="option" slot-scope="option">
-						      <div class="d-center">
-						        <p> Pedido #: {{ option.id }}</p>
-						        <cite>Cliente: {{ user_name }}</cite>
-						        </div>
-						    </template>
-						    <template slot="selected-option" slot-scope="option">
-						      <div class="selected d-center">
-						      	 <p>Pedido #: {{ option.id }}</p>
-						      </div>
-						    </template>
-						</v-select>
-		                <jet-input-error :message="error_client" class="mt-2" />
-		            </div>
-            	</div>
-            </div>
+        	<div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-rows-max lg:auto-cols-max">
+        		<div >
+	                <jet-label for="user_id" value="Cliente" />
+	                <v-select 
+	                class="w-24 min-w-full lg:min-w-max"
+			        label="name" 
+			        :filterable="false" 
+			        :options="clients" 
+			        v-model="user_id"
+			        :reduce= "clients => clients.id"
+			        @search="onSearch"
+			        @input="loadOrders">
+					    <template slot="no-options">
+					      Escribe el nombre de un cliente
+					    </template>
+					    <template slot="option" slot-scope="option">
+					      <div class="d-center">
+					        <p> Nombre: {{ option.name }}</p>
+					        </div>
+					    </template>
+					    <template slot="selected-option" slot-scope="option">
+					      <div class="selected d-center">
+					      	 <p>{{ option.name }}</p>
+					      </div>
+					    </template>
+					</v-select>
+	                <jet-input-error :message="error_client" class="mt-2" />
+	            </div>
+	            <div v-if="orders.length">
+	                <jet-label for="order_id" value="Pedidos" />
+	                <v-select 
+			        label="id" 
+			        :options="orders" 
+			        v-model="order_id"
+			        :reduce= "orders => orders.id"
+			        @input="showDetailOrder">
+					    <template slot="option" slot-scope="option">
+					      <div class="d-center">
+					        <p> Pedido #: {{ option.id }}</p>
+					        <cite>Cliente: {{ user_name }}</cite>
+					        </div>
+					    </template>
+					    <template slot="selected-option" slot-scope="option">
+					      <div class="selected d-center">
+					      	 <p>Pedido #: {{ option.id }}</p>
+					      </div>
+					    </template>
+					</v-select>
+	                <jet-input-error :message="error_client" class="mt-2" />
+	            </div>
+        	</div>
             <!-- order details table -->
             <div v-if="details.length">
             	<div v-if="Object.keys(remi.errors).length">
@@ -156,20 +155,37 @@
 	                    </tr>
 	                </template>
 	            </table-responsive-component>
-	            <div class="grid grid-flow-col gap-4 auto-cols-max">
+	            <div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-rows-max lg:auto-cols-max">
 	            	<div>
 	            		<jet-button type="button" @click.native="openModalStoreVehicle">Agregar vehículo</jet-button>
 	            	</div>
 	            	<div>
-	            		<a href="http://szimek.github.io/signature_pad/" title="Firmar" target="_blank" class="hover:text-blue-500">Ir a firmar</a>
-	            	</div>
-	            	<div>
 			        	<label for="firm" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1 ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 			        		<span>Subir firma</span>
-			        		<input type="file"  id="firm"  ref="firm" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			        		<input type="file"  id="firm"  ref="firm" @change="uploadFirm" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
 			        	</label>
-			        	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
+			        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
+			        	<span v-if="uploadedFirm" class="ml-4 text-green-500">¡Hecho!</span>
 	            	</div>
+	            	<div>
+			        	<label for="plate" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1 ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			        		<span>Subir foto placa</span>
+			        		<input type="file"  id="plate"  ref="plate" @change="uploadPlate" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
+			        	</label>
+			        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
+			        	<span v-if="uploadedPlate" class="ml-4 text-green-500">¡Hecho!</span>
+	            	</div>
+	            	<div>
+			        	<label for="delivery" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1 ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			        		<span>Subir foto entrega</span>
+			        		<input type="file"  id="delivery"  ref="delivery" @change="uploadDelivery" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
+			        	</label>
+			        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
+			        	<span v-if="uploadedDelivery" class="ml-4 text-green-500">¡Hecho!</span>
+	            	</div>
+	            </div>
+	            <div class="mt-8 relative">
+	            	<iframe src="http://szimek.github.io/signature_pad/" class="inset-0 w-full h-screen"></iframe>
 	            </div>
 	        </div>
             <!-- end table  -->
@@ -208,6 +224,7 @@
 					        		<span>Subir</span>
 					        		<input type="file"  id="photo_plate"  ref="photo_plate" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
 					        	</label>
+					        		<p class="mt-2 text-xs text-gray-500">PDF, JPG, PNG</p>
 					        	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
 					        </div>
 				            	
@@ -268,6 +285,7 @@
     	data(){
             return {
             	status:{},
+            	loading: false,
                 clients: [],
                 vehicles: [],
                 orders: [],
@@ -287,6 +305,9 @@
                 order_id: null,
                 showModalFormVehicle: false,
                 uploadedImagen: false,
+                uploadedFirm: false,
+                uploadedPlate: false,
+                uploadedDelivery: false,
                 form: this.$inertia.form({
                     license_plate: '',
                     brand: '',
@@ -299,7 +320,9 @@
                     delivered: null,
             		order_details_id: null,
             		vehicle_users_id: null,
-            		firm:null
+            		firm: null,
+            		plate: null,
+            		delivery: null
                 })
             }
         },
@@ -308,44 +331,39 @@
         },
         methods: {
         	storeVehicle(){
+        		this.startLoading();
+
         		if (this.$refs.photo_plate) {
                     this.form.photo_plate = this.$refs.photo_plate.files[0]
                 }
                 this.form.user_id =  this.user_id;
-
-                const loading = this.$vs.loading({
-            		type: 'circles'
-            	});
 
                 this.form.post(route('vehicle.store'), {
                     errorBag: 'storeVehicle',
                     preserveScroll: true,
                     onStart: () => { 
                     	this.showModalFormVehicle = false;
-                    	loading.text = "Procesando..."
                     },
 				  	onSuccess: () => {
-				  		loading.text = "¡Hecho!";
+				  		this.loading.text = "¡Hecho!";
 				  		this.uploadedImagen = false;
-
-				  		for (var val in this.flash){
-				  			if (this.flash[val]) {
-				  				this.status = {
-				  					type: val,
-				  					text: this.flash[val]
-				  				}
-				  			}
-				  		}
+				  		this.getVehiclesByUserId();
 				  	},
 				  	onFinish: () => {
-				  		loading.close()
+				  		this.endLoading();
+				  		this.form.reset()
 				  	},
                 });
         	},
+        	getVehiclesByUserId(){
+        		axios.get(`/getVehiclesByUserId/${this.user_id}/client`)
+        		.then(res => {
+        			this.vehicles = res.data.vehicles;
+        		});
+        	},
             storeRemission(item){
-
+            	this.startLoading();
             	this.remi.clearErrors();
-
         		this.remi.delivered = item.cantidad;
         		this.remi.order_details_id = item.id;
         		this.remi.vehicle_users_id = item.vehicle_user;
@@ -353,31 +371,24 @@
             	if (this.$refs.firm) {
                     this.remi.firm = this.$refs.firm.files[0]
                 }
-
-                const loading = this.$vs.loading({
-            		type: 'circles'
-            	});
+                if (this.$refs.plate) {
+                    this.remi.plate = this.$refs.plate.files[0]
+                }
+                if (this.$refs.delivery) {
+                    this.remi.delivery = this.$refs.delivery.files[0]
+                }
 
                 this.remi.post(route('remission.store'), {
                     preserveScroll: true,
                     onStart: () => { 
-                    	loading.text = "Procesando..."
                     },
 				  	onSuccess: () => {
-				  		loading.text = "¡Hecho!";
+				  		this.loading.text = "¡Hecho!";
 				  		this.uploadedImagen = false;
-
-				  		for (var val in this.flash){
-				  			if (this.flash[val]) {
-				  				this.status = {
-				  					type: val,
-				  					text: this.flash[val]
-				  				}
-				  			}
-				  		}
 				  	},
 				  	onFinish: () => {
-				  		loading.close()
+				  		this.endLoading();
+				  		this.remi.reset()
 				  	},
                 });
             },
@@ -400,6 +411,7 @@
 		      });
 		    }, 350),
 		    loadOrders(value){
+		    	this.startLoading();
 		    	this.clients.map( item => {
 		    		if (item.id == value) {
 		    			this.vehicles = item.vehicles;
@@ -414,9 +426,11 @@
 			      		type: res.data.type,
 			      		text: res.data.text,
 			      	}
-		    	});
+		    	})
+		    	.finally( () => this.endLoading());
 		    },
 		    showDetailOrder(value){
+		    	this.startLoading();
 		    	axios.get(
 		    		`/getOrderDetailsByOrderId/orderDetail?id=${value}`
 		    	).then( res => {
@@ -426,7 +440,8 @@
 			      		type: res.data.type,
 			      		text: res.data.text,
 			      	}
-		    	});
+		    	})
+		    	.finally( () => this.endLoading());;
 		    },
 		    validateQuantity(item){
 		    	var deli = this.total_delivered(item.remissions);
@@ -448,6 +463,15 @@
 		    uploadImagen(){
 		    	this.uploadedImagen = true;
 		    },
+		    uploadFirm(){
+		    	this.uploadedFirm = true;
+		    },
+		    uploadPlate(){
+		    	this.uploadedPlate = true;
+		    },
+		    uploadDelivery(){
+		    	this.uploadedDelivery = true;
+		    },
 		    total_delivered(remissions){
 		    	var res = 0;
         		if (remissions.length) {
@@ -464,7 +488,17 @@
         	fullyDispatched(item){
         		var dispatched = this.total_delivered(item.remissions);
         		return item.quantity - dispatched;
-        	}
+        	},
+        	startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
+            }
         }
 
     }

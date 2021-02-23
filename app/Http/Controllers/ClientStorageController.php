@@ -28,4 +28,9 @@ class ClientStorageController extends Controller
         return self::getMultimediaByWhereIn([$id],'user_id');
     }
 
+    public function getVehiclesByUserId($id)
+    {
+        return self::getClientWithRelationships($id);
+    }
+
 }

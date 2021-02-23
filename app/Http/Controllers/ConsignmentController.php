@@ -38,19 +38,10 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->wantsJson()) {
-            $this->validate($request, [
+        $this->validate($request, [
             'order_id' => 'required|numeric',
             'consignment_number' => 'required|unique:consignments,consignment_number',
-            ]);
-        }else {
-            $this->validate($request, [
-                'order_id' => 'required|numeric',
-                'consignment_number' => 'required|unique:consignments,consignment_number',
-                'pse_url' => 'nullable|url',
-                'pse_number' => 'nullable|numeric'
-            ]);
-        }
+        ]);
 
         $data = self::storeConsignment();
 

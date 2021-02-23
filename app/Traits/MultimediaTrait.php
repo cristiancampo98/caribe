@@ -87,4 +87,17 @@ trait MultimediaTrait
 			$value->delete();
 		}
 	}
+
+	public static function destroyMultimediaByReason($reason, $foreign_key, $model_id)
+	{
+		$multimedia = Multimedia::where([
+			'reason' => $reason,
+			'foreign_key' => $foreign_key,
+			'model_id' => $model_id,
+		])->get();
+		foreach ($multimedia as $key => $value) {
+			Storage::disk('public')->delete($value->path);
+			$value->delete();
+		}
+	}
 }

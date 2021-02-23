@@ -23,18 +23,33 @@
             			<template #description>{{order.city}}</template>
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
-                        <template #attribute>Nota</template>
+                        <template #attribute>Nota de pedido</template>
                         <template #description>{{order.note}}</template>
                     </item-list-component>
                     <item-list-component>
+                        <template #attribute>Nota de eliminación</template>
+                        <template #description>{{order.delete_note}}</template>
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
                         <template #attribute>Estado</template>
                         <template #description>{{order.status}}</template>
                     </item-list-component>
-                    <item-list-component class="bg-gray-100">
-                        <template #attribute>Valor</template>
-                        <template #description>{{order.total}}</template>
+                    <item-list-component >
+                        <template #attribute>Url PSE</template>
+                        <template #description>
+                            <a class="hover:text-blue-500" :href="order.pse_url" target="_blank">{{order.pse_url}}</a>
+                        </template> 
                     </item-list-component>
-                    <item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Número PSE</template>
+                        <template #description>{{order.pse_number}}</template>    
+                    </item-list-component>
+                    <item-list-download-component
+                    v-if="order_files.length"
+                    title="Contrato/Orden de compra"
+                    :files="order_files">
+                    </item-list-download-component>
+                    <item-list-component class="bg-gray-100">
                         <template #attribute>Fecha</template>
                         <template #description>{{order.created_at}}</template>
                     </item-list-component>
@@ -128,12 +143,13 @@
     	},
     	data(){
             return {
-                files_consignments: []
-              
+                files_consignments: [],
+                order_files: []
             }
         },
         mounted(){
         	this.getMultimediaConsignmentsByOrder();
+            this.getMultimediaOrdersById();
         },
         methods: {
             getClass(value){
@@ -141,14 +157,20 @@
             },
             getMultimediaConsignmentsByOrder(){
                 if (this.order.consignments) {
-                    axios.get('/getMultimediaConsignmentsByOrder?id='+this.order.id)
+                    axios.get(`/getMultimediaConsignmentsByOrder/${this.order.id}/consignment`)
                     .then( res => {
                         this.files_consignments = res.data;
                     });
                 }
+            },
+            getMultimediaOrdersById(){
+                if (this.order.client.details.type_pay == 'crédito') {
+                    axios.get(`/getMultimediaOrdersById/${this.order.id}/order`)
+                    .then( res => {
+                        this.order_files = res.data;
+                    });
+                }
             }
-
         }
-
     }
 </script>

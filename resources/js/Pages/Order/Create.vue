@@ -31,6 +31,7 @@
 					        :options="clients" 
 					        v-model="form.user_id"
 					        :reduce= "clients => clients.id"
+					        @input="getTypePay"
 					        @search="onSearch">
 							    <template slot="no-options">
 							      Escribe el nombre de un cliente o empresa
@@ -100,6 +101,24 @@
 			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	</label>
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
+			            </div>
+			             <!-- contrato -->
+			            <div class="col-span-6 lg:col-span-1" v-if="type_pay == 'crédito'">
+			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            		<span>Subir contrato</span>
+			            		<input type="file"  id="contract"  ref="contract" @change="uploadContract" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            	</label>
+			            	<span v-if="uploadedContract" class="ml-4 text-green-500">¡Hecho!</span>
+			            </div>
+			             <!-- orden de compra -->
+			            <div class="col-span-6 lg:col-span-1" v-if="type_pay == 'crédito'">
+			            	<label for="purchaseOrder" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            		<span>Subir orden de compra</span>
+			            		<input type="file"  id="purchaseOrder"  ref="purchaseOrder" @change="uploadPurchaseOrder" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
+			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            	</label>
+			            	<span v-if="uploadedPurchaseOrder" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			           <div class="col-span-6 lg:col-span-6">
 				           	<h3>Pedido</h3>
@@ -221,11 +240,12 @@
                     shipping_address: null,
                     city: null,
                     note: null,
-                  
+                    contract: null,
+                    purchaseOrder: null,
+                    type_pay:false,
                     order_details: [],
                     consignment: {
                     	consignment_number: null,
-	                  
 	                    imagen: null
                     }
                 }),
@@ -239,7 +259,11 @@
                 clients: [],
                 deparments: [],
                 citys: [],
-                uploadedImagen: false
+                uploadedImagen: false,
+                uploadedContract: false,
+                uploadedPurchaseOrder: false,
+                type_pay: null,
+                loading: false
 
             }
         },
@@ -248,18 +272,43 @@
         },
         methods: {
         	uploadImagen(){
-
+        		this.uploadedImagen = true
+        	},
+        	uploadContract(){
+        		this.uploadedContract = true
+        	},
+        	uploadPurchaseOrder(){
+        		this.uploadedPurchaseOrder = true
         	},
             storeOrder(){
             	if (this.$refs.imagen) {
                     this.form.consignment.imagen = this.$refs.imagen.files[0]
                 }
+                if (this.$refs.contract) {
+                    this.form.contract = this.$refs.contract.files[0]
+                }
+                if (this.$refs.purchaseOrder) {
+                    this.form.purchaseOrder = this.$refs.purchaseOrder.files[0]
+                }
             	if (! this.$page.props.isAdmin) {
             		this.form.user_id = this.user.id
             	}
+            	if (this.type_pay != null) {
+            		this.form.type_pay = true;
+            	}
                 this.form.post(route('order.store'), {
                     errorBag: 'storeOrder',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                      this.startLoading();
+                    },
+                    onSuccess: () => {
+                        this.loading.text = "¡Hecho!";
+                        this.uploadedImagen = false;
+                    },
+                    onFinish: () => {
+                       this.endLoading();
+                    },
                 });
             },
             loadFileColombiaJson(){
@@ -320,7 +369,23 @@
 		      	vm.clients = res.data;
 		        loading(false);
 		      });
-		    }, 350)
+		    }, 350),
+		    getTypePay(value){
+		    	const found = this.clients.find( item => item.id == value);
+		    	if (found) {
+		    		this.type_pay = found.type_pay;
+		    	}
+		    },
+		    startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
+            }
         }
 
     }

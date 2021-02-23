@@ -40,13 +40,14 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        
         $this->validate($request, [
             'user_id' => 'required|numeric|min:1' ,
             'shipping_address' => 'required|string|max:100' ,
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1',
             'order_id' => 'nullable|numeric',
+            'contract' => 'required_if:type_pay,true',
+            'purchaseOrder' => 'required_if:type_pay,true',
             'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number'
         ]);
         $response = self::storeOrder($request->all());
@@ -77,13 +78,17 @@ class OrderController extends Controller
     public function edit($id)
     {
     	$order = self::findOrder($id);
-    	
-    	return inertia('Order/Edit', [
-            'order' => $order,
-            'products' => self::getAllProductsToOrder()
-        ]);
 
-       
+        if ($order->status == 'activo') {
+            return inertia('Order/Edit', [
+                'order' => $order,
+                'products' => self::getAllProductsToOrder(),
+                'contract_old' => self::getMultimediaByParams('order','order_id',$id,'contract_file'),
+                'purchase_order_old' => self::getMultimediaByParams('order','order_id',$id,'purchase_order_file'),
+            ]);
+        }
+        
+        return redirect()->back()->with('info','No se puede editar debido a que se canceló o esta finalizado');
     }
 
     /**
@@ -95,12 +100,15 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $this->validate($request, [
             'user_id' => 'required|numeric|min:1' ,
             'shipping_address' => 'required|string|max:100' ,
             'city' => 'required|string|max:100' ,
-            'order_details' => 'required|array|min:1'
+            'order_details' => 'required|array|min:1',
+            'pse_url' => 'nullable|url',
+            'pse_number' => 'nullable|numeric',
+            'contract' => 'required_if:credit_documents,false',
+            'purchaseOrder' => 'required_if:credit_documents,false',
         ]);
 
         $order = self::updateOrder($request, $id);      

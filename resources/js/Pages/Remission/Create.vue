@@ -376,13 +376,13 @@
         		this.remi.vehicle_users_id = item.vehicle_user;
         		this.remi.consignment_id = item.consignment_id;
 
-            	if (this.$refs.firm) {
+            	if (this.$refs.firm.files[0]) {
                     this.remi.firm = this.$refs.firm.files[0]
                 }
-                if (this.$refs.plate) {
+                if (this.$refs.plate.files[0]) {
                     this.remi.plate = this.$refs.plate.files[0]
                 }
-                if (this.$refs.delivery) {
+                if (this.$refs.delivery.files[0]) {
                     this.remi.delivery = this.$refs.delivery.files[0]
                 }
 
@@ -395,6 +395,7 @@
 				  		this.uploadedImagen = false;
 				  	},
 				  	onFinish: () => {
+				  		this.getStatusFlash();
 				  		this.endLoading();
 				  		this.remi.reset()
 				  	},
@@ -506,7 +507,20 @@
             },
             endLoading(){
                 this.loading.close();
-            }
+            },
+            getStatusFlash(){
+	            for (var val in this.$page.props.flash){
+
+	                if (this.$page.props.flash[val]) {
+
+	                    this.status = {
+
+	                    	type : val,
+	                    	text : this.$page.props.flash[val]
+	                    }
+	                }
+	            }
+	        }
         }
 
     }

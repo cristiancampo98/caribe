@@ -40,7 +40,9 @@ class RemissionController extends Controller
     {
         $response = self::storeRemission($request);
 
-        StoredRemission::dispatch($response);
+        if ($response) {
+            StoredRemission::dispatch($response);
+        }
 
         return $response ? redirect()->route('remission.index')->with('success','La remisión se creo con éxito')
                         : redirect()->back()->with('error','Sucedió un error, no se pudo crear la remisión');

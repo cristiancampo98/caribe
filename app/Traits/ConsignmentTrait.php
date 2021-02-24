@@ -114,11 +114,22 @@ trait ConsignmentTrait
 		);
 	}
 
-	public function getConsignmentByIdWithRelationship($id)
+	public static function getConsignmentByIdWithRelationship($id)
 	{
 		return Consignment::where('id', $id)
 				->with('order.client')
 				->first();
 	}
+
+	public static function canTakenConsignment($id)
+	{
+		$consignment = Consignment::find($id);
+		if ($consignment->taken) {
+			return false;
+		}
+		return true;
+	}
+
+	
 	
 }

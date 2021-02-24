@@ -40,7 +40,12 @@
                             <td-responsive-component>
                                 No. {{item.order_detail.order_id}}
                             </td-responsive-component>
-                             <td-responsive-component>
+                            <td-responsive-component>
+                                {{item.consignment 
+                                    ? item.consignment.consignment_number
+                                    : 'Pendiente '}}
+                            </td-responsive-component>
+                            <td-responsive-component>
                                 {{item.order_detail.product.name}}
                             </td-responsive-component>
                             <td-responsive-component>
@@ -146,7 +151,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Pedido','Producto','Entregado','Cantidad','Vehiculo','Fecha','Opciones'],
+                titles: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Fecha','Opciones'],
                 options: [],
                 package: [],
                 actions: [

@@ -47,7 +47,7 @@
                                 {{item.delivered}}
                                 m3
                             </td-responsive-component>
-                             <td-responsive-component>
+                            <td-responsive-component>
                                 {{item.order_detail.quantity}}
                                 m3
                             </td-responsive-component>
@@ -62,7 +62,9 @@
                                     </li>
                                 </ul>
                             </td-responsive-component>
-                          
+                            <td-responsive-component>
+                                {{moment(item.created_at).format('DD/MM/YYYY')}}
+                            </td-responsive-component>
                            
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -114,6 +116,9 @@
     import JetDropdownLink from '@/Jetstream/DropdownLink'
     import vSelect from "vue-select"
     import 'vue-select/dist/vue-select.css'
+    import moment from 'moment';
+    moment.locale('es')
+    
 
 
     export default {
@@ -141,12 +146,13 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Pedido','Producto','Entregado','Cantidad','Vehiculo','Opciones'],
+                titles: ['#','Pedido','Producto','Entregado','Cantidad','Vehiculo','Fecha','Opciones'],
                 options: [],
                 package: [],
                 actions: [
                     {name: 'Ver', route:'remission.show'},
                 ],
+                moment: moment,
             }
         },
         methods: {

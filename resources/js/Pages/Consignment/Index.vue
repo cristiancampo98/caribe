@@ -47,7 +47,7 @@
                                 {{item.consignment_number}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.created_at}}
+                                 {{moment(item.created_at).format('DD/MM/YYYY')}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -129,6 +129,8 @@
     import JetDropdownLink from '@/Jetstream/DropdownLink'
     import vSelect from "vue-select"
     import 'vue-select/dist/vue-select.css'
+    import moment from 'moment';
+    moment.locale('es')
     
 
     export default {
@@ -163,7 +165,8 @@
                 ],
                 consecutive: null,
                 modalDestroy: false,
-                key: null
+                key: null,
+                moment: moment,
             }
         },
         created(){

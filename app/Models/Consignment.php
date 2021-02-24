@@ -13,10 +13,8 @@ class Consignment extends Model
 
     protected $fillable = [
     	'order_id',
-    	'remission_id',
     	'consignment_number',
-    	'pse_url',
-    	'pse_number'
+        'taken'
     ];
 
     public function order()

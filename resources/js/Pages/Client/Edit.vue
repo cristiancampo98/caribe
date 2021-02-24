@@ -75,25 +75,7 @@
 			            	:options="['contado','crédito']"></v-select>
 			                <jet-input-error :message="form.errors.type_pay" class="mt-2" />
 			            </div>
-			            <!-- steet address -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="street_address" value="Dirección" />
-			                <jet-input id="street_address" type="text" class="mt-1 block w-full" v-model="form.street_address" autocomplete="street_address" />
-			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
-			            </div>
-			            <!-- street details -->
-			            <div class="col-span-6 lg:col-span-6">
-			                <jet-label for="street_details" value="Detalles de dirección" />
-			                <textarea id="street_details" class="mt-1 block w-full rounded-md" v-model="form.street_details"></textarea>
-			                <jet-input-error :message="form.errors.street_details" class="mt-2" />
-			            </div>
-			            <!-- street comune -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="street_comune" value="Comuna" />
-			                <jet-input id="street_comune" type="text" class="mt-1 block w-full" v-model="form.street_comune" autocomplete="street_comune" />
-			                <jet-input-error :message="form.errors.street_comune" class="mt-2" />
-			            </div>
-			            <!-- department -->
+			             <!-- department -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
@@ -118,6 +100,26 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
+			            <!-- street comune -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="street_comune" value="Comuna" />
+			                <jet-input id="street_comune" type="text" class="mt-1 block w-full" v-model="form.street_comune" autocomplete="street_comune" />
+			                <jet-input-error :message="form.errors.street_comune" class="mt-2" />
+			            </div>
+			            <!-- steet address -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="street_address" value="Dirección" />
+			                <jet-input id="street_address" type="text" class="mt-1 block w-full" v-model="form.street_address" autocomplete="street_address" />
+			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
+			            </div>
+			            <!-- street details -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="street_details" value="Detalles de dirección" />
+			                <textarea id="street_details" class="mt-1 block w-full rounded-md" v-model="form.street_details"></textarea>
+			                <jet-input-error :message="form.errors.street_details" class="mt-2" />
+			            </div>
+			            
+			           
 
 			            <div class="col-span-6">
 			            	<p class="text-sm text-blue-500">Nota: En los siguientes tres recuadros podrá ingresar varios datos en cada casilla con la única condición que al final de cada dato exista una coma. Ejemplo: Placa1,Placa2, ... / Email1,Email2, ...</p>

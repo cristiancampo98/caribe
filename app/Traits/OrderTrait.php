@@ -55,6 +55,7 @@ trait OrderTrait
             $order_id = DB::table('orders')->insertGetId([
             	'user_id' => $data['user_id'],
                 'shipping_address' => $data['shipping_address'],
+                'department' => $data['department'],
                 'city' => $data['city'],
                 'note' => $data['note'],
                 'status' => 'activo',
@@ -141,6 +142,7 @@ trait OrderTrait
 			'orderDetails.remissions',
 			'client',
 			'creator',
+			'consignments'
 		])
 		->first();
 
@@ -260,12 +262,6 @@ trait OrderTrait
 	public static function updateStatusOrderTrait($id)
 	{
 		$order = self::findOrder($id);
-		// if ($order->status == 'cancelado') {
-		// 	return response()->json([
-		// 		'type' => 'info',
-  //               'text' => 'Este pedido se encuentra cancelado'
-  //           ],200);
-		// }
 
 		if ($order->status == 'cancelado') {
 			$order->status = 'activo';
@@ -309,10 +305,21 @@ trait OrderTrait
 
 	public static function getOrdersByUserIdWithConsignmentsTrait()
 	{
-		$orders = Order::where('user_id', request()->get('id'))
+		$isCredit = User::find(request()->get('id'))->details;
+
+		$orders = [];
+		if ($isCredit->type_pay == 'crédito') {
+
+			$orders = Order::where('user_id', request()->get('id'))
+					->where('status','activo')
+					->get();
+		}else{
+
+			$orders = Order::where('user_id', request()->get('id'))
 					->whereHas('consignments')
 					->where('status','activo')
 					->get();
+		}
 
 		if (count($orders)) {
 			return response()->json([

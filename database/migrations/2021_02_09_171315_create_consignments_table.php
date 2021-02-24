@@ -17,6 +17,7 @@ class CreateConsignmentsTable extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained();
             $table->string('consignment_number')->unique()->nullable();
+            $table->boolean('taken')->default(0);
             $table->timestamps();
         });
     }

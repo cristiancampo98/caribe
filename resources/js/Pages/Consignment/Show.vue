@@ -20,7 +20,7 @@
             		</item-list-component>
                     <item-list-component>
                         <template #attribute>Fecha consignación</template>
-                        <template #description>{{consignment.created_at}}</template> 
+                        <template #description>{{moment(consignment.created_at).format('DD/MM/YYYY')}}</template>
                     </item-list-component>
                     <item-list-component class="bg-gray-100">
             			<template #attribute>Cliente</template>
@@ -46,6 +46,8 @@
 	import DescriptionListComponent from '@/Components/DescriptionList'
 	import ItemListComponent from '@/Components/ItemList'
     import ItemListDownloadComponent from '@/Components/ItemListDownload'
+    import moment from 'moment';
+    moment.locale('es')
 
     export default {
     	components: {
@@ -61,6 +63,7 @@
             return {
                 status:{},
                 multimedia: [],
+                moment: moment,
             }
         },
         mounted(){

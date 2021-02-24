@@ -44,7 +44,7 @@ class PaymentLink extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Actualización de pedido')
+                    ->subject('Enlace de pago')
                     ->greeting('¡Hola '. $this->order->client->name .'!')
                     ->line('Tú pedido ha sido actualizado.')
                     ->line('Hemos agregado un enlace de pago.')

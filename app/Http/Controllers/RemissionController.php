@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRemissionRequest;
+use App\Events\StoredRemission;
 use App\Traits\RemissionTrait;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,8 @@ class RemissionController extends Controller
     public function store(StoreRemissionRequest $request)
     {
         $response = self::storeRemission($request);
+
+        StoredRemission::dispatch($response);
 
         return $response ? redirect()->route('remission.index')->with('success','La remisión se creo con éxito')
                         : redirect()->back()->with('error','Sucedió un error, no se pudo crear la remisión');

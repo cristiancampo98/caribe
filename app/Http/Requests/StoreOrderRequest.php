@@ -44,7 +44,7 @@ class StoreOrderRequest extends FormRequest
             'order_details.required'     =>  'Seleccione un producto',
             'order_details.array'       =>  'Debes seleccionar uno o más productos',
             'contract.required_if'     =>      'El contrato es requerido porque el tipo de pago es crédito',
-            'purchaseOrder.required_if'     =>      'El tipo de pago requerido porque el tipo de pago es crédito'
+            'purchaseOrder.required_if'     =>      'La orden de compra es requerida porque el tipo de pago es crédito'
         ];
     }
 }

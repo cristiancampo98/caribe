@@ -18,14 +18,7 @@
             			<template #attribute>Referencia</template>
             			<template #description>{{product.reference}}</template>	
             		</item-list-component>
-                   <item-list-component >
-            			<template #attribute>Unidad</template>
-            			<template #description>{{product.units_measure.name}}</template>	
-            		</item-list-component>
-                    <item-list-component class="bg-gray-100">
-            			<template #attribute>Precio</template>
-            			<template #description>{{product.price}}</template>	
-            		</item-list-component>
+                   
                     <item-list-component >
             			<template #attribute>Descripción</template>
             			<template #description>{{product.description}}</template>	
@@ -40,7 +33,7 @@
                     </item-list-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Fecha</template>
-                        <template #description>{{product.created_at}}</template> 
+                        <template #description>{{moment(product.created_at).format('DD/MM/YYYY')}}</template> 
                     </item-list-component>
                     <item-list-download-component
                     v-if="multimedia.length"
@@ -62,6 +55,8 @@
 	import DescriptionListComponent from '@/Components/DescriptionList'
 	import ItemListComponent from '@/Components/ItemList'
     import ItemListDownloadComponent from '@/Components/ItemListDownload'
+    import moment from 'moment';
+    moment.locale('es')
 
     export default {
     	components: {
@@ -77,6 +72,7 @@
             return {
                 status:{},
                 multimedia: [],
+                moment: moment,
             }
         },
         mounted(){

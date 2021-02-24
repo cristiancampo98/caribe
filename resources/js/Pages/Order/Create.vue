@@ -60,6 +60,7 @@
 			            	class="mt-1"
 			            	id="deparment"
 			            	label="departamento"
+			            	v-model="form.department"
 			            	:options="deparments"
 			            	:clearable="false"
 			            	@input="showCitys"></v-select>
@@ -238,6 +239,7 @@
                 form: this.$inertia.form({
                     user_id: null,
                     shipping_address: null,
+                    department: null,
                     city: null,
                     note: null,
                     contract: null,
@@ -293,8 +295,10 @@
             	if (! this.$page.props.isAdmin) {
             		this.form.user_id = this.user.id
             	}
-            	if (this.type_pay != null) {
+            	if (this.type_pay == 'crédito') {
             		this.form.type_pay = true;
+            	}else{
+            		this.form.type_pay = false;
             	}
                 this.form.post(route('order.store'), {
                     errorBag: 'storeOrder',
@@ -318,6 +322,7 @@
             	})
             },
             showCitys(value){
+            	this.form.department = value.departamento;
             	this.citys = value.ciudades
             },
             addToCar(){

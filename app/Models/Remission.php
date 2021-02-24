@@ -15,6 +15,7 @@ class Remission extends Model
     	'delivered',
     	'order_details_id',
     	'vehicle_users_id',
+        'consignment_id',
     	'created_by'
     ];
 
@@ -31,6 +32,11 @@ class Remission extends Model
     public function carrier()
     {
     	return $this->belongsTo(VehicleUser::class, 'vehicle_users_id');
+    }
+
+    public function consignment()
+    {
+        return $this->belongsTo(Consignment::class, 'consignment_id');
     }
 
 

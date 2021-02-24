@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\StoredOrder;
+use App\Events\UpdatedOrder;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Traits\OrderTrait;
@@ -43,6 +45,8 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request)
     {
         $response = self::storeOrder($request->all());
+        $order = self::findOrder($response);
+        StoredOrder::dispatch($order);
 
         return $response ? redirect()->route('order.index')->with('success','El pedido se guardó con éxito')
                 : redirect()->back()->with('error','Sucedió un error, no se pudo crear el pedido');
@@ -92,7 +96,9 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, $id)
     {
-        $order = self::updateOrder($request, $id);      
+        $order = self::updateOrder($request, $id);     
+
+        UpdatedOrder::dispatch($order); 
 
         if ($order) {
             return redirect()->route('order.index')

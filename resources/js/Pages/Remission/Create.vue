@@ -128,23 +128,29 @@
 	                        	{{item.order.shipping_address}}
 	                        </td-responsive-component>
 	                        <td-responsive-component>
-						      	<vs-tooltip>
-						        	<vs-button flat>
-						          	Consignaciones
-						        	</vs-button>
-						        	<template #tooltip>
-						          		<ul>
-						          			<li v-for="value in item.order.consignments">
-						          				<span v-if="value.consignment_number">
-						          					No. {{value.consignment_number}}.
-						          				</span>
-						          				<span v-else>
-						          					No. consignación vacio para # {{value.id}}.
-						          				</span>
-						          			</li>
-						          		</ul>
-						        	</template>
-						      	</vs-tooltip>
+	                        	<v-select v-if="item.order.consignments.length"
+	                        	label="consignment_number"
+	                        	class="min-w-full lg:min-w-max"
+						        :options="item.order.consignments" 
+						        v-model="item.consignment_id"
+						        :reduce= "consignment_number => consignment_number.id"
+						        :selectable="option => ! option.taken"
+						        >
+						        	<template slot="option" slot-scope="option">
+								      <div class="d-center">
+								        <p> Consecutivo #: {{ option.id }}</p>
+								        <cite># consignación: {{ option.consignment_number }}</cite>
+								       </div>
+								    </template>
+								    <template slot="selected-option" slot-scope="option">
+								      <div class="selected d-center">
+								      	 <p> Consecutivo #: {{ option.id }}</p>
+								      	 <cite># consignación: {{ option.consignment_number }}</cite>
+								      </div>
+								    </template>
+							        
+								</v-select>
+						      	<span v-else>No hay consignaciones</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	<jet-button v-if="fullyDispatched(item)" type="button" @click.native="storeRemission(item)">
@@ -320,6 +326,7 @@
                     delivered: null,
             		order_details_id: null,
             		vehicle_users_id: null,
+            		consignment_id: null,
             		firm: null,
             		plate: null,
             		delivery: null
@@ -367,6 +374,7 @@
         		this.remi.delivered = item.cantidad;
         		this.remi.order_details_id = item.id;
         		this.remi.vehicle_users_id = item.vehicle_user;
+        		this.remi.consignment_id = item.consignment_id;
 
             	if (this.$refs.firm) {
                     this.remi.firm = this.$refs.firm.files[0]

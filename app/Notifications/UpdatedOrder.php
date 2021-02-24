@@ -44,6 +44,7 @@ class UpdatedOrder extends Notification
     public function toMail($notifiable)
     {
         $url = url('order/' .$this->order->id);
+        
         return (new MailMessage)
                     ->subject('Actualización de pedido')
                     ->greeting('¡Hola '. $this->order->client->name .'!')

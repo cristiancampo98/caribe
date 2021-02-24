@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\Role;
 use App\Models\TypeBlood;
 use App\Models\TypeIdentification;
@@ -40,14 +42,8 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users',
-            'roles_id' => 'required|array|min:1'
-        ]);
-
         $user = User::storeUser();
 
         return redirect()->route('user.index');
@@ -76,8 +72,7 @@ class UserController extends Controller
     {
         return inertia('User/Edit', [
             'user' => $user,
-            'types_identification' => TypeIdentification::where('available',1)->get(),
-            'types_blood' => TypeBlood::where('available',1)->get(),
+            'types_identification' => TypeIdentification::where('available',1)->get()
         ]);
     }
 
@@ -88,7 +83,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $user->update($request->all());
         $detail = User::storeUserDetail($request->all(), $user->id);

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreVehicleRequest;
+use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Vehicle;
 use App\Traits\VehicleTrait;
 use Illuminate\Http\Request;
@@ -37,12 +39,8 @@ class VehicleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {   
-        $this->validate($request, [
-            'license_plate' => 'required|string|max:10'
-        ]);
-        
+    public function store(StoreVehicleRequest $request)
+    {
         $response = self::storeVehicleFromRemission();
 
         if ($response) {
@@ -92,7 +90,7 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vehicle $vehicle)
+    public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
     {
         $vehicle = $vehicle->update($request->all());
 

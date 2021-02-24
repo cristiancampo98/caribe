@@ -31,7 +31,6 @@
                                 <th-responsive-component 
                                 v-for="(title, key) in titles"
                                 :key="key">{{title}}</th-responsive-component>
-                                <th-responsive-component></th-responsive-component>
                             </tr>
                         </template>
                         <template #content>
@@ -124,7 +123,7 @@
         data() {
             return {
                 loading: false,
-            	titles: ['#','Placa','Marca','Estado'],
+            	titles: ['#','Placa','Marca','Estado','Opciones'],
                 lenght: 5,
                 page: this.lenght,
                 pages:[

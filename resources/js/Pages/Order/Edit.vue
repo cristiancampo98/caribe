@@ -60,6 +60,7 @@
 			            	label="departamento"
 			            	:options="deparments"
 			            	:clearable="false"
+			            	:value="form.department"
 			            	@input="showCitys"></v-select>
 			            </div>
 			            <!-- city -->
@@ -276,6 +277,7 @@
                 	_method: 'put',
                     user_id: this.order.user_id,
                     shipping_address: this.order.shipping_address,
+                    department: this.order.department,
                     city: this.order.city,
                     note: this.order.note,
                     pse_url: this.order.pse_url,
@@ -376,7 +378,8 @@
             	})
             },
             showCitys(value){
-            	this.citys = value.ciudades
+            	this.citys = value.ciudades;
+            	this.form.department = value.departamento;
             },
             addToCar(){
             	if (this.quantity < 1) {

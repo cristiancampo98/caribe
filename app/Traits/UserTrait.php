@@ -63,9 +63,9 @@ trait UserTrait
         return $isAdmin;
     }
 
-    public static function getClients(){
+    public static function getUsersByRol($array_roles){
         
-        return RoleUser::where('role_id',3)->get();
+        return RoleUser::whereIn('role_id',$array_roles)->get();
     }
 
     public static function storeUser()
@@ -75,5 +75,18 @@ trait UserTrait
         $user->save();
         $user->roles()->sync(request()->get('roles_id'));
         return $user;
+    }
+
+    public static function getEmailsUsersByRol($array_roles)
+    {
+        $users = self::getUsersByRol($array_roles);
+        $emails = [];
+
+        foreach ($users as $key => $value) {
+
+            $emails[] = $value->users->email;
+        }
+
+        return $emails;
     }
 }

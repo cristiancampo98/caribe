@@ -22,6 +22,15 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        'App\Events\StoredOrder' => [
+            'App\Listeners\SendStoringNotification',
+        ],
+        'App\Events\UpdatedOrder' => [
+            'App\Listeners\SendUpdatingNotification',
+        ],
+        'App\Events\StoredRemission' => [
+            'App\Listeners\SendRemissionStorageNotification',
+        ],
     ];
 
     /**

@@ -47,7 +47,10 @@
             			<template #attribute>Remitido por </template>
             			<template #description>{{remission.creator.name}}</template>	
             		</item-list-component>
-            		
+                    <item-list-component >
+                        <template #attribute>Fecha remisión </template>
+                        <template #description>{{moment(remission.created_at).format('DD/MM/YYYY')}}</template>    
+                    </item-list-component>            		
                     <item-list-download-component
                     v-if="multimedia.length"
                     title="Documentos"
@@ -69,6 +72,8 @@
 	import DescriptionListComponent from '@/Components/DescriptionList'
 	import ItemListComponent from '@/Components/ItemList'
     import ItemListDownloadComponent from '@/Components/ItemListDownload'
+    import moment from 'moment';
+    moment.locale('es')
 
     export default {
     	components: {
@@ -88,6 +93,7 @@
                 status:{},
                 multimedia: [],
                 loading: false,
+                moment: moment,
             }
         },
         mounted(){

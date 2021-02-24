@@ -51,7 +51,7 @@
                                 {{item.creator.name}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.created_at}}
+                                {{moment(item.created_at).format('DD/MM/YYYY')}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -174,6 +174,8 @@
     import FormConsignment from './Modal/AddConsigment.vue'
     import vSelect from "vue-select"
     import 'vue-select/dist/vue-select.css'
+    import moment from 'moment';
+    moment.locale('es')
     
 
     export default {
@@ -213,7 +215,8 @@
                     note:null,
                     id:null
                 },
-                order_id:false
+                order_id:false,
+                moment: moment,
 
             }
         },

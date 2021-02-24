@@ -19,8 +19,8 @@
             			<template #description>{{order.shipping_address}}</template>	
             		</item-list-component>
             		<item-list-component>
-            			<template #attribute>Ciudad</template>
-            			<template #description>{{order.city}}</template>
+            			<template #attribute>Ubicación</template>
+            			<template #description>{{order.department}}/ {{order.city}}</template>
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Nota de pedido</template>
@@ -51,7 +51,7 @@
                     </item-list-download-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Fecha</template>
-                        <template #description>{{order.created_at}}</template>
+                        <template #description>{{moment(order.created_at).format('DD/MM/YYYY')}}</template>
                     </item-list-component>
             	</description-list-component>
                 <div class="py-4">
@@ -91,17 +91,7 @@
                         <template #description>
                             <ul class="mx-auto">
                                 <li>No. consignación: {{item.consignment_number}}</li>
-                                <li>
-                                    Url: 
-                                    <a :href="item.pse_url" 
-                                    title="Enlace" 
-                                    target="_blank"
-                                    class="text-blue-500 hover:underline">
-                                        {{item.pse_url}}
-                                    </a>
-                                </li>
-                                <li>No. Pse: {{item.pse_number}}</li>
-                                <li>Fecha: {{item.created_at}}</li>
+                                <li>Fecha: {{moment(item.created_at).format('DD/MM/YYYY')}}</li>
                             </ul>
                         </template>
                     </item-list-component>
@@ -127,6 +117,8 @@
 	import DescriptionListComponent from '@/Components/DescriptionList'
 	import ItemListComponent from '@/Components/ItemList'
     import ItemListDownloadComponent from '@/Components/ItemListDownload'
+    import moment from 'moment';
+    moment.locale('es')
 
     export default {
     	components: {
@@ -144,7 +136,8 @@
     	data(){
             return {
                 files_consignments: [],
-                order_files: []
+                order_files: [],
+                moment: moment,
             }
         },
         mounted(){

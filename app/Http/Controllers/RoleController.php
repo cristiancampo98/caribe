@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -36,16 +38,8 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
-        $this->validate($request, [
-            "name" => "required|string|max:50",
-            "slug" => "required|string|max:50|unique:roles,slug",
-            "description" => "required",
-            "full_access" => "required|",
-            "public" => "required|boolean"
-        ]);
-
         $role = (new Role)->fill($request->all());
         $role['full-access'] = $request->full_access;
         $role->save();
@@ -82,7 +76,7 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
+    public function update(UpdateRoleRequest $request, Role $role)
     {
         //
     }

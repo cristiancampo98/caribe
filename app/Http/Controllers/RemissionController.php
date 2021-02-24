@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRemissionRequest;
 use App\Events\StoredRemission;
 use App\Traits\RemissionTrait;
 use Illuminate\Http\Request;
@@ -35,17 +36,8 @@ class RemissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRemissionRequest $request)
     {
-        $this->validate($request, [
-            'delivered' => 'required|numeric|min:1',
-            'order_details_id' => 'required|numeric|min:1',
-            'vehicle_users_id' => 'required|numeric|min:1',
-            'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'plate' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-            'delivery' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-        ]);
-
         $response = self::storeRemission($request);
 
         StoredRemission::dispatch($response);

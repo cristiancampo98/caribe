@@ -50,6 +50,31 @@
 			            	:clearable="false"></v-select>
 			                <jet-input-error :message="form.errors.type_identification_id" class="mt-2" />
 			            </div>
+						<!-- department -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="deparment" value="Departamento" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="deparment"
+			            	label="departamento"
+			            	:options="deparments"
+			            	v-model="form.deparment"
+			            	:clearable="false"
+			            	@input="showCitys"></v-select>
+			                <jet-input-error :message="form.errors.deparment" class="mt-2" />
+			            </div>
+						<!-- city -->
+			            <div class="col-span-6 lg:col-span-2" >
+			                <jet-label for="city" value="Ciudad" />
+			               	<v-select 
+			               	v-if="form.city || citys.length"
+			            	class="mt-1"
+			            	id="city"
+			            	label="ciudades"
+			            	v-model="form.city"
+			            	:options="citys"></v-select>
+			                <jet-input-error :message="form.errors.city" class="mt-2" />
+			            </div>
 			            <!-- steet address -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="street_address" value="Dirección" />
@@ -68,32 +93,6 @@
 			                <jet-input id="street_comune" type="text" class="mt-1 block w-full" v-model="form.street_comune" autocomplete="street_comune" />
 			                <jet-input-error :message="form.errors.street_comune" class="mt-2" />
 			            </div>
-			            <!-- department -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="deparment" value="Departamento" />
-			                <v-select 
-			            	class="mt-1"
-			            	id="deparment"
-			            	label="departamento"
-			            	:options="deparments"
-			            	v-model="form.deparment"
-			            	:clearable="false"
-			            	@input="showCitys"></v-select>
-			                <jet-input-error :message="form.errors.deparment" class="mt-2" />
-			            </div>
-			            <!-- city -->
-			            <div class="col-span-6 lg:col-span-2" >
-			                <jet-label for="city" value="Ciudad" />
-			               	<v-select 
-			               	v-if="form.city || citys.length"
-			            	class="mt-1"
-			            	id="city"
-			            	label="ciudades"
-			            	v-model="form.city"
-			            	:options="citys"></v-select>
-			                <jet-input-error :message="form.errors.city" class="mt-2" />
-			            </div>
-			            
 			            <!-- others_email -->
 			            <div class="col-span-6 lg:col-span-3">
 			                <jet-label for="others_email" value="Otros correos" />

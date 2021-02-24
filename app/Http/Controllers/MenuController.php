@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMenuRequest;
+use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 
@@ -37,15 +39,8 @@ class MenuController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreMenuRequest $request)
     {
-        $this->validate($request, [
-            "name" => "required|unique:menus,name",
-            "slug" => "required|string|max:50",
-            "icon" => "required|string|max:50",
-            "available" => "required|boolean",
-            "isDirect" => "required|boolean",
-        ]);
         $menu = (new Menu)->fill($request->all());
         $menu->position = Menu::count() + 1;
         $menu->save();
@@ -86,7 +81,7 @@ class MenuController extends Controller
      * @param  \App\Models\Menu  $menu
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, Menu $menu)
     {
         //
         $menu->update($request->all());

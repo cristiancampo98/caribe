@@ -48,11 +48,13 @@ class HandleInertiaRequests extends Middleware
             ? $this->menu->getAccessMenu()
             : null,
             'isAdmin' => Auth::id() ? Auth::user()->isAdmin() : false,
-            'flash' => [
-                'info' => $request->session()->get('info'),
-                'success' => $request->session()->get('success'),
-                'error' => $request->session()->get('error')
-            ],
+            'flash' => Auth::id() ? [
+                        'info' => $request->session()->get('info'),
+                        'success' => $request->session()->get('success'),
+                        'error' => $request->session()->get('error'),
+                        'warning' => $request->session()->get('warning')
+                    ]
+                    : false,
         ]);
     }
 }

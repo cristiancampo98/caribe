@@ -14,6 +14,7 @@ class RemissionObserver
      */
     public function created(Remission $remission)
     {
+        
         $remission->consignment->taken = 1;
         $remission->consignment->save();
 

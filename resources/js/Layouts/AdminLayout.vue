@@ -62,7 +62,6 @@ export default {
             this.getNotification(); 
         },
         flash: function() {
-            console.log(this.flash)
             this.getStatusFlash();
         }
     },
@@ -115,9 +114,13 @@ export default {
       	},
         getStatusFlash(){
             for (var val in this.flash){
+
                 if (this.flash[val]) {
-                    this.status.type = val;;
-                    this.status.text = this.flash[val];
+                    
+                    this.status = {
+                        type: val,
+                        text: this.flash[val]
+                    }
                 }
             }
         }

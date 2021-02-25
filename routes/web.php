@@ -180,7 +180,3 @@ Route::get('artisanCall', function () {
     Artisan::call('config:cache');
     Artisan::call('storage:link');
 });
-
-Route::get('artisanMigrate', function () {
-    Artisan::call('migrate:refresh --seed');
-});

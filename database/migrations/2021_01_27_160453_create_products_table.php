@@ -18,6 +18,8 @@ class CreateProductsTable extends Migration
             $table->string('name')->unique();
             $table->string('reference')->nullable();
             $table->text('description')->nullable();
+            $table->decimal('cubic_meters',3,1);
+            $table->decimal('ton',3,1);
             $table->foreignId('user_id') ->constrained();
             $table->boolean('status')->default(1);
             $table->timestamps();

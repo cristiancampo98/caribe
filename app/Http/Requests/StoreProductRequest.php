@@ -26,6 +26,8 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:100|unique:products',
             'reference' => 'nullable|string|max:50',
+            'cubic_meters' => 'required|numeric|min:0',
+            'ton' => 'required|numeric|min:0',
         ];
     }
 
@@ -33,7 +35,13 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'name.required'     =>  'El nombre es requerido',
-            'name.unique'       =>  'El nombre ya existe'
+            'name.unique'       =>  'El nombre ya existe',
+            'cubic_meters.required' => 'La equivalencia en metros cúbicos es requerida',
+            'cubic_meters.numeric' => 'La equivalencia en metros cúbicos debe ser númerica',
+            'cubic_meters.min' => 'La equivalencia miníma en metros cúbicos es 0',
+            'ton.required' => 'La equivalencia en toneladas es requerida',
+            'ton.numeric' => 'La equivalencia en toneladas debe ser númerica',
+            'ton.min' => 'La equivalencia miníma en toneladas es 0',
         ];
     }
 }

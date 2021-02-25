@@ -62,7 +62,8 @@ trait RemissionTrait
 							'orderDetail.product',
 							'creator',
 							'carrier.client',
-							'carrier.vehicle'
+							'carrier.vehicle',
+							'consignment'
 						)
 						->paginate(request()->get('lenght'));
 	}

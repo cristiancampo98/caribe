@@ -70,7 +70,8 @@
                             <ul class="mx-auto">
                                 <li>Nombre: {{item.product.name}}</li>
                                 <li>Precio: {{item.product.price}}</li>
-                                <li>Cantidad: {{item.quantity}}</li>
+                                <li>Cantidad: {{item.quantity}} m3</li>
+                                <li>Equivalencia: {{(item.quantity / item.product.cubic_meters).toFixed(2)}} ton</li>
                                 <li>Descuento: {{item.discount}}</li>
                             </ul>
                         </template>

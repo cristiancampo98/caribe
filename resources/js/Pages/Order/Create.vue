@@ -140,7 +140,7 @@
 			            <!-- quantity -->
 			             <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="quantity" value="Cantidad en m3" />
-			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" />
+			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="0" v-model="quantity" step="0.1"/>
 			            </div>
 			           <div class="col-span-6 lg:col-span-1">
 				           	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
@@ -163,6 +163,7 @@
 				            		<tr v-for="(item, key) in form.order_details" :key="key">
 				            			<td-responsive-component>{{item.name}}</td-responsive-component>
 				            			<td-responsive-component>{{item.quantity}}</td-responsive-component>
+				            			<td-responsive-component>{{(item.quantity / item.equivalenceM3).toFixed(2)}}</td-responsive-component>
 				            				<button type="button" @click="deleteToCar(key)" class="bg-red-500 hover:bg-red-700 rounded-lg border-2 border-white hover:border-black text-white py-1 px-2">
 				            					Eliminar
 				            				</button>
@@ -257,6 +258,7 @@
                 titles: [
                 	'Producto',
                 	'Cantidad en metros cúbicos',
+                	'Toneladas'
                 ],
                 clients: [],
                 deparments: [],
@@ -326,7 +328,7 @@
             	this.citys = value.ciudades
             },
             addToCar(){
-            	if (this.quantity < 1) {
+            	if (this.quantity < 0) {
             		this.quantity *= -1;
             	
             	}
@@ -339,6 +341,8 @@
 						product_id: this.product_detail.id,
 						name : this.product_detail.name, 
 						quantity :this.quantity,
+						equivalenceM3: this.product_detail.cubic_meters,
+						equivalenceTon: this.product_detail.ton
 					}
 	            	
 	            	//Valida que el producto ya se haya agregado anteriormente
@@ -348,7 +352,7 @@
 
 					if (found) {
 						//Si lo encuentra modifica por los nuevos datos
-						found.quantity = parseInt(this.quantity);
+						found.quantity = parseFloat(this.quantity);
 					}else{
 						//Si no lo encuentra agrega el nuevo producto
 						this.form.order_details.push(pedido);

@@ -14,7 +14,11 @@ class Product extends Model
     protected $fillable = [
 	    'name',
 	    'reference',
-	    'description'
+	    'description',
+        'cubic_meters',
+        'ton',
+        'user_id',
+        'status'
     ];
 
     public function creator()

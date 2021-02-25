@@ -41,6 +41,9 @@
                             <td-responsive-component>
                                 {{item.name}}
                             </td-responsive-component>
+                             <td-responsive-component>
+                                {{item.cubic_meters}} m3 /  {{item.ton}} ton
+                            </td-responsive-component>
                             <td-responsive-component>
                                 {{item.description}}
                             </td-responsive-component>
@@ -130,7 +133,7 @@
                 pages:[
                     5,10,20
                 ],
-                titles: ['#','Nombre','Descripción','Referencia','Estado','Opciones'],
+                titles: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado','Opciones'],
                 options: [],
                 package: [],
                 actions: [

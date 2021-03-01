@@ -20,7 +20,9 @@
             		</item-list-component>
             		<item-list-component>
             			<template #attribute>Estado</template>
-            			<template #description>{{user.status ? 'Activo' : 'Inactivo'}}</template>
+            			<template #description>
+            				<span class=" rounded-md text-white p-1" :class="getClassStatus">{{user.status ? 'Activo' : 'Inactivo'}}</span>
+            			</template>
             		</item-list-component>
             		<div v-if="user.details">
 	            		<item-list-component class="bg-gray-100">
@@ -49,7 +51,11 @@
 	            		</item-list-component>
 	            		<item-list-component class="bg-gray-100">
 	            			<template #attribute>Tipo identificación</template>
-	            			<template #description>{{user.details.type_identification.description}}</template>
+	            			<template #description>
+	            				{{user.details.type_identification
+	            					? user.details.type_identification.description
+	            					: 'N/A'}}
+	            			</template>
 	            		</item-list-component>
 	            		<item-list-component  >
 	            			<template #attribute>Número de identificación</template>
@@ -61,7 +67,10 @@
 	            		</item-list-component>
 	            		<item-list-component >
 	            			<template #attribute >Tipo de sangre</template>
-	            			<template #description>{{user.details.type_blood.description}}</template>	
+	            			<template #description>
+	            				{{user.details.type_blood 
+	            				? user.details.type_blood.description
+	            				: 'N/A'}}</template>	
 	            		</item-list-component>
             		</div>
             		<item-list-component class="bg-gray-100">
@@ -130,6 +139,11 @@
         },
         mounted(){
         	
+        },
+        computed: {
+        	getClassStatus(){
+        		return this.user.status ? 'bg-green-500' : 'bg-red-500'
+        	}
         },
         methods: {
         }

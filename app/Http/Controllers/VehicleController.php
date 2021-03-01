@@ -38,8 +38,24 @@ class VehicleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {   
+        $this->validate($request, [
+            'license_plate' => 'required|string|max:10'
+        ]);
+        
+        $response = self::storeVehicleFromRemission();
+
+        if ($response) {
+            if ($request->index) {
+                return redirect()->route('vehicle.index')
+                    ->with('success', 'El vehiculo se agrego con éxito');
+            }
+            return redirect()->back()
+                    ->with('success', 'El vehiculo se agrego con éxito');
+        }
+        return redirect()->back()
+                    ->with('error', 'Sucedió un error, no se pudo agregar el vehículo');
+        
     }
 
     /**
@@ -48,8 +64,9 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function show(Vehicle $vehicle)
+    public function show($id)
     {
+        $vehicle = self::getVehicleWithRelationship($id);
         return inertia('Vehicle/Show', [
             'vehicle' => $vehicle
         ]);
@@ -80,9 +97,9 @@ class VehicleController extends Controller
         $vehicle = $vehicle->update($request->all());
 
         if ($vehicle) {
-            return redirect()->route('vehicle.index');
+            return redirect()->route('vehicle.index')->with('success','El vehículo se actualizó con éxito');
         }
-        return redirect()->back();
+        return redirect()->back()->with('error','Sucedió un error,el vehículo no se actualizó con éxito');
     }
 
     /**
@@ -114,9 +131,9 @@ class VehicleController extends Controller
         $vehicle = self::updateStatusVehicle($id);
 
         if ($vehicle) {
-            return redirect()->route('vehicle.index');
+            return redirect()->route('vehicle.index')->with('success','El vehículo se actualizó con éxito');
         }
-        return redirect()->back();
+        return redirect()->back()->with('error','Sucedió un error,el vehículo no se actualizó con éxito');
 
         
     }

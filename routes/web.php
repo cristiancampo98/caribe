@@ -9,11 +9,14 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\OrderDetailStorageController;
 use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductStorageController;
 use App\Http\Controllers\RemissionController;
+use App\Http\Controllers\RemissionStorageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\SecurityController;
@@ -68,6 +71,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'vehicle' => VehicleController::class,
         'consignment' => ConsignmentController::class
     ]);
+    Route::get('pdf.reportclient', [ClientController::class, 'imprimir']);
     Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);
     Route::get('security/{role}/assignPermission', [SecurityController::class, 'assignPermission'])->name('security.assignPermission');
 
@@ -77,6 +81,34 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
 
+    Route::put('updateStatus/{id}/product',
+        [ProductController::class, 'updateStatus']
+    );
+
+    Route::get('getPaginateAllProducts/products',
+        [ProductStorageController::class, 'getPaginateAllProducts']
+    );
+
+    Route::get('getPaginateAllRemissions/remission',
+        [RemissionStorageController::class, 'getPaginateAllRemissions']
+    );
+
+    Route::get('getMultimediaFilesByProduct/{id}/products',
+        [ProductStorageController::class, 'getMultimediaFilesByProduct']
+    );
+
+    Route::get('getMultimediaFilesByClient/{id}/client',
+        [ClientStorageController::class, 'getMultimediaFilesByClient']
+    );
+
+    Route::get('getMultimediaFilesByVehicle/{id}/vehicle',
+        [VehicleStorageController::class, 'getMultimediaFilesByVehicle']
+    );
+
+    Route::get('getMultimediaFilesByConsignment/{id}/consignment',
+        [ConsignmentStorageController::class, 'getMultimediaFilesByConsignment']
+    );
+
     Route::get('getPaginateAllUsers/users',
         [UserStorageController::class, 'getPaginateAllUsers']
     );
@@ -85,6 +117,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
     Route::get('getOrderByConsecutiveOrClient/order',
         [OrderStorageController::class, 'getOrderByConsecutiveOrClient']
+    );
+    Route::get('getOrdersByUserId/order',
+        [OrderStorageController::class, 'getOrdersByUserId']
+    );
+    Route::get('getOrderDetailsByOrderId/orderDetail',
+        [OrderDetailStorageController::class, 'getOrderDetailsByOrderId']
     );
     Route::get('getAllConsignments/consignments',
         [ConsignmentStorageController::class, 'getAllConsignments']
@@ -99,6 +137,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getClients/client',
         [ClientStorageController::class, 'getClients']
     );
+    Route::get('getClientWithOrders/client',
+        [ClientStorageController::class, 'getClientWithOrders']
+    );
     Route::get('getClientsPaginate/client',
         [ClientStorageController::class, 'getClientsPaginate']
     );
@@ -111,6 +152,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
     Route::put('updateStatusOrder/{id}/order',
         [OrderController::class, 'updateStatusOrder']
+    );
+    Route::get('sendEmailUpdate/{id}/order',
+        [OrderController::class, 'sendEmailUpdate']
+    );
+
+    Route::get('download/{id}/multimedia',
+        [MultimediaController::class, 'download']
     );
 
     // End TODO API

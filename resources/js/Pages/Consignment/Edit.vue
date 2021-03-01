@@ -15,7 +15,9 @@
 			            Crea un consignación con la información requerida.
 			        </template>
 			        <template #form>
-
+			        	<div class="col-span-6">
+			        		<jet-label for="user_id" class="text-red-500" :value="`Consecutivo actual: ${form.order_id}`"/>
+			        	</div>
 			            <!-- user id or cliente -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="user_id" value="Consecutivo pedido"/>
@@ -115,18 +117,18 @@
             return {
                 form: this.$inertia.form({
                 	_method: 'put',
-                    consignment_number: null,
-                    pse_url: null,
-                    pse_number: null,
-                    order_id: null,
-                    imagen: null
+                    consignment_number: this.consignment.consignment_number,
+                    pse_url: this.consignment.pse_url,
+                    pse_number: this.consignment.pse_number,
+                    order_id: this.consignment.order_id,
+                    imagen: this.consignment.imagen,
                 }),
                 orders: [],
                 uploadedImagen: false
             }
         },
         mounted(){
-        	this.setConsignmentData()
+
         },
         methods: {
         	uploadImagen(){
@@ -141,13 +143,7 @@
                     preserveScroll: true
                 });
             },
-            setConsignmentData(){
-            	this.form.consignment_number = this.consignment.consignment_number;
-            	this.form.pse_url = this.consignment.pse_url;
-            	this.form.pse_number = this.consignment.pse_number;
-            	this.form.order_id = this.consignment.order_id;
-            	this.form.imagen = this.consignment.imagen;
-            },
+           
             onSearch(search, loading) {
 		      if(search.length) {
 		        loading(true);

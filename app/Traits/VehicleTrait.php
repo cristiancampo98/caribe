@@ -3,6 +3,8 @@
 namespace App\Traits;
 
 use App\Models\Vehicle;
+use App\Models\VehicleUser;
+use App\Traits\MultimediaTrait;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -10,6 +12,8 @@ use Illuminate\Support\Facades\DB;
  */
 trait VehicleTrait
 {
+	use MultimediaTrait;
+
 	public static function storeVehicleFromClient($data,$user_id)
 	{
 		$vehicles = explode(',', $data);
@@ -22,6 +26,41 @@ trait VehicleTrait
 			$vehicle->users()->sync($user_id);
 		}
 	}
+
+	public static function storeVehicleFromRemission()
+    {
+    	$vehicle = Vehicle::updateOrCreate(
+    		[
+    			'license_plate' => request()->get('license_plate')
+    		],
+    		request()->all()
+    	);
+
+    	if ($vehicle) {
+
+    		if (request()->hasFile('photo_plate')) {
+
+	    		self::storeSingleFileMultimedia(
+	    			request()->file('photo_plate'),
+	    			'license_plate', 
+					'vehicle', 
+					'photo_plate', 
+					'vehicle_id', 
+					$vehicle->id
+	    		);
+	    	}
+
+	    	VehicleUser::firstOrCreate(
+	    		[
+	    			'user_id' => request()->get('user_id'),
+	    			'vehicle_id' => $vehicle->id,
+	    			'carrier' => request()->get('carrier')
+	    		]
+	    	);
+    	}
+
+    	return $vehicle;
+    }
 
 	public static function getAllVehicles()
 	{
@@ -57,6 +96,14 @@ trait VehicleTrait
 	public static function getVehiclesPaginate(){
         
         return Vehicle::paginate(request()->get('lenght'));
-
     }
+
+    public static function getVehicleWithRelationship($id)
+    {
+    	return Vehicle::where('id', $id)
+    			->with('users')
+    			->first();
+    }
+
+    
 }

@@ -6,6 +6,7 @@ use App\Models\RoleUser;
 use App\Models\User;
 use App\Traits\MultimediaTrait;
 use App\Traits\VehicleTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Iluminate\Http\Request;
@@ -21,6 +22,13 @@ trait ClientTrait
 	public static function getClient($id)
 	{
 		return User::find($id);
+	}
+
+	public static function getClientWithRelationships($id)
+	{
+		return User::where('id', $id)
+				->with('orders','vehicles')
+				->first();
 	}
 
 	public static function storeClient()
@@ -46,7 +54,7 @@ trait ClientTrait
 				self::storeVehicleFromClient(request()->get('vehicles'),$id);
 			}
 
-			if (request()->file('photo_document')) {
+			if (request()->hasFile('photo_document')) {
 				self::storeSingleFileMultimedia(
 					request()->file('photo_document'), 
 					'documents', 
@@ -57,7 +65,7 @@ trait ClientTrait
 				);
 			}
 
-			if (request()->file('rut_document')) {
+			if (request()->hasFile('rut_document')) {
 
 				self::storeSingleFileMultimedia(
 					request()->file('rut_document'), 
@@ -69,7 +77,7 @@ trait ClientTrait
 				);
 			}
 
-			if (request()->file('logo')) {
+			if (request()->hasFile('logo')) {
 
 				self::storeSingleFileMultimedia(
 					request()->file('logo'), 
@@ -111,5 +119,27 @@ trait ClientTrait
     		'users.name as name',
     		'user_details.name_company as name_company'
     	)->get();
+    }
+
+    public static function getClientWithOrdersTrait()
+    {
+    	$clients =  User::where('name','like','%'. request()->get('q').'%')
+    	->without('details','roles')
+    	->with('vehicles')
+    	->select('id','name')
+		->get();
+
+		if (count($clients)) {
+			return response()->json([
+				'clients' => $clients,
+				'type' => 'success',
+				'text' => 'La consulta se realizó con exito'
+			],200);
+		}
+		return response()->json([
+			'clients' => [],
+			'type' => 'error',
+			'text' => 'No se encontró el cliente'		
+		],200);
     }
 }

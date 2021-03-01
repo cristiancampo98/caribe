@@ -19,4 +19,9 @@ class OrderStorageController extends Controller
     {
     	return self::getOrderByConsecutiveOrClientTrait();
     }
+
+    public function getOrdersByUserId()
+    {
+    	return self::getOrdersByUserIdWithConsignmentsTrait();
+    }
 }

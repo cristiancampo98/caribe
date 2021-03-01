@@ -14,6 +14,7 @@ class Vehicle extends Model
     
     public function users()
     {
-        return $this->belongsToMany(User::class, 'vehicle_users', 'vehicle_id', 'user_id');
+        return $this->belongsToMany(User::class, 'vehicle_users', 'vehicle_id', 'user_id')
+        ->withPivot('id','carrier');
     }
 }

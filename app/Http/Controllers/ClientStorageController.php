@@ -19,4 +19,13 @@ class ClientStorageController extends Controller
         return self::getAllClientsPaginate();
     }
 
+    public function getClientWithOrders(){
+    	return self::getClientWithOrdersTrait();
+    }
+
+    public function getMultimediaFilesByClient($id)
+    {
+        return self::getMultimediaByWhereIn([$id],'user_id');
+    }
+
 }

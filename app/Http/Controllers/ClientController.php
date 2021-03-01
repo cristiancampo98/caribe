@@ -7,6 +7,7 @@ use App\Models\TypeIdentification;
 use App\Traits\ClientTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use PDF;
 
 class ClientController extends Controller
 {
@@ -26,6 +27,18 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function imprimir(){
+        $clients = \DB::table('user_details')
+        ->select('user_details.*', 'users.name')
+        ->join('users', 'user_details.user_id', '=',  'users.id')
+        ->orderBy('id', 'ASC')
+        ->take(10)
+        ->get();
+        $fecha = date('y-m-d');
+        $data = compact('clients', 'fecha');
+        $pdf = PDF::loadView('pdf.reportclient', $data);
+    }
+
     public function create()
     {
         return inertia('Client/Create');
@@ -59,10 +72,7 @@ class ClientController extends Controller
     public function show($id)
     {
         return inertia('Client/Show', [
-            'client' => self::getClient($id),
-            'photo_document' => self::getMultimediaByParams('users', 'user_id', $id, 'photo_document'),
-            'rut_document' => self::getMultimediaByParams('users', 'user_id', $id, 'rut_document'),
-            'logo' => self::getMultimediaByParams('users', 'user_id', $id, 'logo')
+            'client' => self::getClientWithRelationships($id)
         ]);
     }
 
@@ -94,7 +104,9 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         $client = self::updateClient($id);
-        return redirect()->route('client.index');
+
+        return $client ? redirect()->route('client.index')->with('success','El cliente se actualizó con éxito')
+                : redirect()->back()->with('error','Sucedió un error,el cliente no se actualizó');
     }
 
     /**

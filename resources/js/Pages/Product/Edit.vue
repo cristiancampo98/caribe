@@ -2,7 +2,7 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Actualizar permiso
+                Actualizar producto
             </h2>
         </template>
         <div class="py-12">
@@ -15,10 +15,10 @@
 			        </template>
 
 			        <template #description>
-			            Crea un producto con la información requerida.
+			            Edita un producto con la información requerida.
 			        </template>
 
-			        <template #form v-if="showFormEdit">
+			        <template #form>
 
 			            <!-- Name -->
 			            <div class="col-span-6 lg:col-span-3">
@@ -55,6 +55,12 @@
 			                <textarea id="description" class="mt-1 block w-full rounded-lg" v-model="form.description"></textarea>
 			                <jet-input-error :message="form.errors.description" class="mt-2" />
 			            </div>
+			            <div class="col-span-6 lg:col-span-6">
+			            	<drap-zone-component accept=".jpg,.jpeg,.png" types="JPG,GIF,PNG" title="Fotos producto" @setFiles="getFiles"/>
+			            	 <p class="text-sm text-red-500">
+			                	Nota: Cualquier archivo distinto a los indicados sera ignorado.</strong>.
+			                </p>
+			            </div>
 			              
 			        </template>
 
@@ -83,6 +89,7 @@
     import JetInputError from '@/Jetstream/InputError'
     import JetActionMessage from '@/Jetstream/ActionMessage'
     import JetButton from '@/Jetstream/Button'
+    import DrapZoneComponent from '@/components/DrapZone'
 
     export default {
     	components: {
@@ -93,15 +100,8 @@
             JetActionMessage,
             JetButton,
             AdminLayout,
+            DrapZoneComponent
     	},
-		/*,
-		
-    		
-    	
-        mounted(){
-        	this.productHasDetail();
-        },
-        */
 	   data(){
             return {
                 form: this.$inertia.form({
@@ -113,7 +113,6 @@
                     description: this.product.description,
 					photos: []
                 }),
-				showFormEdit: false
             }
         },
 		props: {
@@ -123,18 +122,16 @@
     			required: true
     		}
         }, 
-	   
-		 mounted(){
-        	this.productHasDetail();
+		mounted(){
+        	
         },
-	   methods: {
+	   	methods: {
 			
             updateProduct(){
 				this.form.post(route('product.update', { id: this.product.id }), {
                     errorBag: 'updateProduct',
                     preserveScroll: true
-                });
-				
+                });	
             },
             getFiles(files){
             	for (var i = 0; i < files.length; i++) {
@@ -143,21 +140,8 @@
             			this.form.photos.push(files[i]);
             		}
             	}
-            	console.log(this.form.photos);	
-            },
-			productHasDetail(){
-            	if (this.product.details) {
-            		this.form.name = this.product.details.name;
-                    this.form.reference = this.product.details.reference;
-                    this.form.unit_measure_id = this.product.details.unit_measure_id;
-                    this.form.price = this.product.details.price;
-                    this.form.description = this.product.details.description;
-                    this.form.photos = this.product.details.photos;
-
-            	}
-            	this.showFormEdit = true;
-            }
             }
         }
+    }
 
 </script>

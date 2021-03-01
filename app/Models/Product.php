@@ -25,4 +25,9 @@ class Product extends Model
     {
         return $this->belongsTo(UnitMeasure::class, 'unit_measure_id', 'id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

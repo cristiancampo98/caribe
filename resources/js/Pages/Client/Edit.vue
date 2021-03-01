@@ -193,33 +193,13 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+	import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
-    	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-            vSelect
-    	},
+    	mixins: [FormComponentMixin],
     	props: {
     		client: {
     			type: Object
-    		},
-    		types_blood: {
-    			type: Array
     		},
     		types_identification: {
     			type: Array
@@ -283,7 +263,19 @@
                 }
                 this.form.post(route('client.update', { id: this.client.id }), {
                     errorBag: 'updateClient',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                        this.startLoading();
+                    },
+                    onSuccess: () => {
+                        this.loader.text = "¡Hecho!";
+                        this.uploadedDocument = false;
+                        this.uploadedRut = false;
+                        this.uploadedLogo = false;
+                    },
+                    onFinish: () => {
+                        this.endLoading();
+                    },
                 });
             },
             uploadDocument(){

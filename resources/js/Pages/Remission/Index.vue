@@ -122,6 +122,7 @@
     import vSelect from "vue-select"
     import 'vue-select/dist/vue-select.css'
     import moment from 'moment';
+    import { loadingMixin} from '@/Mixins/loadingMixin'
     moment.locale('es')
     
 
@@ -142,10 +143,10 @@
         created() {
             this.getPaginate();
         },
+        mixins: [loadingMixin],
         data () {
             return {
                 status: {},
-                loading: false,
                 lenght: 5,
                 page: this.lenght,
                 pages:[
@@ -194,17 +195,6 @@
                     this.endLoading();
                 });
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

@@ -106,6 +106,7 @@
     import JetDropdownLink from '@/Jetstream/DropdownLink'
     import vSelect from "vue-select"
     import 'vue-select/dist/vue-select.css'
+    import { loadingMixin} from '@/Mixins/loadingMixin'
 
     export default {
         components: {
@@ -124,10 +125,10 @@
         created() {
             this.getPaginate();
         },
+        mixins: [loadingMixin],
         data () {
             return {
                 status: {},
-                loading: false,
                 lenght: 5,
                 page: this.lenght,
                 pages:[
@@ -182,17 +183,6 @@
                     : 'text-white bg-red-500 p-1 rounded-md';
 
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
 
     }

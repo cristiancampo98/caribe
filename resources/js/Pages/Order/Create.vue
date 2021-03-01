@@ -196,36 +196,20 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+	
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
-            vSelect
-
     	},
+    	mixins: [FormComponentMixin],
     	props: {
-    		
     		products: {
     			type: [Object, Array],
     			required: true
@@ -267,7 +251,6 @@
                 uploadedContract: false,
                 uploadedPurchaseOrder: false,
                 type_pay: null,
-                loading: false
 
             }
         },
@@ -309,7 +292,7 @@
                       this.startLoading();
                     },
                     onSuccess: () => {
-                        this.loading.text = "¡Hecho!";
+                        this.loader.text = "¡Hecho!";
                         this.uploadedImagen = false;
                     },
                     onFinish: () => {
@@ -385,16 +368,7 @@
 		    		this.type_pay = found.type_pay;
 		    	}
 		    },
-		    startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
+		   
         }
 
     }

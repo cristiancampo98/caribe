@@ -113,17 +113,6 @@
             updateNotifications(data){
                 this.status = data;
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
-
         }
 
     }

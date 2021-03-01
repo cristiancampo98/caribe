@@ -256,33 +256,19 @@
 	</admin-layout>
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+	
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
-    import JetDialogModal from "@/Jetstream/DialogModal"
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-            vSelect,
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
-            JetDialogModal,
     	},
+    	mixins: [FormComponentMixin],
     	props: {
     		flash: {
     			type: Object
@@ -291,7 +277,6 @@
     	data(){
             return {
             	status:{},
-            	loading: false,
                 clients: [],
                 vehicles: [],
                 orders: [],
@@ -352,7 +337,7 @@
                     	this.showModalFormVehicle = false;
                     },
 				  	onSuccess: () => {
-				  		this.loading.text = "¡Hecho!";
+				  		this.loader.text = "¡Hecho!";
 				  		this.uploadedImagen = false;
 				  		this.getVehiclesByUserId();
 				  	},
@@ -391,7 +376,7 @@
                     onStart: () => { 
                     },
 				  	onSuccess: () => {
-				  		this.loading.text = "¡Hecho!";
+				  		this.loader.text = "¡Hecho!";
 				  		this.uploadedImagen = false;
 				  	},
 				  	onFinish: () => {
@@ -498,16 +483,6 @@
         		var dispatched = this.total_delivered(item.remissions);
         		return item.quantity - dispatched;
         	},
-        	startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            },
             getStatusFlash(){
 	            for (var val in this.$page.props.flash){
 

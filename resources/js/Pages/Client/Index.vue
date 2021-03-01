@@ -1,5 +1,5 @@
 <template>
-    <admin-layout :status="status">
+    <admin-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Clientes
@@ -50,7 +50,7 @@
                                 {{item.users.email}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                <span :class="item.users.classStatus">{{item.users.status}}</span>
+                                <span class="text-white p-1 rounded-md" :class="item.users.classStatus">{{item.users.status}}</span>
                             </td-responsive-component>
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -128,7 +128,6 @@
             return {
                 status: {},
                 titles: ['#','Nombre','Tipo','Empresa','Dirección','Ciudad','Correo','Estado','Opciones'],
-                loading: false,
                 showTable: false,
                 lenght: 5,
                 page: this.lenght,
@@ -174,8 +173,8 @@
                     : 'Inactivo';
 
                     this.clients[i].users.classStatus = this.clients[i].users.status == 'Activo' 
-                    ? 'text-white bg-green-500 p-1 rounded-md'
-                    : 'text-white bg-red-500 p-1 rounded-md';
+                    ? 'bg-green-500'
+                    : 'bg-red-500';
                 }
                 this.showTable = true;
             },
@@ -185,12 +184,9 @@
                 .then(res => {
                     item.users.status = res.data.user.status ? 'Activo' : 'Inactivo';
                     item.users.classStatus = res.data.user.status 
-                    ? 'text-white bg-green-500 p-1 rounded-md'
-                    : 'text-white bg-red-500 p-1 rounded-md';
-                    this.status = {
-                        type: res.data.type,
-                        text: res.data.text
-                    }
+                    ? 'bg-green-500'
+                    : 'bg-red-500';
+                    this.setStatusFlash(res.data.type,res.data.text);
                 })
                 .finally( () =>  this.endLoading())
             },
@@ -214,16 +210,6 @@
                 this.options = data.data;
                 this.package = data;
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

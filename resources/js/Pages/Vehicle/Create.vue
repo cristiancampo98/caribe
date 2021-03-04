@@ -80,32 +80,16 @@
     </admin-layout>
 </template>
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+   
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
-        components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-            vSelect
-    	},
+       
+        mixins: [FormComponentMixin],
         data(){
             return {
                 clients: [],
                 uploadedImagen: false,
-                loading: false,
                 form: this.$inertia.form({
                     license_plate: null,
                     brand: null,
@@ -128,7 +112,7 @@
                       this.startLoading();
                     },
                     onSuccess: () => {
-                        this.loading.text = "¡Hecho!";
+                        this.loader.text = "¡Hecho!";
                         this.uploadedImagen = false;
                     },
                     onFinish: () => {
@@ -153,16 +137,6 @@
             uploadImagen(){
                 this.uploadedImagen = true;
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

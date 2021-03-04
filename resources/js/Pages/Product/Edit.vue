@@ -66,27 +66,16 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+
     import DrapZoneComponent from '@/components/DrapZone'
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
             DrapZoneComponent
     	},
-	   data(){
+    	mixins: [FormComponentMixin],
+	   	data(){
             return {
                 form: this.$inertia.form({
                 	_method: 'PUT',
@@ -110,7 +99,16 @@
             updateProduct(){
 				this.form.post(route('product.update', { id: this.product.id }), {
                     errorBag: 'updateProduct',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                        this.startLoading();
+                    },
+                    onSuccess: () => {
+                        this.loader.text = "¡Hecho!";
+                    },
+                    onFinish: () => {
+                        this.endLoading();
+                    },
                 });	
             },
             getFiles(files){

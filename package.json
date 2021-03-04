@@ -30,7 +30,10 @@
         "@moesaid/cleopatra": "^1.1.1",
         "boxicons": "^2.0.7",
         "datatables": "^1.10.18",
+        "jspdf": "^2.3.0",
+        "jspdf-autotable": "^3.5.14",
         "moment": "^2.29.1",
+        "vue-json-excel": "^0.3.0",
         "vue-select": "^3.11.2",
         "vuesax": "^4.0.1-alpha.25"
     }

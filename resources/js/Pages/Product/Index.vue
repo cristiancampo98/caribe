@@ -11,6 +11,16 @@
                     Crear producto
                 </jet-button>
             </jet-nav-link>
+            <jet-button type="button" @click.native="exportPDF">
+                PDF
+            </jet-button>
+            <json-excel class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            :data="options"
+            :fields="json_fields"
+            worksheet="Tabla"
+            :name="`${document_name}.xls`">
+                CSV
+            </json-excel>
            
             <div v-if="options.length" class="mt-8">
                 <div class="grid grid-cols-6 gap-6">
@@ -51,7 +61,10 @@
                                 {{item.reference}}
                             </td-responsive-component>
                              <td-responsive-component>
-                                <span :class="getClassStatus(item.status)">{{item.status ? 'Activo' : 'Inactivo'}}</span>
+                                <span class="text-white p-1 rounded-md" 
+                                :class="getClassStatus(item.status)">
+                                    {{item.status ? 'Activo' : 'Inactivo'}}
+                                </span>
                             </td-responsive-component>
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -95,47 +108,35 @@
     </admin-layout>
 </template>
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-    import JetNavLink from '@/Jetstream/NavLink'
-    import JetButton from '@/Jetstream/Button'
-    import TableResponsiveComponent from '@/Components/TableResponsive'
-    import ThResponsiveComponent from '@/Components/THResponsive'
-    import TdResponsiveComponent from '@/Components/TDResponsive'
-    import PaginateComponent from '@/Components/Paginate'
-    import JetDropdown from '@/Jetstream/Dropdown'
-    import JetDropdownLink from '@/Jetstream/DropdownLink'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+    import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
 
     export default {
-        components: {
-            AdminLayout,
-            JetNavLink,
-            JetButton,
-            TableResponsiveComponent,
-            ThResponsiveComponent,
-            TdResponsiveComponent,
-            PaginateComponent,
-            JetDropdown,
-            JetDropdownLink,
-            vSelect
-
-        },
+        mixins: [DataTableComponentMixin],
         created() {
-            this.getPaginate();
+            this.url = '/getPaginateAllProducts/products';
         },
         data () {
             return {
-                status: {},
-                loading: false,
-                lenght: 5,
-                page: this.lenght,
-                pages:[
-                    5,10,20
-                ],
+               
                 titles: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado','Opciones'],
-                options: [],
-                package: [],
+                document_name: 'Listado pagina clientes',
+                columns: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado'],
+                json_fields: {
+                    '#' : 'id',
+                    Nombre : 'name',
+                    Equivalencia: {
+                        callback: (value) => {
+                            return `${value.cubic_meters} m3 /  ${value.ton} ton`
+                        },
+                    },
+                    'Descripción': 'description',
+                    Referencia: 'reference',
+                    Estado: {
+                        callback: (value) => {
+                            return value.status ? 'Activo' : 'Inactivo';
+                        },
+                    }
+                },
                 actions: [
                     {name: 'Editar', route:'product.edit'},
                     {name: 'Ver', route:'product.show'},
@@ -143,25 +144,6 @@
             }
         },
         methods: {
-            getPaginate(){
-                var url = '/getPaginateAllProducts/products',
-                    param = '?lenght='+this.lenght,
-                    total_url = url + param;
-
-                this.startLoading();
-
-                axios.get(total_url)
-                .then(res => {
-                    this.options = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => this.endLoading());
-
-            },
-            updateData(data){
-                this.options = data.data;
-                this.package = data;
-            },
             updateStatus(item){
                 this.startLoading();
 
@@ -178,21 +160,10 @@
                 });
             },
             getClassStatus(status){
-                return status ? 'text-white bg-green-500 p-1 rounded-md'
-                    : 'text-white bg-red-500 p-1 rounded-md';
+                return status ? 'bg-green-500'
+                    : 'bg-red-500';
 
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
 
     }

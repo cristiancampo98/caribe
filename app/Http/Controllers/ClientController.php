@@ -43,7 +43,8 @@ class ClientController extends Controller
 
         $user = self::storeClient();
 
-        return redirect()->route('client.edit',$user);
+        return redirect()->route('client.edit',$user)
+                ->with('success','El client se creó con éxito');
 
     }
 

@@ -100,6 +100,7 @@
     import 'vue-select/dist/vue-select.css'
     import JetDropdown from '@/Jetstream/Dropdown'
     import JetDropdownLink from '@/Jetstream/DropdownLink'
+    import { loadingMixin} from '@/Mixins/loadingMixin'
 
     export default {
         components: {
@@ -114,6 +115,7 @@
             JetDropdown,
             JetDropdownLink
         },
+        mixins: [loadingMixin],
         props: {
 
         },
@@ -156,16 +158,6 @@
                 this.options = data.data;
                 this.package = data;
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

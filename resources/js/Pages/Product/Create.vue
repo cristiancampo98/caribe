@@ -85,31 +85,19 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+	
     import DrapZoneComponent from '@/components/DrapZone'
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
             DrapZoneComponent
     	},
+        mixins: [FormComponentMixin],
     	props: {
     	},
     	data(){
             return {
-                loading: false,
                 form: this.$inertia.form({
                     name: null,
                     reference: null,
@@ -125,14 +113,15 @@
         },
         methods: {
             storeProduct(){
-                this.startLoading();
+                
                 this.form.post(route('product.store'), {
                     errorBag: 'storeProduct',
                     preserveScroll: true,
                     onStart: () => { 
+                        this.startLoading();
                     },
                     onSuccess: () => {
-                        this.loading.text = "¡Hecho!";
+                        this.loader.text = "¡Hecho!";
                         this.uploadedImagen = false;
                     },
                     onFinish: () => {
@@ -148,16 +137,6 @@
             			this.form.photos.push(files[i]);
             		}
             	}
-            },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
             },
         }
 

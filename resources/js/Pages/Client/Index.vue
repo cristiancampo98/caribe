@@ -1,5 +1,5 @@
 <template>
-    <admin-layout :status="status">
+    <admin-layout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Clientes
@@ -11,7 +11,17 @@
                     Crear Cliente
                 </jet-button>
             </jet-nav-link>
-            <div class="mt-8" v-if="clients.length">
+            <jet-button type="button" @click.native="exportPDF">
+                PDF
+            </jet-button>
+            <json-excel class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            :data="options"
+            :fields="json_fields"
+            worksheet="Tabla"
+            :name="`${document_name}.xls`">
+                CSV
+            </json-excel>
+            <div class="mt-8" v-if="options.length">
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-3">
                         <label for="lenght">Paginar: </label>
@@ -33,7 +43,7 @@
                         </tr>
                     </template>
                     <template #content>
-                        <tr v-for="(item, key) in clients" :key="key">
+                        <tr v-for="(item, key) in options" :key="key">
                             <td-responsive-component>{{item.user_id}}</td-responsive-component>
                             <td-responsive-component>{{item.users.name}}</td-responsive-component>
                             <td-responsive-component>{{item.users.details.type_pay}}</td-responsive-component>
@@ -50,7 +60,7 @@
                                 {{item.users.email}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                <span :class="item.users.classStatus">{{item.users.status}}</span>
+                                <span class="text-white p-1 rounded-md" :class="item.users.classStatus">{{item.users.status}}</span>
                             </td-responsive-component>
                             <td-responsive-component>
                                 <jet-dropdown align="right" width="48">
@@ -96,86 +106,68 @@
 </template>
 
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-    import JetNavLink from '@/Jetstream/NavLink'
-    import JetButton from '@/Jetstream/Button'
-    import TableResponsiveComponent from '@/Components/TableResponsive'
-    import ThResponsiveComponent from '@/Components/THResponsive'
-    import TdResponsiveComponent from '@/Components/TDResponsive'
-    import PaginateComponent from '@/Components/Paginate'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
-    import JetDropdown from '@/Jetstream/Dropdown'
-    import JetDropdownLink from '@/Jetstream/DropdownLink'
+   import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
 
     export default {
-        components: {
-            AdminLayout,
-            JetNavLink,
-            JetButton,
-            TableResponsiveComponent,
-            ThResponsiveComponent,
-            TdResponsiveComponent,
-            vSelect,
-            PaginateComponent,
-            JetDropdown,
-            JetDropdownLink
+        mixins: [DataTableComponentMixin],
+        created() {
+            this.url = '/getClientsPaginate/client';
         },
-        mounted(){
-            this.getPaginate();
+        updated() {
+            this.validateDataClients();
         },
         data() {
             return {
-                status: {},
                 titles: ['#','Nombre','Tipo','Empresa','Dirección','Ciudad','Correo','Estado','Opciones'],
-                loading: false,
+                document_name: 'Listado pagina clientes',
+                columns: ['#','Nombre','Tipo','Empresa','Dirección','Ciudad','Correo','Estado'],
+                json_fields: {
+                    '#' : 'users.id',
+                    Nombre : 'users.name',
+                    Tipo: 'users.details.type_pay',
+                    Empresa: 'users.details.name_company',
+                    'Dirección': 'users.details.street_address',
+                    Ciudad: 'users.details.city',
+                    Correo: 'users.email',
+                    Estado: 'users.status'
+                },
                 showTable: false,
-                lenght: 5,
-                page: this.lenght,
-                pages:[
-                    5,10,20
-                ],
                 actions: [
                     {name: 'Editar', route:'client.edit'},
                     {name: 'Ver', route:'client.show'},
                 ],
-                clients: []
             }
         },
         methods: {
             validateDataClients(){
-                
-                for (var i = 0; i < this.clients.length; i++) {
 
-                    if (this.clients[i].users.details) {
-                        this.clients[i].users.details.name_company  = this.clients[i].users.details.name_company 
-                        ? this.clients[i].users.details.name_company 
-                        : 'N/A';
+                for (var i = 0; i < this.options.length; i++) {
 
-                        this.clients[i].users.details.street_address  = this.clients[i].users.details.street_address 
-                        ? this.clients[i].users.details.street_address 
-                        : 'N/A';
+                    if (this.options[i].users.details) {
+                       
+                       for(var client in this.options[i].users.details){
 
-                        this.clients[i].users.details.city  = this.clients[i].users.details.city 
-                        ? this.clients[i].users.details.city 
-                        : 'N/A';
-                          
+                            this.options[i].users.details[client] = this.options[i].users.details[client] 
+                            ? this.options[i].users.details[client]
+                            : 'Sin datos'
+                        }
                     }else{
 
-                        this.clients[i].users.details = {
+                        this.options[i].users.details = {
                             name_company : 'N/A',
                             street_address : 'N/A',
                             city : 'N/A',
-                            email : 'N/A'
+                            email : 'N/A',
+                            type_pay: 'N/A'
                         }
                     }
-                    this.clients[i].users.status = this.clients[i].users.status
+                    this.options[i].users.status = this.options[i].users.status
                     ? 'Activo'
                     : 'Inactivo';
 
-                    this.clients[i].users.classStatus = this.clients[i].users.status == 'Activo' 
-                    ? 'text-white bg-green-500 p-1 rounded-md'
-                    : 'text-white bg-red-500 p-1 rounded-md';
+                    this.options[i].users.classStatus = this.options[i].users.status == 'Activo' 
+                    ? 'bg-green-500'
+                    : 'bg-red-500';
                 }
                 this.showTable = true;
             },
@@ -185,45 +177,13 @@
                 .then(res => {
                     item.users.status = res.data.user.status ? 'Activo' : 'Inactivo';
                     item.users.classStatus = res.data.user.status 
-                    ? 'text-white bg-green-500 p-1 rounded-md'
-                    : 'text-white bg-red-500 p-1 rounded-md';
-                    this.status = {
-                        type: res.data.type,
-                        text: res.data.text
-                    }
+                    ? 'bg-green-500'
+                    : 'bg-red-500';
+                    this.setStatusFlash(res.data.type,res.data.text);
                 })
                 .finally( () =>  this.endLoading())
             },
-            getPaginate(){
-                this.startLoading();
-                var url = '/getClientsPaginate/client';
-                var param = '?lenght='+this.lenght;
-                var total_url = url + param;
-                axios.get(total_url)
-                .then(res => {
-                    this.clients = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => {
-                    this.validateDataClients();
-                    this.endLoading();
-                });
 
-            },
-            updateData(data){
-                this.options = data.data;
-                this.package = data;
-            },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

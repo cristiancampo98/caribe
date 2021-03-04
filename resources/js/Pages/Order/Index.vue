@@ -11,6 +11,16 @@
                     Crear pedido
                 </jet-button>
             </jet-nav-link>
+            <jet-button type="button" @click.native="exportPDF">
+                PDF
+            </jet-button>
+            <json-excel class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            :data="options"
+            :fields="json_fields"
+            worksheet="Tabla"
+            :name="`${document_name}.xls`">
+                CSV
+            </json-excel>
             <div class="mt-8" v-if="options.length">
                 <div class="col-span-3">
                     <label for="lenght">Paginar: </label>
@@ -162,50 +172,29 @@
 </template>
 
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-    import JetNavLink from '@/Jetstream/NavLink'
-    import JetButton from '@/Jetstream/Button'
-    import TableResponsiveComponent from '@/Components/TableResponsive'
-    import ThResponsiveComponent from '@/Components/THResponsive'
-    import TdResponsiveComponent from '@/Components/TDResponsive'
-    import PaginateComponent from '@/Components/Paginate'
-    import JetDropdown from '@/Jetstream/Dropdown'
-    import JetDropdownLink from '@/Jetstream/DropdownLink'
-    import FormConsignment from './Modal/AddConsigment.vue'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
-    import moment from 'moment';
-    import { loadingMixin} from '@/Mixins/loadingMixin'
-    moment.locale('es')
-    
+    import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
 
     export default {
-        components: {
-            AdminLayout,
-            JetNavLink,
-            JetButton,
-            TableResponsiveComponent,
-            ThResponsiveComponent,
-            TdResponsiveComponent,
-            PaginateComponent,
-            JetDropdown,
-            JetDropdownLink,
-            FormConsignment,
-            vSelect
-            
-        },
-        mixins: [loadingMixin],
+        mixins: [DataTableComponentMixin],
         data () {
             return {
-                status: {},
-                lenght: 5,
-                page: this.lenght,
-                pages:[
-                    5,10,20
-                ],
-                titles: ['#','Cliente','Tipo','Email','Estado','Creador','Creado','Opciones'],
-                options: [],
-                package: [],
+                titles: ['#','Cliente','Tipo','Email','Estado','Creador','Fecha','Opciones'],
+                document_name: 'Listado pagina pedidos',
+                columns: ['#','Cliente','Tipo','Email','Estado','Creador','Fecha'],
+                json_fields: {
+                    '#' : 'id',
+                    Cliente : 'client.name',
+                    Tipo: 'client.details.type_pay',
+                    Email: 'client.email',
+                    Estado: 'status',
+                    Creador: 'creator.name',
+                    Fecha: {
+                        Fecha: 'created_at',
+                        callback: (value) => {
+                            return this.moment(value.created_at).format('DD/MM/YYYY');
+                        },
+                    }
+                },
                 actions: [
                     {name: 'Editar', route:'order.edit'},
                     {name: 'Ver', route:'order.show'},
@@ -217,31 +206,12 @@
                     id:null
                 },
                 order_id:false,
-                moment: moment,
-
             }
         },
         created(){
-            this.getPaginate();
+            this.url = '/getAllOrders/order';
         },
         methods: {
-            getPaginate(){
-                 this.startLoading();
-                var url = '/getAllOrders/order';
-                var param = '?lenght='+this.lenght;
-                var total_url = url + param;
-                axios.get(total_url)
-                .then(res => {
-                    this.options = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => this.endLoading());
-
-            },
-            updateData(data){
-                this.options = data.data;
-                this.package = data;
-            },
             updateNotifications(data){
                 this.modalConsignment = false;
                 this.status = data;

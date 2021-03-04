@@ -8,9 +8,19 @@
         <div class="py-12">
             <jet-nav-link :href="route('remission.create')">
                 <jet-button type="button">
-                    Crear remission
+                    Crear remisión
                 </jet-button>
             </jet-nav-link>
+            <jet-button type="button" @click.native="exportPDF">
+                PDF
+            </jet-button>
+            <json-excel class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            :data="options"
+            :fields="json_fields"
+            worksheet="Tabla"
+            :name="`${document_name}.xls`">
+                CSV
+            </json-excel>
             <div class="mt-8" v-if="options.length">
                 <div class="grid grid-cols-6 gap-6">
                     <div class="col-span-3">
@@ -110,77 +120,57 @@
 </template>
 
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-    import JetNavLink from '@/Jetstream/NavLink'
-    import JetButton from '@/Jetstream/Button'
-    import TableResponsiveComponent from '@/Components/TableResponsive'
-    import ThResponsiveComponent from '@/Components/THResponsive'
-    import TdResponsiveComponent from '@/Components/TDResponsive'
-    import PaginateComponent from '@/Components/Paginate'
-    import JetDropdown from '@/Jetstream/Dropdown'
-    import JetDropdownLink from '@/Jetstream/DropdownLink'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
-    import moment from 'moment';
-    import { loadingMixin} from '@/Mixins/loadingMixin'
-    moment.locale('es')
+    import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
     
-
-
     export default {
-        components: {
-            AdminLayout,
-            JetNavLink,
-            JetButton,
-            TableResponsiveComponent,
-            ThResponsiveComponent,
-            TdResponsiveComponent,
-            PaginateComponent,
-            JetDropdown,
-            JetDropdownLink,
-            vSelect
-        },
+        mixins: [DataTableComponentMixin],
         created() {
-            this.getPaginate();
+            this.url = '/getPaginateAllRemissions/remission';
         },
-        mixins: [loadingMixin],
         data () {
             return {
-                status: {},
-                lenght: 5,
-                page: this.lenght,
-                pages:[
-                    5,10,20
-                ],
                 titles: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Fecha','Opciones'],
-                options: [],
-                package: [],
+                document_name: 'Listado pagina de remisiones',
+                columns: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Fecha'],
+                json_fields: {
+                    '#' : 'id',
+                    Pedido : 'order_detail.order_id',
+                    'Consignación': {
+                        callback: (value) => {
+                            return  value.consignment ? value.consignment.consignment_number : 'Sin asignar'
+                        }
+                    },
+                    Producto: 'order_detail.product.name',
+                    Entregado: {
+                        field: 'delivered',
+                        callback: (value) => {
+                            return `${value} m3`
+                        }
+                    },
+                    Cantidad: {
+                        field: 'order_detail.quantity',
+                        callback: (value) => {
+                            return `${value} m3`
+                        }
+                    },
+                    Vehiculo: {
+                        callback: (value) => {
+                            return `Placa: ${value.carrier.vehicle.license_plate} / Conductor: ${value.carrier.carrier}`
+                        }
+                    },
+                    Fecha: {
+                        field: 'created_at',
+                        callback: (value) => {
+                            return this.moment(value).format('DD/MM/YYYY');
+                        }
+                    }
+                },
                 actions: [
                     {name: 'Ver', route:'remission.show'},
                 ],
-                moment: moment,
             }
         },
         methods: {
-            getPaginate(){
-                var url = '/getPaginateAllRemissions/remission',
-                    param = '?lenght='+this.lenght,
-                    total_url = url + param;
-
-                this.startLoading();
-
-                axios.get(total_url)
-                .then(res => {
-                    this.options = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => this.endLoading());
-
-            },
-            updateData(data){
-                this.options = data.data;
-                this.package = data;
-            },
             updaStatus(id){
                 this.startLoading();
 

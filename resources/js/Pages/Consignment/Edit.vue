@@ -87,7 +87,6 @@
     			type: Object
     		}
     	},
-    	mixins: [loadingMixin],
     	data(){
             return {
                 form: this.$inertia.form({

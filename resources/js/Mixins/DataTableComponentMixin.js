@@ -9,7 +9,11 @@ import 'vue-select/dist/vue-select.css'
 import JetDropdown from '@/Jetstream/Dropdown'
 import JetDropdownLink from '@/Jetstream/DropdownLink'
 import PaginateComponent from '@/Components/Paginate'
-
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+import JsonExcel from "vue-json-excel"
+import moment from 'moment';
+moment.locale('es')
 
 export const DataTableComponentMixin = {
 
@@ -23,14 +27,14 @@ export const DataTableComponentMixin = {
         vSelect,
         PaginateComponent,
         JetDropdown,
-        JetDropdownLink
+        JetDropdownLink,
+        JsonExcel
     },
     beforeCreate() {
     	console.log('Hook called from DataTableComponentMixin.js');
     },
  	mounted(){
         this.getPaginate();
-        console.log(this.options)
     },
     data() {
         return {
@@ -39,30 +43,49 @@ export const DataTableComponentMixin = {
             pages:[
                 5,10,20
             ],
-            options: []
+            options: [],
+            url: null,
+		    json_meta: [
+		      [
+		        {
+		          key: "charset",
+		          value: "utf-8",
+		        },
+		      ],
+		    ],
+		    moment: moment,
         }
     },
     methods: {
-
         getPaginate(){
             this.startLoading();
-            var url = '/getClientsPaginate/client';
             var param = '?lenght='+this.lenght;
-            var total_url = url + param;
+            var total_url = this.url + param;
             axios.get(total_url)
             .then(res => {
                 this.options = res.data.data;
                 this.package = res.data
-                console.log(this.options)
             })
             .finally( () => {
                 this.endLoading();
             });
-
         },
-        updateData(data){
+        updateData(data) {
             this.options = data.data;
             this.package = data;
+        },
+        exportPDF() {
+        	this.startLoading();
+        	var vm = this
+        	const doc = new jsPDF()
+        	autoTable(doc, { 
+        		html: '#my-table' ,
+        		theme: 'grid',
+        		columns: vm.columns,
+        		margin: {top: 30},
+        	})
+        	doc.save(vm.document_name)
+        	this.endLoading();
         },
     }
 	

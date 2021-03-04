@@ -8,7 +8,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-				<jet-form-section @submitted="storeProduct">
+				<jet-form-section @submitted="storeMenu">
 			        <template #title>
 			            Información del menú
 			        </template>
@@ -40,7 +40,7 @@
 			            <!-- Description -->
 			             <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="description" value="Descripción" />
-			                <textarea id="description"class="mt-1 block w-full rounded-md" v-model="form.description" autocomplete="description"></textarea>
+			                <textarea id="description" class="mt-1 block w-full rounded-md" v-model="form.description" autocomplete="description"></textarea>
 			                <jet-input-error :message="form.errors.description" class="mt-2" />
 			            </div>
 
@@ -147,9 +147,9 @@
         	console.log(this.units)
         },
         methods: {
-            storeProduct(){
-                this.form.post(route('product.store'), {
-                    errorBag: 'storeProduct',
+            storeMenu(){
+                this.form.post(route('menu.store'), {
+                    errorBag: 'storeMenu',
                     preserveScroll: true
                 });
             }

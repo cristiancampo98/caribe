@@ -20,10 +20,11 @@ class Menu extends Model
     	'description',
     	'icon',
     	'available',
+        'isDirect',
     	'position'
     ];
 
-     public function items()
+    public function items()
     {
         return $this->hasMany(Item::class);
     }

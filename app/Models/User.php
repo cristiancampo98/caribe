@@ -12,6 +12,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -63,10 +64,21 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    protected $with = ['details'];
+    protected $with = ['details','roles'];
 
     public function details()
     {
         return $this->hasOne(UserDetail::class, 'user_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
+
+    public function vehicles()
+    {
+        return $this->belongsToMany(Vehicle::class,'vehicle_users','user_id','vehicle_id')
+        ->withPivot('id','carrier');
     }
 }

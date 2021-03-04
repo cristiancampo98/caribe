@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreVehicleRequest;
+use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Vehicle;
+use App\Traits\VehicleTrait;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
 {
+    use VehicleTrait;
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +18,9 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Vehicle/Index', [
+            'vehicles' => self::getAllVehicles(),
+        ]);
     }
 
     /**
@@ -24,7 +30,7 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Vehicle/Create');
     }
 
     /**
@@ -33,9 +39,21 @@ class VehicleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreVehicleRequest $request)
     {
-        //
+        $response = self::storeVehicleFromRemission();
+
+        if ($response) {
+            if ($request->index) {
+                return redirect()->route('vehicle.index')
+                    ->with('success', 'El vehiculo se agrego con éxito');
+            }
+            return redirect()->back()
+                    ->with('success', 'El vehiculo se agrego con éxito');
+        }
+        return redirect()->back()
+                    ->with('error', 'Sucedió un error, no se pudo agregar el vehículo');
+        
     }
 
     /**
@@ -44,9 +62,12 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function show(Vehicle $vehicle)
+    public function show($id)
     {
-        //
+        $vehicle = self::getVehicleWithRelationship($id);
+        return inertia('Vehicle/Show', [
+            'vehicle' => $vehicle
+        ]);
     }
 
     /**
@@ -57,7 +78,9 @@ class VehicleController extends Controller
      */
     public function edit(Vehicle $vehicle)
     {
-        //
+        return inertia('Vehicle/Edit', [
+            'vehicle' => $vehicle
+        ]);
     }
 
     /**
@@ -67,9 +90,14 @@ class VehicleController extends Controller
      * @param  \App\Models\Vehicle  $vehicle
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Vehicle $vehicle)
+    public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
     {
-        //
+        $vehicle = $vehicle->update($request->all());
+
+        if ($vehicle) {
+            return redirect()->route('vehicle.index')->with('success','El vehículo se actualizó con éxito');
+        }
+        return redirect()->back()->with('error','Sucedió un error,el vehículo no se actualizó con éxito');
     }
 
     /**
@@ -81,5 +109,30 @@ class VehicleController extends Controller
     public function destroy(Vehicle $vehicle)
     {
         //
+    }
+
+    public function editStatus($id)
+    {
+        return inertia('Vehicle/EditState', [
+            'vehicle' => self::getVehicleById($id),
+        ]);
+    }
+
+    /**
+     * Update the state of specified resource from storage.
+     *
+     * @param  \App\Models\Vehicle  $vehicle
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatus($id)
+    {
+        $vehicle = self::updateStatusVehicle($id);
+
+        if ($vehicle) {
+            return redirect()->route('vehicle.index')->with('success','El vehículo se actualizó con éxito');
+        }
+        return redirect()->back()->with('error','Sucedió un error,el vehículo no se actualizó con éxito');
+
+        
     }
 }

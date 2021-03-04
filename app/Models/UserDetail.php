@@ -16,8 +16,6 @@ class UserDetail extends Model
     protected $fillable = [
     	'number_identification',
     	'type_identification_id',
-    	'sex',
-    	'type_blood_id',
     	'name_company',
     	'type_pay',
     	'street_address',
@@ -30,4 +28,11 @@ class UserDetail extends Model
     	'phones',
         'user_id'
     ];
+
+    protected $with = ['typeIdentification'];
+
+    public function typeIdentification()
+    {
+        return $this->belongsTo(TypeIdentification::class, 'type_identification_id', 'id');
+    }
 }

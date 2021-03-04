@@ -14,15 +14,15 @@ class Product extends Model
     protected $fillable = [
 	    'name',
 	    'reference',
-	    'unit_measure_id',
-	    'price',
-	    'description'
+	    'description',
+        'cubic_meters',
+        'ton',
+        'user_id',
+        'status'
     ];
 
-    protected $with = ['units_measure'];
-
-    public function units_measure()
+    public function creator()
     {
-        return $this->belongsTo(UnitMeasure::class, 'unit_measure_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

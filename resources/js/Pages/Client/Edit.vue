@@ -2,7 +2,7 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear cliente
+                Editar cliente
             </h2>
         </template>
         <div class="py-12">
@@ -15,6 +15,13 @@
 
 			        <template #description>
 			            Crea un cliente con la información requerida.
+
+			            <div class="mt-8">
+			            	<ul>
+			            		<li></li>
+			            	</ul>
+			            	
+			            </div>
 			        </template>
 
 			        <template #form v-if="showFormEdit">
@@ -27,7 +34,7 @@
 			            </div>
 			            <!-- email -->
 			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="email" value="Correo" />
+			                <jet-label for="email" value="Correo principal" />
 			                <jet-input id="email" type="text" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
 			                <jet-input-error :message="form.errors.email" class="mt-2" />
 			            </div>
@@ -50,25 +57,7 @@
 			            	:clearable="false"></v-select>
 			                <jet-input-error :message="form.errors.type_identification_id" class="mt-2" />
 			            </div>
-			            <!-- sex -->
-			            <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="sex" value="Sexo" />
-			                <jet-input id="sex" type="text" class="mt-1 block w-full" v-model="form.sex" autocomplete="sex" />
-			                <jet-input-error :message="form.errors.sex" class="mt-2" />
-			            </div>
-			            <!-- type blood -->
-			            <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="type_blood_id" value="Tipo de sangre" />
-			                <v-select 
-			            	class="mt-1"
-			            	id="type_blood_id"
-			            	label="acronym"
-			            	:reduce="acronym => acronym.id"
-			            	v-model="form.type_blood_id"
-			            	:options="types_blood"
-			            	:clearable="false"></v-select>
-			                <jet-input-error :message="form.errors.type_blood_id" class="mt-2" />
-			            </div>
+			           
 			            <!-- name company -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="name_company" value="Empresa" />
@@ -78,28 +67,15 @@
 			            <!-- type pay -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="type_pay" value="Tipo de pago" />
-			                <jet-input id="type_pay" type="text" class="mt-1 block w-full" v-model="form.type_pay" autocomplete="type_pay" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="type_pay"
+			            	v-model="form.type_pay"
+			            	:clearable="false"
+			            	:options="['contado','crédito']"></v-select>
 			                <jet-input-error :message="form.errors.type_pay" class="mt-2" />
 			            </div>
-			            <!-- steet address -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="street_address" value="Dirección" />
-			                <jet-input id="street_address" type="text" class="mt-1 block w-full" v-model="form.street_address" autocomplete="street_address" />
-			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
-			            </div>
-			            <!-- street details -->
-			            <div class="col-span-6 lg:col-span-6">
-			                <jet-label for="street_details" value="Detalles de dirección" />
-			                <textarea id="street_details" class="mt-1 block w-full rounded-md" v-model="form.street_details"></textarea>
-			                <jet-input-error :message="form.errors.street_details" class="mt-2" />
-			            </div>
-			            <!-- street comune -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="street_comune" value="Comuna" />
-			                <jet-input id="street_comune" type="text" class="mt-1 block w-full" v-model="form.street_comune" autocomplete="street_comune" />
-			                <jet-input-error :message="form.errors.street_comune" class="mt-2" />
-			            </div>
-			            <!-- department -->
+			             <!-- department -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
@@ -124,16 +100,41 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
+			            <!-- street comune -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="street_comune" value="Comuna" />
+			                <jet-input id="street_comune" type="text" class="mt-1 block w-full" v-model="form.street_comune" autocomplete="street_comune" />
+			                <jet-input-error :message="form.errors.street_comune" class="mt-2" />
+			            </div>
+			            <!-- steet address -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="street_address" value="Dirección" />
+			                <jet-input id="street_address" type="text" class="mt-1 block w-full" v-model="form.street_address" autocomplete="street_address" />
+			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
+			            </div>
+			            <!-- street details -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="street_details" value="Detalles de dirección" />
+			                <textarea id="street_details" class="mt-1 block w-full rounded-md" v-model="form.street_details"></textarea>
+			                <jet-input-error :message="form.errors.street_details" class="mt-2" />
+			            </div>
+			            
+			           
+
+			            <div class="col-span-6">
+			            	<p class="text-sm text-blue-500">Nota: En los siguientes tres recuadros podrá ingresar varios datos en cada casilla con la única condición que al final de cada dato exista una coma. Ejemplo: Placa1,Placa2, ... / Email1,Email2, ...</p>
+			            </div>
 			            
 			            <!-- others_email -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="others_email" value="Otros correos" />
 			                <textarea id="others_email" class="mt-1 block w-full rounded-md" v-model="form.others_email"></textarea>
 			                <jet-input-error :message="form.errors.others_email" class="mt-2" />
+
 			            </div>
 			            <!-- phones -->
 			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="phones" value="Otros telefonos" />
+			                <jet-label for="phones" value="Teléfonos" />
 			                <textarea id="phones"  class="mt-1 block w-full rounded-md" v-model="form.phones"></textarea>
 			                <jet-input-error :message="form.errors.phones" class="mt-2" />
 			            </div>
@@ -142,13 +143,13 @@
 			                <jet-label for="vehicles" value="Vehículos" />
 			                <textarea id="vehicles"  class="uppercase mt-1 block w-full rounded-md" v-model="form.vehicles"></textarea>
 			                <jet-input-error :message="form.errors.vehicles" class="mt-2" />
-			                <p class="text-sm text-blue-500">Nota: Ingrese las placas de los vehículos separados por comas. Ejemplo: Placa1,Placa2, ...</p>
 			            </div>
 			            <!-- photo document -->
 			            <div class="col-span-6 lg:col-span-2">
 			            	<label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 			            		<span>Subir Identificación</span>
 			            		<input type="file" id="photo" ref="photo" @change="uploadDocument" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
+			            		<p class="text-xs text-gray-500">PDF</p>
 			            	</label>
 			            	<span v-if="uploadedDocument" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
@@ -157,6 +158,7 @@
 			            	<label for="rut" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 			            		<span>Subir RUT</span>
 			            		<input type="file"  id="rut"  ref="rut" @change="uploadRut" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
+			            		<p class="text-xs text-gray-500">PDF</p>
 			            	</label>
 			            	<span v-if="uploadedRut" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
@@ -165,6 +167,7 @@
 			            	<label for="logo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
 			            		<span>Subir Logo</span>
 			            		<input type="file"  id="logo"  ref="logo" @change="uploadLogo" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
+			            		<p class="text-xs text-gray-500">JPG, PNG</p>
 			            	</label>
 			            	<span v-if="uploadedLogo" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
@@ -220,6 +223,15 @@
     		},
     		types_identification: {
     			type: Array
+    		},
+    		photo_document: {
+    			type: Array
+    		},
+    		rut_document: {
+    			type: Array
+    		},
+    		logo: {
+    			type: Array
     		}
     	},
     	data(){
@@ -230,11 +242,9 @@
                     email: this.client.email,
                     number_identification: null,
                     type_identification_id: null,
-                    sex: null,
                     photo_document: null,
                     rut_document: null,
                     logo: null,
-                    type_blood_id: null,
                     name_company: null,
                     type_pay: null,
                     street_address: null,
@@ -299,10 +309,8 @@
             	if (this.client.details) {
             		this.form.number_identification = this.client.details.number_identification;
                     this.form.type_identification_id = this.client.details.type_identification_id;
-                    this.form.sex = this.client.details.sex;
                     this.form.photo_document = this.client.details.photo_document;
                     this.form.rut_document = this.client.details.rut_document;
-                    this.form.type_blood_id = this.client.details.type_blood_id;
                     this.form.name_company = this.client.details.name_company;
                     this.form.type_pay = this.client.details.type_pay;
                     this.form.street_address = this.client.details.street_address;

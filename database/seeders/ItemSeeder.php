@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\DB;
 class ItemSeeder extends Seeder
 {
 	protected $items = [
-		 ['Roles','role.index'],
-		['Permisos','permission.index'],
+		
 		['Menu','menu.index'],
-		['Usuarios','user.index']
+		['Permisos','permission.index'],
+		['Roles','role.index'],
+		['Usuarios','user.index'],
+		['Vehículos','vehicle.index'],
 	];
     /**
      * Run the database seeds.
@@ -26,7 +28,7 @@ class ItemSeeder extends Seeder
 			    	'name' => $value[0], 
 			    	'route' => $value[1],
 			    	'available' => 1,
-			    	'menu_id' => 5
+			    	'menu_id' => 6
 			    ],
 			]);
     	}

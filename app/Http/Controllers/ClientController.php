@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TypeBlood;
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
 use App\Models\TypeIdentification;
 use App\Traits\ClientTrait;
 use Illuminate\Http\Request;
@@ -18,9 +19,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return inertia('Client/Index', [
-            'clients' => self::getClients(),
-        ]);
+        return inertia('Client/Index');
     }
 
     /**
@@ -39,12 +38,8 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:users'
-        ]);
 
         $user = self::storeClient();
 
@@ -60,7 +55,9 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        //
+        return inertia('Client/Show', [
+            'client' => self::getClientWithRelationships($id)
+        ]);
     }
 
     /**
@@ -74,7 +71,9 @@ class ClientController extends Controller
         return inertia('Client/Edit', [
             'client' => self::getClient($id),
             'types_identification' => TypeIdentification::where('available',1)->get(),
-            'types_blood' => TypeBlood::where('available',1)->get(),
+            'photo_document' => self::getMultimediaByParams('users', 'user_id', $id, 'photo_document'),
+            'rut_document' => self::getMultimediaByParams('users', 'user_id', $id, 'rut_document'),
+            'logo' => self::getMultimediaByParams('users', 'user_id', $id, 'logo')
         ]);
     }
 
@@ -85,10 +84,18 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateClientRequest $request, $id)
     {
+        $this->validate($request,[
+        
+             'email' => 'required|string|max:255|email|unique:users,email,'.$id
+
+        ]);
+
         $client = self::updateClient($id);
-        return redirect()->route('client.index');
+
+        return $client ? redirect()->route('client.index')->with('success','El cliente se actualizó con éxito')
+                : redirect()->back()->with('error','Sucedió un error,el cliente no se actualizó');
     }
 
     /**

@@ -20,7 +20,7 @@ class RoleSeeder extends Seeder
 		    	'slug' => 'super.root',
 		    	'description' => 'El todo poderoso',
 		    	'full-access' => 'yes',
-		    	'public' => 1,
+		    	'public' => 0,
 		    ],
 		    [
 		    	'name' => 'Administrador', 

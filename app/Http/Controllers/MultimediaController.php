@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Multimedia;
+use App\Traits\MultimediaTrait;
 use Illuminate\Http\Request;
 
 class MultimediaController extends Controller
 {
+    use MultimediaTrait;
     /**
      * Display a listing of the resource.
      *
@@ -44,7 +45,7 @@ class MultimediaController extends Controller
      * @param  \App\Models\Multimedia  $multimedia
      * @return \Illuminate\Http\Response
      */
-    public function show(Multimedia $multimedia)
+    public function show($id)
     {
         //
     }
@@ -55,7 +56,7 @@ class MultimediaController extends Controller
      * @param  \App\Models\Multimedia  $multimedia
      * @return \Illuminate\Http\Response
      */
-    public function edit(Multimedia $multimedia)
+    public function edit($id)
     {
         //
     }
@@ -67,7 +68,7 @@ class MultimediaController extends Controller
      * @param  \App\Models\Multimedia  $multimedia
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Multimedia $multimedia)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -78,8 +79,19 @@ class MultimediaController extends Controller
      * @param  \App\Models\Multimedia  $multimedia
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Multimedia $multimedia)
+    public function destroy($id)
     {
-        //
+        $response = self::destroyTrait($id);
+        if (request()->wantsJson()) {
+            
+            $data = $response ? ['type' => 'success','text' => 'Se eliminó con éxito el contenido multimedia']
+                    : ['type' => 'error','text' => 'Sucedió un error,No se eliminó con éxito el contenido multimedia'];
+            return response()->json($data, 200);
+        }
+    }
+
+    public function download($id)
+    {
+        return self::downloadTrait($id);
     }
 }

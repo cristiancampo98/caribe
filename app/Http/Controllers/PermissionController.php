@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePermissionRequest;
+use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
 use Illuminate\Http\Request;
 
@@ -14,7 +16,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::paginate(5);
+        $permissions = Permission::all();
         
         return inertia('Permission/Index', [
             'permissions' => $permissions
@@ -37,14 +39,8 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePermissionRequest $request)
     {
-        $this->validate($request, [
-            "name" => "required|unique:permission,name",
-            "slug" => "required|unique:permission,slug",
-            "controller" => 'required'
-        ]);
-
         Permission::create($request->all());
 
         return redirect()->route('permission.index');
@@ -83,7 +79,7 @@ class PermissionController extends Controller
      * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Permission $permission)
+    public function update(UpdatePermissionRequest $request, Permission $permission)
     {
         //
        

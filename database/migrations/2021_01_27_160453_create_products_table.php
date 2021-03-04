@@ -15,13 +15,13 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('reference')->nullable();
-            $table->foreignId('unit_measure_id') ->constrained();
-            $table->double('price')->nullable();
             $table->text('description')->nullable();
+            $table->decimal('cubic_meters',3,1);
+            $table->decimal('ton',3,1);
             $table->foreignId('user_id') ->constrained();
-            $table->boolean('status');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

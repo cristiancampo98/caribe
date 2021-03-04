@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Remission;
+use App\Http\Requests\StoreRemissionRequest;
+use App\Events\StoredRemission;
+use App\Traits\RemissionTrait;
 use Illuminate\Http\Request;
 
 class RemissionController extends Controller
 {
+    use RemissionTrait;
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +17,7 @@ class RemissionController extends Controller
      */
     public function index()
     {
-        //
+        return inertia('Remission/Index');
     }
 
     /**
@@ -24,7 +27,7 @@ class RemissionController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('Remission/Create');
     }
 
     /**
@@ -33,9 +36,18 @@ class RemissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRemissionRequest $request)
     {
-        //
+        $response = self::storeRemission($request);
+
+        if ($response) {
+            StoredRemission::dispatch($response);
+        }
+
+        return $response ? redirect()->route('remission.index')->with('success','La remisión se creo con éxito')
+                        : redirect()->back()->with('error','Sucedió un error, no se pudo crear la remisión');
+
+        
     }
 
     /**
@@ -44,9 +56,11 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function show(Remission $remission)
+    public function show($id)
     {
-        //
+        return inertia('Remission/Show',[
+            'remission' => self::getRemissionByIdWithRelationships($id)
+        ]);
     }
 
     /**
@@ -55,7 +69,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function edit(Remission $remission)
+    public function edit($id)
     {
         //
     }
@@ -67,7 +81,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Remission $remission)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -78,7 +92,7 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Remission $remission)
+    public function destroy($id)
     {
         //
     }

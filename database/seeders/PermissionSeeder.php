@@ -14,14 +14,17 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-    	
-        $this->setPermissions('role','Roles');
-        $this->setPermissions('permission','Permisos');
-        $this->setPermissions('menu','Menu');
-        $this->setPermissions('user','Usuarios');
-        $this->setPermissions('product','Productos');
+        $this->setPermissions('consignment','Consignaciones');
+    	$this->setPermissions('client','Clientes');
+        $this->setPermissions('menu','Menús');
         $this->setPermissions('order','Pedidos');
+        $this->setPermissions('permission','Permisos');
+        $this->setPermissions('product','Productos');
         $this->setPermissions('remission','Remisiones');
+        $this->setPermissions('role','Roles');
+        $this->setPermissions('user','Usuarios');
+        $this->setPermissions('vehicle','Vehículos');
+        
 
          Permission::create([
             'name' => 'Configuración',

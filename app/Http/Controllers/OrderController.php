@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Events\StoredOrder;
+use App\Events\UpdatedOrder;
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\UpdateOrderRequest;
 use App\Traits\OrderTrait;
+use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
     use OrderTrait;
+    use ProductTrait;
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +21,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return inertia('Order/Index', [
-            'orders' => self::getOrdersByRole(),
-        ]);
+        return inertia('Order/Index');
     }
 
     /**
@@ -28,10 +31,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-
         return inertia('Order/Create', [
-            'products' => Product::all(),
-            'clients' => self::getClientsToOrder()
+            'products' => self::getAllProductsToOrder(),
         ]);
     }
 
@@ -41,17 +42,14 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $this->validate($request, [
-            'user_id' => 'required|numeric|min:1' ,
-            'shipping_address' => 'required|string|max:100' ,
-            'city' => 'required|string|max:100' ,
-            'order_details' => 'required|array|min:1'
-        ]);
-        self::storeOrder($request->all());
+        $response = self::storeOrder($request->all());
+        $order = self::findOrder($response);
+        StoredOrder::dispatch($order);
 
-        return redirect()->route('order.index');
+        return $response ? redirect()->route('order.index')->with('success','El pedido se guardó con éxito')
+                : redirect()->back()->with('error','Sucedió un error, no se pudo crear el pedido');
     }
 
     /**
@@ -60,9 +58,11 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function show(Order $order)
+    public function show($id)
     {
-        //
+        return inertia('Order/Show', [
+            'order' => self::findOrder($id)
+        ]);
     }
 
     /**
@@ -71,9 +71,20 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function edit(Order $order)
+    public function edit($id)
     {
-        //
+    	$order = self::findOrder($id);
+
+        if ($order->status == 'activo') {
+            return inertia('Order/Edit', [
+                'order' => $order,
+                'products' => self::getAllProductsToOrder(),
+                'contract_old' => self::getMultimediaByParams('order','order_id',$id,'contract_file'),
+                'purchase_order_old' => self::getMultimediaByParams('order','order_id',$id,'purchase_order_file'),
+            ]);
+        }
+        
+        return redirect()->back()->with('info','No se puede editar debido a que se canceló o esta finalizado');
     }
 
     /**
@@ -83,9 +94,39 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(UpdateOrderRequest $request, $id)
     {
-        //
+        $order = self::updateOrder($request, $id);     
+
+        UpdatedOrder::dispatch($order); 
+
+        if ($order) {
+            return redirect()->route('order.index')
+            ->with('success','El pedido se actualizó con exito');    
+        }
+        return redirect()->route('order.index')
+        ->with('error','Sucedió un error, no se pudo actualizar');    
+        
+
+    }
+
+    public function updateStatusOrder($id)
+    {
+        return self::updateStatusOrderTrait($id);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $this->validate($request,[
+            'delete_note' => 'required|string|max:255'
+        ]);
+        
+        return self::cancelOrder($id, $request->all());
+    }
+
+    public function sendEmailUpdate($id)
+    {
+        return self::sendEmailUpdateTrait($id);
     }
 
     /**
@@ -94,8 +135,9 @@ class OrderController extends Controller
      * @param  \App\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Order $order)
+    public function destroy($id)
     {
         //
     }
+
 }

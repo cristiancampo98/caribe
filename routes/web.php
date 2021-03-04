@@ -1,19 +1,29 @@
 <?php
 
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ClientStorageController;
+use App\Http\Controllers\ConsignmentController;
+use App\Http\Controllers\ConsignmentStorageController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\OrderDetailStorageController;
+use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductStorageController;
 use App\Http\Controllers\RemissionController;
+use App\Http\Controllers\RemissionStorageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ClientController;
+use App\Http\Controllers\UserStorageController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\VehicleStorageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -57,8 +67,116 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'role' => RoleController::class,
         'roleUser' => RoleUserController::class,
         'user' => UserController::class,
-        'client' => ClientController::class
+        'client' => ClientController::class,
+        'vehicle' => VehicleController::class,
+        'consignment' => ConsignmentController::class
     ]);
     Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);
     Route::get('security/{role}/assignPermission', [SecurityController::class, 'assignPermission'])->name('security.assignPermission');
+
+    Route::put('updateStatus/{id}/user', [UserController::class, 'updateStatus'])->name('updateStatus.user');
+    Route::get('editstatus/{vehicle}/vehicle', [VehicleController::class, 'editStatus'])->name('editStatus.vehicle');
+    Route::put('updateStatus/{vehicle}/vehicle', [VehicleController::class, 'updateStatus'])->name('updateStatus.vehicle');
+
+    // TODO API: mover estas rutas al archivo api route cuando se configure este metodo
+
+    Route::put('updateStatus/{id}/product',
+        [ProductController::class, 'updateStatus']
+    );
+
+    Route::get('getPaginateAllProducts/products',
+        [ProductStorageController::class, 'getPaginateAllProducts']
+    );
+
+    Route::get('getPaginateAllRemissions/remission',
+        [RemissionStorageController::class, 'getPaginateAllRemissions']
+    );
+
+    Route::get('getMultimediaFilesByProduct/{id}/products',
+        [ProductStorageController::class, 'getMultimediaFilesByProduct']
+    );
+
+    Route::get('getMultimediaFilesByClient/{id}/client',
+        [ClientStorageController::class, 'getMultimediaFilesByClient']
+    );
+
+    Route::get('getMultimediaFilesByVehicle/{id}/vehicle',
+        [VehicleStorageController::class, 'getMultimediaFilesByVehicle']
+    );
+
+    Route::get('getMultimediaFilesByConsignment/{id}/consignment',
+        [ConsignmentStorageController::class, 'getMultimediaFilesByConsignment']
+    );
+
+    Route::get('getMultimediaFilesByRemission/{id}/remission',
+        [RemissionStorageController::class, 'getMultimediaFilesByRemission']
+    );
+
+
+
+    Route::get('getPaginateAllUsers/users',
+        [UserStorageController::class, 'getPaginateAllUsers']
+    );
+    Route::get('getAllOrders/order',
+        [OrderStorageController::class, 'getAllOrders']
+    );
+    Route::get('getOrderByConsecutiveOrClient/order',
+        [OrderStorageController::class, 'getOrderByConsecutiveOrClient']
+    );
+    Route::get('getOrdersByUserId/order',
+        [OrderStorageController::class, 'getOrdersByUserId']
+    );
+    Route::get('getOrderDetailsByOrderId/orderDetail',
+        [OrderDetailStorageController::class, 'getOrderDetailsByOrderId']
+    );
+    Route::get('getAllConsignments/consignments',
+        [ConsignmentStorageController::class, 'getAllConsignments']
+    );
+    
+    Route::get('getConsignment/consignments',
+        [ConsignmentStorageController::class, 'getConsignment']
+    );
+    Route::get('getMultimediaConsignmentsByOrder/{id}/consignment',
+        [ConsignmentStorageController::class, 'getMultimediaConsignmentsByOrder']
+    );
+    Route::get('getMultimediaOrdersById/{id}/order',
+        [OrderStorageController::class, 'getMultimediaOrdersById']
+    );
+    Route::get('getClients/client',
+        [ClientStorageController::class, 'getClients']
+    );
+    Route::get('getClientWithOrders/client',
+        [ClientStorageController::class, 'getClientWithOrders']
+    );
+    Route::get('getClientsPaginate/client',
+        [ClientStorageController::class, 'getClientsPaginate']
+    );
+    Route::get('getVehiclesByUserId/{id}/client',
+        [ClientStorageController::class, 'getVehiclesByUserId']
+    );
+    
+    Route::get('getPaginateAllVehicles/vehicles',
+        [VehicleStorageController::class, 'getVehiclesPaginate']
+    );
+
+    Route::put('cancel/{id}/order',
+        [OrderController::class, 'cancel']
+    );
+    Route::put('updateStatusOrder/{id}/order',
+        [OrderController::class, 'updateStatusOrder']
+    );
+    Route::get('sendEmailUpdate/{id}/order',
+        [OrderController::class, 'sendEmailUpdate']
+    );
+
+    Route::get('download/{id}/multimedia',
+        [MultimediaController::class, 'download']
+    );
+
+    // End TODO API
+});
+
+Route::get('artisanCall', function () {
+    Artisan::call('config:cache');
+    Artisan::call('storage:link');
 });

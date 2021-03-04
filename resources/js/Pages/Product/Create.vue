@@ -20,34 +20,37 @@
 			        <template #form>
 
 			            <!-- Name -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="name" value="Nombre" />
 			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" maxlength="100" />
 			                <jet-input-error :message="form.errors.name" class="mt-2" />
 			            </div>
 			            <!-- Reference -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="reference" value="Referencia" />
 			                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" maxlength="50" />
 			                <jet-input-error :message="form.errors.reference" class="mt-2" />
 			            </div>
-			            <!-- Unit measure -->
-			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="unit_measure_id" value="Unidad medida" />
-			                <select v-model="form.unit_measure_id" class="mt-1 block w-full rounded-lg" required>
-			                	<option value="0" disabled> Seleccione una opción</option>
-							  	<option v-for="option in units_measure" v-bind:value="option.id">
-								    {{ option.name }}
-							  	</option>
-							</select>
-			                <jet-input-error :message="form.errors.unit_measure_id" class="mt-2" />
-			            </div>
-			            <!-- Price -->
-			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="price" value="Precio" />
-			                <jet-input id="price" type="number" class="mt-1 block w-full" v-model.number="form.price" autocomplete="price" />
-			                <jet-input-error :message="form.errors.price" class="mt-2" />
-			            </div>
+                        <!-- Cubic meters -->
+                        <div class="col-span-6 lg:col-span-2">
+                            <jet-label for="cubic_meters" value="Equivalencia en metros cúbicos" />
+                            <jet-input type="number" class="mt-1 block w-full"
+                            id="cubic_meters"
+                            step="0.1"
+                            min="0"
+                            v-model.number="form.cubic_meters"/>
+                            <jet-input-error :message="form.errors.cubic_meters" class="mt-2" />
+                        </div>
+                        <!-- Ton -->
+                        <div class="col-span-6 lg:col-span-1">
+                            <jet-label for="ton" value="Equivalencia en toneladas" />
+                            <jet-input type="number" class="mt-1 block w-full"
+                            id="ton"
+                            step="0.1"
+                            min="0"
+                            v-model.number="form.ton"/>
+                            <jet-input-error :message="form.errors.ton" class="mt-2" />
+                        </div>
 			            <!-- Description -->
 			            <div class="col-span-6 lg:col-span-6">
 			                <jet-label for="description" value="Descripción" />
@@ -103,19 +106,16 @@
             DrapZoneComponent
     	},
     	props: {
-    		units_measure: {
-    			type: [Object,Array],
-    			required: true
-    		}
     	},
     	data(){
             return {
+                loading: false,
                 form: this.$inertia.form({
                     name: null,
                     reference: null,
-                    unit_measure_id: 0,
-                    price: 0,
                     description: null,
+                    cubic_meters: 0,
+                    ton: 0,
                     photos: []
                 }),
             }
@@ -125,9 +125,19 @@
         },
         methods: {
             storeProduct(){
+                this.startLoading();
                 this.form.post(route('product.store'), {
                     errorBag: 'storeProduct',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                    },
+                    onSuccess: () => {
+                        this.loading.text = "¡Hecho!";
+                        this.uploadedImagen = false;
+                    },
+                    onFinish: () => {
+                        this.endLoading();
+                    },
                 });
             },
             getFiles(files){
@@ -138,9 +148,17 @@
             			this.form.photos.push(files[i]);
             		}
             	}
-            	console.log(this.form.photos);
-            	
-            }
+            },
+            startLoading(){
+                
+                this.loading = this.$vs.loading({
+                    type: 'circles'
+                });
+                this.loading.text = "Procesando...";
+            },
+            endLoading(){
+                this.loading.close();
+            },
         }
 
     }

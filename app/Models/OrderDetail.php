@@ -15,7 +15,19 @@ class OrderDetail extends Model
     	'order_id',
     	'product_id',
     	'quantity',
-    	'discount',
     	'status',
     ];
+
+    public function order(){
+    	return $this->belongsTo(Order::class);
+    }
+
+    public function product(){
+    	return $this->belongsTo(Product::class);
+    }
+
+    public function remissions()
+    {
+        return  $this->hasMany(Remission::class, 'order_details_id');
+    }
 }

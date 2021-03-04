@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Multimedia;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 
@@ -23,13 +24,13 @@ trait MultimediaTrait
 	{
 		foreach ($files as $key => $value) {
 			Multimedia::create([
-				'path' => $value->storeAs('public/' .$folder , $value->getClientOriginalName()),
+				'path' => $value->storePubliclyAs($folder, $value->getClientOriginalName(), 'public'),
 				'filename' => $value->getClientOriginalName(),
 				'model' => $model,
 				'reason' => $reason,
 				'foreign_key' => $foreign_key,
 				'model_id' => $model_id
-			]);	
+			]);
 		}
 	}
 
@@ -40,14 +41,63 @@ trait MultimediaTrait
 	public static function storeSingleFileMultimedia($file, $folder, $model, $reason, $foreign_key, $model_id)
 	{
 		return Multimedia::create([
-			'path' => $file->storeAs('public/' .$folder , $file->getClientOriginalName()),
+			'path' => $file->storePubliclyAs($folder, $file->getClientOriginalName(), 'public'),
 			'filename' => $file->getClientOriginalName(),
 			'model' => $model,
 			'reason' => $reason,
 			'foreign_key' => $foreign_key,
 			'model_id' => $model_id
-		]);	
+		]);
 	}
 
-    
+	public static function getMultimediaByParams($model, $foreign_key, $model_id, $reason)
+	{
+		return Multimedia::where('model', $model)
+			->where('foreign_key', $foreign_key)
+			->where('model_id', $model_id)
+			->where('reason', $reason)
+			->get();
+	}
+
+	public static function getMultimediaByWhereIn($data, $foreign_key)
+	{
+		return Multimedia::whereIn('model_id', $data)
+			->where('foreign_key', $foreign_key)
+			->get();
+	}
+
+	public static function downloadTrait($id)
+	{
+		$file = Multimedia::find($id);
+		return Storage::disk('public')->download($file->path);
+	}
+
+	public static function destroyTrait($id)
+	{
+		$file = Multimedia::find($id);
+		Storage::disk('public')->delete($file->path);
+		return $file->delete();
+	}
+
+	public static function destroyMasiveMultimediaByParams($data, $foreign_key)
+	{
+		$multimedia = self::getMultimediaByWhereIn($data, $foreign_key);
+		foreach ($multimedia as $key => $value) {
+			Storage::disk('public')->delete($value->path);
+			$value->delete();
+		}
+	}
+
+	public static function destroyMultimediaByReason($reason, $foreign_key, $model_id)
+	{
+		$multimedia = Multimedia::where([
+			'reason' => $reason,
+			'foreign_key' => $foreign_key,
+			'model_id' => $model_id,
+		])->get();
+		foreach ($multimedia as $key => $value) {
+			Storage::disk('public')->delete($value->path);
+			$value->delete();
+		}
+	}
 }

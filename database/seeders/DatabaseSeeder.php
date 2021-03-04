@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
 	        RoleSeeder::class,
 	        PermissionSeeder::class,
 	        RoleUserSeeder::class,
-            UnitMeasureSeeder::class,
+            //UnitMeasureSeeder::class,
             TypeIdentificationSeeder::class,
-            TypeBloodSeeder::class
+            //TypeBloodSeeder::class
 	    ]);
     }
 }

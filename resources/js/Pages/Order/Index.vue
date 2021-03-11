@@ -133,6 +133,9 @@
                 </template>
                 <div class="grid grid-cols-3">
                   <textarea v-model="form.note" class="rounded-md col-span-3"></textarea>
+                  <p v-if="error_note" v-for="error in error_note" class="text-sm text-red-500 mt-2 col-span-3">
+                    {{error}}
+                  </p>
                 </div>
                 <template #footer>
                   <div class="grid grid-cols-2">
@@ -155,7 +158,7 @@
                   </h4>
                 </template>
                 <form-consignment
-                @updatingNotifications="updateNotifications"
+                @closingModal="closeModal"
                 :order_id="order_id"/>
                 <template #footer>
                   <div class="grid grid-cols-2">
@@ -173,9 +176,13 @@
 
 <script>
     import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
+    import FormConsignment from './Modal/AddConsigment.vue'
 
     export default {
         mixins: [DataTableComponentMixin],
+        components: {
+            FormConsignment,
+        },
         data () {
             return {
                 titles: ['#','Cliente','Tipo','Email','Estado','Creador','Fecha','Opciones'],
@@ -206,15 +213,15 @@
                     id:null
                 },
                 order_id:false,
+                error_note: null
             }
         },
         created(){
             this.url = '/getAllOrders/order';
         },
         methods: {
-            updateNotifications(data){
-                this.modalConsignment = false;
-                this.status = data;
+            closeModal(data){
+                this.modalConsignment = data;
             },
             openModalConsignment(item){
                 this.modalConsignment = true;
@@ -231,21 +238,22 @@
             destroyOrder(item){
                 this.startLoading();
                 axios.put('cancel/'+this.form.id+'/order',{
-                    delete_note: this.form.note
+                    note: this.form.note
                 })
                 .then( res => {
                     this.modal = false;
-                    this.status = {type: res.data.type ,text: res.data.text}
+                    this.setStatusFlash(res.data.type, res.data.text)
                     this.options.map(item => {
                         if(item.id == this.form.id){
                             item.status = 'cancelado';
                         }
-                    })
+                    });
+                    this.error_note = null;
                 })
                 .finally( () => this.endLoading())
                 .catch( error => {
-                    //error.response.data.errors
-                    this.status = {type: 'error' ,text: 'Error, escribe el motivo para cancelar.'}  
+                    this.error_note = error.response.data.errors;
+                    this.setStatusFlash('error', 'Error, verifica los datos.')
                 });
             },
             updateStatusOrder(item){

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreConsignmentRequest;
 use App\Traits\ConsignmentTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 
 class ConsignmentController extends Controller
@@ -17,6 +19,8 @@ class ConsignmentController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Index');
     }
 
@@ -27,6 +31,8 @@ class ConsignmentController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Create');
     }
 
@@ -36,13 +42,8 @@ class ConsignmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreConsignmentRequest $request)
     {
-        $this->validate($request, [
-            'order_id' => 'required|numeric',
-            'consignment_number' => 'required|unique:consignments,consignment_number',
-        ]);
-
         $data = self::storeConsignment();
 
         if ($data) {
@@ -71,6 +72,8 @@ class ConsignmentController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Show', [
             'consignment' => self::getConsignmentByIdWithRelationship($id)
         ]);
@@ -84,6 +87,8 @@ class ConsignmentController extends Controller
      */
     public function edit($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Edit', [
             'consignment' => self::findConsignment($id)
         ]);
@@ -112,6 +117,8 @@ class ConsignmentController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('haveaccess');
+        
         $response = self::destroyConsignmentTrait($id);
 
         if (request()->wantsJson()) {

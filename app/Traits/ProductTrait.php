@@ -35,7 +35,7 @@ trait ProductTrait
 
 	public static function getPaginateAllProductsTrait()
 	{
-		$products = Product::paginate( request()->get('lenght'));
+		$products = Product::orderBy('id','desc')->paginate( request()->get('lenght'));
 
 		return $products;
 	}

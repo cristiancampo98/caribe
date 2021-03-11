@@ -10,6 +10,8 @@ use App\Models\TypeIdentification;
 use App\Models\User;
 use App\Traits\MultimediaTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -21,6 +23,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('User/Index');
     }
 
@@ -31,6 +35,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('User/Create', [
             'roles' => Role::where('public',1)->get()
         ]);
@@ -57,6 +63,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('User/Show', [
             'user' => $user
         ]);
@@ -70,8 +78,17 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        Gate::authorize('haveaccess');
+
+        if (Auth::user()->isAdmin()) {
+            $roles = Role::all();
+        }else {
+            $roles = Role::where('public', 1)->get();
+        }
+
         return inertia('User/Edit', [
             'user' => $user,
+            'roles' => $roles,
             'types_identification' => TypeIdentification::where('available',1)->get()
         ]);
     }
@@ -86,7 +103,9 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $user->update($request->all());
-        $detail = User::storeUserDetail($request->all(), $user->id);
+        $user->details->update($request->all());
+        $user->roles()->sync($request->roles_id);
+        
         if ($request->has('photo_document')) {
 
             self::storeSingleFileMultimedia(
@@ -98,7 +117,7 @@ class UserController extends Controller
                 $user->id
             );
         }
-        return redirect()->route('user.index')->with('info','El proceso se realizó con éxito');
+        return redirect()->route('user.index')->with('success','El proceso se realizó con éxito');
     }
 
     /**
@@ -109,7 +128,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 
     public function updateStatus($id)

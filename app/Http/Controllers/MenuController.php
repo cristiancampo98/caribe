@@ -6,6 +6,7 @@ use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Menu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class MenuController extends Controller
 {
@@ -16,6 +17,7 @@ class MenuController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
         $menus = Menu::all();
         
         return inertia('Menu/Index', [
@@ -30,6 +32,8 @@ class MenuController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Menu/Create');
     }
 
@@ -56,7 +60,8 @@ class MenuController extends Controller
      */
     public function show($id)
     {
-        //
+        Gate::authorize('haveaccess');
+
         return inertia('Menu/Show', [
             'menus' => Menu::find($id),
         ]);
@@ -70,8 +75,9 @@ class MenuController extends Controller
      */
     public function edit(Menu $menu)
     {
-        //
-        return inertia('Menu/Edit', ['menu' => $menu]);
+        Gate::authorize('haveaccess');
+
+        return inertia('Menu/Edit', ['item' => $menu]);
     }
 
     /**
@@ -96,6 +102,6 @@ class MenuController extends Controller
      */
     public function destroy(Menu $menu)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 }

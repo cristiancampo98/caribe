@@ -1,58 +1,71 @@
 <template>
-    <main class="col-sm-9">
-        <div  class="border-t border-gray-200">
-            <dl>
-            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">
-                Nombre
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <li >
-                    {{ permissions.name }}
-                </li>
-                </dd>
+    <admin-layout>
+         <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+               Consultar pedido
+            </h2>
+        </template>
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                 <description-list-component>
+                    <template #title>Permisos</template>
+                    <template #subtitle>Visualiza la información del permiso</template>
+                    <item-list-component>
+                        <template #attribute>Nombre</template>
+                        <template #description>{{permissions.name}}</template>
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Slug</template>
+                        <template #description>{{permissions.slug}}</template>
+                    </item-list-component>
+                    <item-list-component>
+                        <template #attribute>Controlador</template>
+                        <template #description>{{permissions.controller}}</template>
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Descripción</template>
+                        <template #description>{{permissions.description}}</template>
+                    </item-list-component>
+                    <item-list-component>
+                        <template #attribute>Fecha creación</template>
+                        <template #description>{{moment(permissions.created_at).format('DD/MM/YYYY')}}</template>
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Roles</template>
+                        <template #description>
+                            <ul v-if="permissions.roles.length">
+                                <li v-for="rol in permissions.roles" type="disc">
+                                    {{rol.name}}
+                                </li>
+                            </ul>
+                            <div v-else>
+                                <p>No existe relación</p>
+                            </div>
+                        </template>
+                    </item-list-component>
+                </description-list-component>
             </div>
-            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">
-                Slug
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <li>
-                    {{ permissions.slug }}
-                </li>
-                </dd>
-            </div>
-            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">
-                Controlador
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <li >
-                    {{ permissions.controller }}
-                </li>
-                </dd>
-            </div>
-            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt class="text-sm font-medium text-gray-500">
-                Descripción
-                </dt>
-                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                <li>
-                    {{ permissions.description }}
-                </li>
-                </dd>
-            </div>
-            </dl>
         </div>
-    </main>
+    </admin-layout>
 </template>
-<script>   
+<script>
+    import { ShowViewComponentMixin} from '@/Mixins/ShowViewComponentMixin'
+
     export default {
-        mounted(){
-            console.log(this.permissions)
-        },
+        mixins: [ShowViewComponentMixin],
         props: {
-            permissions: Object
-        },  
+            permissions: {
+                type: Object
+            },
+        },
+        data(){
+            return {
+            }
+        },
+        mounted(){
+            
+        },
+        methods: {
+        }  
     }
 </script>

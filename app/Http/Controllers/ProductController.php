@@ -6,6 +6,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Traits\ProductTrait;
 use Faker\Guesser\Name;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
@@ -18,6 +19,8 @@ class ProductController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Product/Index');
     }
 
@@ -28,6 +31,8 @@ class ProductController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Product/Create');
     }
 
@@ -52,6 +57,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Product/Show', [
             'product' => self::getProductWithAllData($id),
         ]);
@@ -65,6 +72,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Product/Edit', [
             'product' => self::findProduct($id)
         ]);
@@ -99,7 +108,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        
+        Gate::authorize('haveaccess');   
     }
 
     public function updateStatus($id)

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Vehicle;
 use App\Traits\VehicleTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class VehicleController extends Controller
 {
@@ -18,6 +19,8 @@ class VehicleController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Vehicle/Index', [
             'vehicles' => self::getAllVehicles(),
         ]);
@@ -30,6 +33,8 @@ class VehicleController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Vehicle/Create');
     }
 
@@ -64,6 +69,8 @@ class VehicleController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         $vehicle = self::getVehicleWithRelationship($id);
         return inertia('Vehicle/Show', [
             'vehicle' => $vehicle
@@ -78,6 +85,8 @@ class VehicleController extends Controller
      */
     public function edit(Vehicle $vehicle)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Vehicle/Edit', [
             'vehicle' => $vehicle
         ]);
@@ -108,7 +117,7 @@ class VehicleController extends Controller
      */
     public function destroy(Vehicle $vehicle)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 
     public function editStatus($id)

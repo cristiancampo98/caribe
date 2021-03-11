@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreRemissionRequest;
 use App\Events\StoredRemission;
+use App\Http\Requests\StoreRemissionRequest;
 use App\Traits\RemissionTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RemissionController extends Controller
 {
@@ -17,6 +18,8 @@ class RemissionController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Remission/Index');
     }
 
@@ -27,6 +30,8 @@ class RemissionController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Remission/Create');
     }
 
@@ -58,6 +63,8 @@ class RemissionController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Remission/Show',[
             'remission' => self::getRemissionByIdWithRelationships($id)
         ]);
@@ -71,7 +78,7 @@ class RemissionController extends Controller
      */
     public function edit($id)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 
     /**
@@ -83,7 +90,7 @@ class RemissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
@@ -94,6 +101,6 @@ class RemissionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 }

@@ -103,7 +103,7 @@ trait ClientTrait
 
 	public static function getAllClientsPaginate(){
         
-        return RoleUser::where('role_id',3)->paginate(request()->get('lenght'));
+        return RoleUser::where('role_id',3)->orderBy('id','desc')->paginate(request()->get('lenght'));
     }
 
     public static function getClientsToOrder(){

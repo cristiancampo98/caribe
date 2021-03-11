@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateClientRequest;
 use App\Models\TypeIdentification;
 use App\Traits\ClientTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
@@ -19,6 +20,8 @@ class ClientController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Client/Index');
     }
 
@@ -29,6 +32,8 @@ class ClientController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Client/Create');
     }
 
@@ -56,6 +61,8 @@ class ClientController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Client/Show', [
             'client' => self::getClientWithRelationships($id)
         ]);
@@ -69,6 +76,8 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Client/Edit', [
             'client' => self::getClient($id),
             'types_identification' => TypeIdentification::where('available',1)->get(),
@@ -107,6 +116,6 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 }

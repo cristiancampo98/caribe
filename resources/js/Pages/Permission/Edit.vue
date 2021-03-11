@@ -8,16 +8,16 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-				<form action="#" method="PATCH" @submit="updatePermission">
-			        <template >
+				<jet-form-section @submitted="updatePermission">
+			        <template #title>
 			            Información del permiso
 			        </template>
 
-			        <template >
+			        <template #description>
 			            Crea un permiso con la información requerida.
 			        </template>
 
-			        <template >
+			        <template #form>
 			            <!-- Profile Photo -->
 			             
 
@@ -58,16 +58,16 @@
 			            
 			        </template>
 
-			        <template>
+			        <template #actions>
 			            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
 			                Guardado.
 			            </jet-action-message>
 
-			            <button type="submit">
+			            <jet-button :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
 			                Guardar
-			            </button>
+			            </jet-button>
 			        </template>
-			   </form> 
+			   </jet-form-section> 
             </div>
         </div>
 
@@ -81,11 +81,11 @@
 
     export default {
     	mixins: [FormComponentMixin],
-    	props: ['permission', 'errors'],
-    		
+    	props: ['permission'],
     	data(){
             return {
                 form: this.$inertia.form({
+                	_method: 'put',
                     name: this.permission.name,
                     slug: this.permission.slug,
                     controller: this.permission.controller,
@@ -101,10 +101,8 @@
 				this.form.patch(`/permission/${this.permission.id}`, {
                     errorBag: 'storePermission',
                     preserveScroll: true
-                })
-				
-                }
+                });
             }
         }
-
+    }
 </script>

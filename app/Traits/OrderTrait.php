@@ -43,7 +43,7 @@ trait OrderTrait
 			]);
 		}
 
-		return $orders->paginate(request()->get('lenght'));
+		return $orders->orderBy('id','desc')->paginate(request()->get('lenght'));
 	}
 
 	public static function storeOrder($data){
@@ -242,7 +242,7 @@ trait OrderTrait
 		}
 
 		$data = $order->update([
-			'delete_note' => $data['delete_note'],
+			'note' => $data['note'],
 			'status' => 'cancelado'
 		]);
 
@@ -267,7 +267,7 @@ trait OrderTrait
 			$order->status = 'activo';
 			$text = 'El pedido se activo con éxito';
 		}
-
+		
 		if ($order->save()) {
 			return response()->json([
 				'order' => $order,

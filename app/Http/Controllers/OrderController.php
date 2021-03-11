@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Events\StoredOrder;
 use App\Events\UpdatedOrder;
+use App\Http\Requests\CancelOrderRequest;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Traits\OrderTrait;
 use App\Traits\ProductTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -21,6 +23,8 @@ class OrderController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Order/Index');
     }
 
@@ -31,6 +35,8 @@ class OrderController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Order/Create', [
             'products' => self::getAllProductsToOrder(),
         ]);
@@ -60,6 +66,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Order/Show', [
             'order' => self::findOrder($id)
         ]);
@@ -73,6 +81,8 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
+        Gate::authorize('haveaccess');
+
     	$order = self::findOrder($id);
 
         if ($order->status == 'activo') {
@@ -115,12 +125,8 @@ class OrderController extends Controller
         return self::updateStatusOrderTrait($id);
     }
 
-    public function cancel(Request $request, $id)
+    public function cancel(CancelOrderRequest $request, $id)
     {
-        $this->validate($request,[
-            'delete_note' => 'required|string|max:255'
-        ]);
-        
         return self::cancelOrder($id, $request->all());
     }
 
@@ -137,7 +143,7 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 
 }

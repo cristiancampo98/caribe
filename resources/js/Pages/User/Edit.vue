@@ -20,16 +20,29 @@
 			        <template #form v-if="showFormEdit">
 
 			            <!-- name -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="name" value="Nombre Completo" />
 			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
 			                <jet-input-error :message="form.errors.name" class="mt-2" />
 			            </div>
 			            <!-- email -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="email" value="Correo principal" />
 			                <jet-input id="email" type="text" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
 			                <jet-input-error :message="form.errors.email" class="mt-2" />
+			            </div>
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="roles_id" value="Roles" />
+			                <v-select 
+			            	class="mt-1"
+			            	id="roles_id"
+			            	label="name"
+			            	multiple
+			            	v-model="form.roles_id"
+			            	:reduce="roles => roles.id"
+			            	:options="roles"
+			            	:clearable="false"></v-select>
+			                <jet-input-error :message="form.errors.roles_id" class="mt-2" />
 			            </div>
 			            <!-- number identification -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -82,7 +95,7 @@
 			                <jet-input-error :message="form.errors.street_address" class="mt-2" />
 			            </div>
 			            <!-- street details -->
-			            <div class="col-span-6 lg:col-span-6">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="street_details" value="Detalles de dirección" />
 			                <textarea id="street_details" class="mt-1 block w-full rounded-md" v-model="form.street_details"></textarea>
 			                <jet-input-error :message="form.errors.street_details" class="mt-2" />
@@ -94,13 +107,13 @@
 			                <jet-input-error :message="form.errors.street_comune" class="mt-2" />
 			            </div>
 			            <!-- others_email -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="others_email" value="Otros correos" />
 			                <textarea id="others_email" class="mt-1 block w-full rounded-md" v-model="form.others_email"></textarea>
 			                <jet-input-error :message="form.errors.others_email" class="mt-2" />
 			            </div>
 			            <!-- phones -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="phones" value="Teléfonos" />
 			                <textarea id="phones"  class="mt-1 block w-full rounded-md" v-model="form.phones"></textarea>
 			                <jet-input-error :message="form.errors.phones" class="mt-2" />
@@ -146,7 +159,7 @@
     		user: {
     			type: Object
     		},
-    		types_blood: {
+    		roles: {
     			type: Array
     		},
     		types_identification: {
@@ -159,6 +172,7 @@
                 	_method: 'PUT',
                     name: this.user.name,
                     email: this.user.email,
+                    roles_id: this.user.roles,
                     number_identification: null,
                     type_identification_id: null,
                     photo_document: null,
@@ -172,6 +186,7 @@
                     phones: null,
                     name_company: null,
                     type_pay: null
+                    
                 }),
                 uploadedDocument: false,
                 deparments: [],

@@ -65,6 +65,7 @@ trait RemissionTrait
 							'carrier.vehicle',
 							'consignment'
 						)
+						->orderBy('id','desc')
 						->paginate(request()->get('lenght'));
 	}
 

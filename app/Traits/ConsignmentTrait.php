@@ -43,6 +43,7 @@ trait ConsignmentTrait
 			$data = Consignment::with([
 				'order.client'
 			])
+			->orderBy('id','desc')
 			->paginate( request()->get('lenght'));
 		}else{
 			$data = self::getAllConsignmentsById();

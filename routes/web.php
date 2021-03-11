@@ -6,6 +6,7 @@ use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ConsignmentStorageController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuStorageController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\OrderDetailStorageController;
 use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
+use App\Http\Controllers\PermissionStorageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductStorageController;
 use App\Http\Controllers\RemissionController;
@@ -171,6 +173,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('download/{id}/multimedia',
         [MultimediaController::class, 'download']
+    );
+
+    Route::get('getPaginateAllMenus/menu',
+        [MenuStorageController::class, 'getPaginateAllMenus']
+    );
+
+    Route::get('getPaginateAllPermissions/permission',
+        [PermissionStorageController::class, 'getPaginateAllPermissions']
     );
 
     // End TODO API

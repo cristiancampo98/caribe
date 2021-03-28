@@ -19,7 +19,7 @@
             :fields="json_fields"
             worksheet="Tabla"
             :name="`${document_name}.xls`">
-                CSV
+               {{ btn_name_excel }}
             </json-excel>
            
             <div v-if="options.length" class="mt-8">
@@ -119,7 +119,7 @@
             return {
                
                 titles: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado','Opciones'],
-                document_name: 'Listado pagina clientes',
+                document_name: 'Listado pagina de productos',
                 columns: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado'],
                 json_fields: {
                     '#' : 'id',

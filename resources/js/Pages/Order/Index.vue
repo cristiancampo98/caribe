@@ -19,7 +19,7 @@
             :fields="json_fields"
             worksheet="Tabla"
             :name="`${document_name}.xls`">
-                CSV
+                {{ btn_name_excel }}
             </json-excel>
             <div class="mt-8" v-if="options.length">
                 <div class="col-span-3">
@@ -44,6 +44,9 @@
                         <tr v-for="(item, key) in options" :key="key">
                             <td-responsive-component>
                                 {{item.id}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.client.details.name_company}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.client.name}}
@@ -108,7 +111,7 @@
                                         <button type="button"
                                         v-if="$page.props.isAdmin"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        @click="sendEmail(item.id)">
+                                        @click="confirmNotification(item)">
                                             Notificar
                                         </button>
 
@@ -170,6 +173,34 @@
                 </template>
              </vs-dialog>
             <!-- end form consignment -->
+            <!-- confirm notification -->
+            <vs-dialog width="550px" not-center v-model="modalNotify">
+                <template #header>
+                  <h4 class="not-margin">
+                    Enviar notificación por correo a <b>{{dataNotify.name}}</b>
+                  </h4>
+                </template>
+
+
+                <div class="con-content">
+                  <p>
+                    ¿Quieres enviar una notificación al usuario informandole que su pedido ha sido actualizado?. <br>
+                    Enviar una notificación al usuario podrá causar que la operación tarde mas ¿Quieres enviarla?
+                  </p>
+                </div>
+
+                <template #footer>
+                  <div class="con-footer">
+                    <vs-button @click="sendNotify(true)" transparent>
+                      Si, enviar notificación
+                    </vs-button>
+                    <vs-button @click="sendNotify(false)" dark transparent>
+                      No enviar notificación
+                    </vs-button>
+                  </div>
+                </template>
+            </vs-dialog>
+            <!-- end confirm notification -->
         </div>
     </admin-layout>
 </template>
@@ -185,9 +216,9 @@
         },
         data () {
             return {
-                titles: ['#','Cliente','Tipo','Email','Estado','Creador','Fecha','Opciones'],
+                titles: ['#','Empresa','Cliente','Tipo','Email','Estado','Creador','Fecha','Opciones'],
                 document_name: 'Listado pagina pedidos',
-                columns: ['#','Cliente','Tipo','Email','Estado','Creador','Fecha'],
+                columns: ['#','Empresa','Cliente','Tipo','Email','Estado','Creador','Fecha'],
                 json_fields: {
                     '#' : 'id',
                     Cliente : 'client.name',
@@ -211,6 +242,11 @@
                 form:{
                     note:null,
                     id:null
+                },
+                modalNotify: false,
+                dataNotify:{
+                    id: null,
+                    name: null,
                 },
                 order_id:false,
                 error_note: null
@@ -271,12 +307,26 @@
                this.startLoading();
                 axios.get('sendEmailUpdate/'+id+'/order')
                 .then( res => {
-                    this.status = {type: res.data.type, text: res.data.text}
+                    this.setStatusFlash(res.data.type, res.data.text);
                     this.loader.text = '¡Hecho!';
                 }).finally( () => {
                     this.endLoading();
                 });
             },
+            confirmNotification(item) {
+                this.modalNotify = true
+                this.dataNotify.id = item.id;
+                this.dataNotify.name = item.client.name;
+
+            },
+            sendNotify(value) {
+
+                this.modalNotify = false;
+                if (value) {
+                    this.sendEmail(this.dataNotify.id);    
+                }
+                this.dataNotify = {};
+            }
         }
     }
 </script>

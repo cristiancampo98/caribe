@@ -19,7 +19,7 @@
             :fields="json_fields"
             worksheet="Tabla"
             :name="`${document_name}.xls`">
-                CSV
+                {{ btn_name_excel }}
             </json-excel>
             <div class="mt-8" v-if="options.length">
                 <div class="grid grid-cols-6 gap-6">
@@ -45,11 +45,11 @@
                     <template #content>
                         <tr v-for="(item, key) in options" :key="key">
                             <td-responsive-component>{{item.user_id}}</td-responsive-component>
-                            <td-responsive-component>{{item.users.name}}</td-responsive-component>
-                            <td-responsive-component>{{item.users.details.type_pay}}</td-responsive-component>
                             <td-responsive-component>
                                 {{item.users.details.name_company}}
                             </td-responsive-component>
+                            <td-responsive-component>{{item.users.name}}</td-responsive-component>
+                            <td-responsive-component>{{item.users.details.type_pay}}</td-responsive-component>
                             <td-responsive-component>
                                 {{item.users.details.street_address}}
                             </td-responsive-component>
@@ -82,7 +82,7 @@
 
                                         <jet-dropdown-link v-for="(option,key) in actions"
                                         :key="key"
-                                        :href="route(option.route, {client: item.id})" :as="option.as" method="option.method">
+                                        :href="route(option.route, {client: item.user_id})">
                                             {{option.name}}
                                         </jet-dropdown-link>
                                         <button type="button"
@@ -118,9 +118,9 @@
         },
         data() {
             return {
-                titles: ['#','Nombre','Tipo','Empresa','Dirección','Ciudad','Correo','Estado','Opciones'],
+                titles: ['#','Empresa','Nombre','Tipo','Dirección','Ciudad','Correo','Estado','Opciones'],
                 document_name: 'Listado pagina clientes',
-                columns: ['#','Nombre','Tipo','Empresa','Dirección','Ciudad','Correo','Estado'],
+                columns: ['#','Empresa','Nombre','Tipo','Dirección','Ciudad','Correo','Estado'],
                 json_fields: {
                     '#' : 'users.id',
                     Nombre : 'users.name',
@@ -173,7 +173,7 @@
             },
             updateStatusUser(item){
                 this.startLoading();
-                axios.put('/updateStatus/'+item.id+'/user')
+                axios.put(`/updateStatus/${item.user_id}/user`)
                 .then(res => {
                     item.users.status = res.data.user.status ? 'Activo' : 'Inactivo';
                     item.users.classStatus = res.data.user.status 

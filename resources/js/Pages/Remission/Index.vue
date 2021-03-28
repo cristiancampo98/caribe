@@ -19,7 +19,7 @@
             :fields="json_fields"
             worksheet="Tabla"
             :name="`${document_name}.xls`">
-                CSV
+                {{ btn_name_excel }}
             </json-excel>
             <div class="mt-8" v-if="options.length">
                 <div class="grid grid-cols-6 gap-6">

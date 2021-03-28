@@ -10,6 +10,10 @@
             	<description-list-component>
             		<template #title>Pedido</template>
             		<template #subtitle>Visualiza la información del pedido</template>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Empresa</template>
+                        <template #description>{{order.client.details.name_company}}</template>    
+                    </item-list-component>
             		<item-list-component>
             			<template #attribute>Cliente</template>
             			<template #description>{{order.client.name}}</template>
@@ -20,7 +24,7 @@
             		</item-list-component>
             		<item-list-component>
             			<template #attribute>Ubicación</template>
-            			<template #description>{{order.department}}/ {{order.city}}</template>
+            			<template #description>{{order.department}} | {{order.city}}</template>
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Nota de pedido</template>
@@ -33,16 +37,6 @@
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Estado</template>
                         <template #description>{{order.status}}</template>
-                    </item-list-component>
-                    <item-list-component >
-                        <template #attribute>Url PSE</template>
-                        <template #description>
-                            <a class="hover:text-blue-500" :href="order.pse_url" target="_blank">{{order.pse_url}}</a>
-                        </template> 
-                    </item-list-component>
-                    <item-list-component class="bg-gray-100">
-                        <template #attribute>Número PSE</template>
-                        <template #description>{{order.pse_number}}</template>    
                     </item-list-component>
                     <item-list-download-component
                     v-if="order_files.length"
@@ -74,6 +68,19 @@
                                 <li>Equivalencia: {{(item.quantity / item.product.cubic_meters).toFixed(2)}} ton</li>
                                 <li>Descuento: {{item.discount}}</li>
                             </ul>
+                            <div v-if="item.remissions" class="bg-white p-3">
+                                <h4>Remisiones</h4>
+                                <ul v-for="(remi) in item.remissions">
+                                    <h3>Remisión # {{remi.id}}</h3>
+                                    <li >Entregado {{remi.delivered}} m3 de {{item.quantity}} m3</li>
+                                    <li >Placa de vehículo 
+                                        <span class="uppercase">
+                                            {{remi.carrier.vehicle.license_plate}}
+                                        </span>
+                                    </li>
+                                    <li >Remitido el  {{moment(remi.created_at).format('DD/MM/YYYY')}}</li>
+                                </ul>
+                            </div>
                         </template>
                     </item-list-component>
                 </description-list-component>

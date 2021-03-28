@@ -124,10 +124,13 @@ trait ClientTrait
 
     public static function getClientWithOrdersTrait()
     {
-    	$clients =  User::where('name','like','%'. request()->get('q').'%')
-    	->without('details','roles')
+    	$clients =  User::join('user_details','users.id','user_details.user_id')
+    	->where('name','like','%'. request()->get('q').'%')
+    	->orWhere('name_company','like','%'. request()->get('q').'%')
+    	->without('roles')
     	->with('vehicles')
-    	->select('id','name')
+    	->has('orders')
+    	->select('users.id','users.name','user_details.name_company')
 		->get();
 
 		if (count($clients)) {

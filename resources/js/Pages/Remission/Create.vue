@@ -10,7 +10,7 @@
         		<div >
 	                <jet-label for="user_id" value="Cliente" />
 	                <v-select 
-	                class="w-24 min-w-full lg:min-w-max"
+	                class="w-72 min-w-full lg:min-w-max"
 			        label="name" 
 			        :filterable="false" 
 			        :options="clients" 
@@ -24,11 +24,13 @@
 					    <template slot="option" slot-scope="option">
 					      <div class="d-center">
 					        <p> Nombre: {{ option.name }}</p>
+					        <cite>Empresa: {{ option.name_company }}</cite>
 					        </div>
 					    </template>
 					    <template slot="selected-option" slot-scope="option">
 					      <div class="selected d-center">
 					      	 <p>{{ option.name }}</p>
+					      	 <cite>Empresa: {{ option.name_company }}</cite>
 					      </div>
 					    </template>
 					</v-select>
@@ -38,6 +40,7 @@
 	                <jet-label for="order_id" value="Pedidos" />
 	                <v-select 
 			        label="id" 
+			        class="w-72 min-w-full lg:min-w-max"
 			        :options="orders" 
 			        v-model="order_id"
 			        :reduce= "orders => orders.id"
@@ -397,10 +400,7 @@
 		        `/getClientWithOrders/client?q=${search}`
 		      ).then(res => {
 		      	vm.clients = res.data.clients;
-		      	vm.status = {
-		      		type: res.data.type,
-		      		text: res.data.text,
-		      	}
+		      	vm.setStatusFlash(res.data.type, res.data.text);
 		        loading(false);
 		      });
 		    }, 350),
@@ -416,10 +416,7 @@
 		    		`/getOrdersByUserId/order?id=${value}`
 		    	).then( res => {
 		    		this.orders = res.data.orders;
-		    		this.status = {
-			      		type: res.data.type,
-			      		text: res.data.text,
-			      	}
+		    		this.setStatusFlash(res.data.type, res.data.text);
 		    	})
 		    	.finally( () => this.endLoading());
 		    },
@@ -429,11 +426,7 @@
 		    		`/getOrderDetailsByOrderId/orderDetail?id=${value}`
 		    	).then( res => {
 		    		this.details = res.data.details;
-
-		    		this.status = {
-			      		type: res.data.type,
-			      		text: res.data.text,
-			      	}
+		    		this.setStatusFlash(res.data.type, res.data.text);
 		    	})
 		    	.finally( () => this.endLoading());;
 		    },
@@ -442,10 +435,9 @@
 		    	var total = item.quantity - deli;
 		    	if (item.cantidad < 1 || item.cantidad > total) {
 		    		item.cantidad = 1;
-		    		this.status = {
-		    			type: "warning",
-		    			text: "La cantidad no puede ser menor a 1 o mayor a la cantidad del detalle",
-		    		}
+	    			let type = "warning";
+	    			let text = "La cantidad no puede ser menor a 1 o mayor a la cantidad del detalle";
+		    		this.setStatusFlash(type, text);
 		    	}
 		    },
 		    openModalStoreVehicle(){
@@ -483,19 +475,6 @@
         		var dispatched = this.total_delivered(item.remissions);
         		return item.quantity - dispatched;
         	},
-            getStatusFlash(){
-	            for (var val in this.$page.props.flash){
-
-	                if (this.$page.props.flash[val]) {
-
-	                    this.status = {
-
-	                    	type : val,
-	                    	text : this.$page.props.flash[val]
-	                    }
-	                }
-	            }
-	        }
         }
 
     }

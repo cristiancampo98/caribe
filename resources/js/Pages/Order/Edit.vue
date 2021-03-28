@@ -21,8 +21,7 @@
 
 			            <!-- user id or cliente -->
 			            <div class="col-span-6 lg:col-span-3" v-if="$page.props.isAdmin">
-			                <jet-label for="user_id" 
-			                :value="`Cliente: ${order.client.name}`" />
+			                <jet-label for="user_id" value="Cliente" />
 			                <v-select 
 					        label="name" 
 					        :filterable="false" 
@@ -88,17 +87,17 @@
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
 			             <!-- pse_url -->
-				        <div class="col-span-6 lg:col-span-3">
+				        <!-- <div class="col-span-6 lg:col-span-3">
 				        	<jet-label for="pse_url" value="Link PSE" />
 				        	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.pse_url" />
 				            <jet-input-error :message="form.errors.pse_url" class="mt-2" />
-				        </div>
+				        </div> -->
 				        <!-- pse_number -->
-				        <div class="col-span-6 lg:col-span-3">
+				       <!--  <div class="col-span-6 lg:col-span-3">
 				        	<jet-label for="pse_number" value="PSE # radicado" />
 				        	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.pse_number" />
 				            <jet-input-error :message="form.errors.pse_number" class="mt-2" />
-				        </div>
+				        </div> -->
 			             <!-- contrato -->
 			            <div class="col-span-6 lg:col-span-3" v-if="type_pay == 'crédito'">
 			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -266,8 +265,8 @@
                     department: this.order.department,
                     city: this.order.city,
                     note: this.order.note,
-                    pse_url: this.order.pse_url,
-                    pse_number: this.order.pse_number,
+                    // pse_url: this.order.pse_url,
+                    // pse_number: this.order.pse_number,
                     contract: null,
                     purchaseOrder: null,
                     order_details: [],
@@ -292,7 +291,10 @@
 
             }
         },
-        mounted(){
+        async mounted(){
+        	if (this.order.user_id) {
+    			await this.getClientsByLikeName(this.order.client.name)
+    		}
         	this.loadFileColombiaJson();
         	this.setProductStorageToFormOrderDetails()
         	this.type_pay = this.order.client.details.type_pay;
@@ -406,6 +408,7 @@
             	this.form.order_details.splice(index,1)
             },
             onSearch(search, loading) {
+            	console.log(search);
 		      if(search.length >= 3) {
 		        loading(true);
 		        this.search(loading, search, this);
@@ -425,6 +428,13 @@
 		    		this.type_pay = found.type_pay;
 		    	}
 		    },
+		    getClientsByLikeName(search) {
+		    	axios.get(
+			        `/getClients/client?q=${search}`
+			    ).then(res => {
+			     	this.clients = res.data;
+			    });
+		    }
         }
 
     }

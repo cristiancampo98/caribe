@@ -24,6 +24,15 @@
             			<template #description>{{product.description}}</template>	
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
+                        <template #attribute>Equivalencia en m3</template>
+                        <template #description>{{product.cubic_meters}}</template> 
+                    </item-list-component>
+                   
+                    <item-list-component >
+                        <template #attribute>Equivalencia en ton</template>
+                        <template #description>{{product.ton}}</template>   
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
                         <template #attribute>Creador</template>
                         <template #description>{{product.creator.name}}</template> 
                     </item-list-component>

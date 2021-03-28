@@ -2,13 +2,13 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-               Consultar cliente
+               Consultar remisión
             </h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             	<description-list-component>
-            		<template #title>Remission</template>
+            		<template #title>Remisión</template>
             		<template #subtitle>Visualiza la información de la remisión</template>
             		<item-list-component >
             			<template #attribute>Cliente </template>

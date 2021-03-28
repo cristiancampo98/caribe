@@ -45,6 +45,7 @@ export const DataTableComponentMixin = {
             ],
             options: [],
             url: null,
+            btn_name_excel: "XLS",
 		    json_meta: [
 		      [
 		        {

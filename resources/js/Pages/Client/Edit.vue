@@ -26,23 +26,24 @@
 
 			        <template #form v-if="showFormEdit">
 
+			        	 <!-- name company -->
+			            <div class="col-span-6 lg:col-span-2">
+			                <jet-label for="name_company" value="Empresa" />
+			                <jet-input id="name_company" type="text" class="mt-1 block w-full" v-model="form.name_company" autocomplete="name_company" />
+			                <jet-input-error :message="form.errors.name_company" class="mt-2" />
+			            </div>
+
 			            <!-- name -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="name" value="Nombre Completo" />
 			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" />
 			                <jet-input-error :message="form.errors.name" class="mt-2" />
 			            </div>
 			            <!-- email -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="email" value="Correo principal" />
 			                <jet-input id="email" type="text" class="mt-1 block w-full" v-model="form.email" autocomplete="email" />
 			                <jet-input-error :message="form.errors.email" class="mt-2" />
-			            </div>
-			            <!-- number identification -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="number_identification" value="Número de identificación" />
-			                <jet-input id="number_identification" type="number" class="mt-1 block w-full" v-model.number="form.number_identification" autocomplete="number_identification" />
-			                <jet-input-error :message="form.errors.number_identification" class="mt-2" />
 			            </div>
 			             <!-- type identification -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -57,13 +58,13 @@
 			            	:clearable="false"></v-select>
 			                <jet-input-error :message="form.errors.type_identification_id" class="mt-2" />
 			            </div>
-			           
-			            <!-- name company -->
+			            <!-- number identification -->
 			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="name_company" value="Empresa" />
-			                <jet-input id="name_company" type="text" class="mt-1 block w-full" v-model="form.name_company" autocomplete="name_company" />
-			                <jet-input-error :message="form.errors.name_company" class="mt-2" />
+			                <jet-label for="number_identification" value="Número de identificación" />
+			                <jet-input id="number_identification" type="number" class="mt-1 block w-full" v-model.number="form.number_identification" autocomplete="number_identification" />
+			                <jet-input-error :message="form.errors.number_identification" class="mt-2" />
 			            </div>
+
 			            <!-- type pay -->
 			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="type_pay" value="Tipo de pago" />
@@ -146,29 +147,31 @@
 			            </div>
 			            <!-- photo document -->
 			            <div class="col-span-6 lg:col-span-2">
-			            	<label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="photo" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir Identificación</span>
 			            		<input type="file" id="photo" ref="photo" @change="uploadDocument" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
-			            		<p class="text-xs text-gray-500">PDF</p>
+			            		
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF</p>
 			            	<span v-if="uploadedDocument" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			            <!-- rut document -->
 			            <div class="col-span-6 lg:col-span-2">
-			            	<label for="rut" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="rut" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir RUT</span>
 			            		<input type="file"  id="rut"  ref="rut" @change="uploadRut" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
-			            		<p class="text-xs text-gray-500">PDF</p>
+			            		
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF</p>
 			            	<span v-if="uploadedRut" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			            <!-- logo -->
 			            <div class="col-span-6 lg:col-span-2">
-			            	<label for="logo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="logo" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir Logo</span>
 			            		<input type="file"  id="logo"  ref="logo" @change="uploadLogo" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
-			            		<p class="text-xs text-gray-500">JPG, PNG</p>
 			            	</label>
+			            	<p class="text-xs text-gray-500">JPG, PNG</p>
 			            	<span v-if="uploadedLogo" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 

@@ -10,6 +10,10 @@
             	<description-list-component>
             		<template #title>Cliente</template>
             		<template #subtitle>Visualiza la información del cliente</template>
+                    <item-list-component v-if="client.details.name_company" class="bg-gray-100">
+                        <template #attribute>Empresa</template>
+                        <template #description>{{client.details.name_company}}</template>  
+                    </item-list-component>
             		<item-list-component>
             			<template #attribute>Nombre</template>
             			<template #description>{{client.name}}</template>
@@ -94,22 +98,6 @@
                                     ? client.details.number_identification
                                     : 'N/A'}}
                             </template>
-                		</item-list-component>
-                		<item-list-component>
-                			<template #attribute>Sexo</template>
-                			<template #description>
-                                {{client.details.sex 
-                                    ? client.details.sex
-                                    : 'N/A'}}
-                            </template>
-                		</item-list-component>
-                		<item-list-component class="bg-gray-100">
-                			<template #attribute >Tipo de sangre</template>
-                			<template #description>
-                                {{client.details.type_blood
-                                    ? client.details.type_blood.description
-                                    : 'N/A'}}
-                                </template>
                 		</item-list-component>
 					</div>
                     <item-list-download-component

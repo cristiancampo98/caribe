@@ -54,6 +54,13 @@
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
 			            </div>
+			             <!-- shipping address -->
+			            <div class="col-span-6 lg:col-span-1">
+			                <jet-label for="shipping_address" value="Dirección envío" />
+			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
+			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
+			            </div>
+			            <!-- department -->
 			             <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
@@ -77,12 +84,7 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
-			            <!-- shipping address -->
-			            <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="shipping_address" value="Dirección envío" />
-			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
-			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
-			            </div>
+			           
 			           <!-- note -->
 			            <div class="col-span-6 lg:col-span-6">
 			                <jet-label for="note" value="Nota" />
@@ -96,29 +98,31 @@
 			            </div>
 			            <!-- imagen -->
 			            <div class="col-span-6 lg:col-span-1">
-			            	<label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="imagen" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir imagen</span>
 			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
-			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            		
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			             <!-- contrato -->
 			            <div class="col-span-6 lg:col-span-1" v-if="type_pay == 'crédito'">
-			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="contract" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir contrato</span>
 			            		<input type="file"  id="contract"  ref="contract" @change="uploadContract" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
-			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            		
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedContract" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			             <!-- orden de compra -->
 			            <div class="col-span-6 lg:col-span-1" v-if="type_pay == 'crédito'">
-			            	<label for="purchaseOrder" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="purchaseOrder" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir orden de compra</span>
 			            		<input type="file"  id="purchaseOrder"  ref="purchaseOrder" @change="uploadPurchaseOrder" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
-			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedPurchaseOrder" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			           <div class="col-span-6 lg:col-span-6">

@@ -139,7 +139,7 @@ trait OrderTrait
 		$order = Order::where('id',$id)
 		->with([
 			'orderDetails.product',
-			'orderDetails.remissions',
+			'orderDetails.remissions.carrier.vehicle',
 			'client',
 			'creator',
 			'consignments'
@@ -309,12 +309,13 @@ trait OrderTrait
 
 		$orders = [];
 		if ($isCredit->type_pay == 'crédito') {
-
+			$text = 'No se encontraron pedidos a crédito';
 			$orders = Order::where('user_id', request()->get('id'))
 					->where('status','activo')
 					->get();
-		}else{
 
+		}else{
+			$text = 'No se encontraron pedidos con consignaciones';
 			$orders = Order::where('user_id', request()->get('id'))
 					->whereHas('consignments')
 					->where('status','activo')
@@ -332,7 +333,7 @@ trait OrderTrait
 		return response()->json([
 			'orders' => $orders,
 			'type' => 'info',
-			'text' => 'No se encontraron pedidos'
+			'text' => $text
 		],200);
 	}
 

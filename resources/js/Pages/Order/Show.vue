@@ -68,7 +68,7 @@
                                 <li>Equivalencia: {{(item.quantity / item.product.cubic_meters).toFixed(2)}} ton</li>
                                 <li>Descuento: {{item.discount}}</li>
                             </ul>
-                            <div v-if="item.remissions" class="bg-white p-3">
+                            <div v-if="item.remissions.length" class="bg-white p-3">
                                 <h4>Remisiones</h4>
                                 <ul v-for="(remi) in item.remissions">
                                     <h3>Remisión # {{remi.id}}</h3>

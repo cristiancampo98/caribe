@@ -51,8 +51,8 @@
                                 No. {{item.order_detail.order_id}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.consignment 
-                                    ? item.consignment.consignment_number
+                                {{item.order_detail.consignment_id
+                                    ? item.order_detail.consignment_id
                                     : 'Pendiente '}}
                             </td-responsive-component>
                             <td-responsive-component>
@@ -136,8 +136,9 @@
                     '#' : 'id',
                     Pedido : 'order_detail.order_id',
                     'Consignación': {
+                        field: 'order_detail.consignment_id',
                         callback: (value) => {
-                            return  value.consignment ? value.consignment.consignment_number : 'Sin asignar'
+                            return  value ? value : 'Sin asignar'
                         }
                     },
                     Producto: 'order_detail.product.name',
@@ -167,6 +168,7 @@
                 },
                 actions: [
                     {name: 'Ver', route:'remission.show'},
+                    {name: 'Editar', route:'remission.edit'},
                 ],
             }
         },

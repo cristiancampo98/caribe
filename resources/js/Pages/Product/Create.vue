@@ -32,8 +32,8 @@
 			                <jet-input-error :message="form.errors.reference" class="mt-2" />
 			            </div>
                         <!-- Cubic meters -->
-                        <div class="col-span-6 lg:col-span-2">
-                            <jet-label for="cubic_meters" value="Equivalencia en metros cúbicos" />
+                        <div class="col-span-6 lg:col-span-1">
+                            <jet-label for="cubic_meters" value="= en metros cúbicos" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="cubic_meters"
                             step="0.1"
@@ -43,13 +43,23 @@
                         </div>
                         <!-- Ton -->
                         <div class="col-span-6 lg:col-span-1">
-                            <jet-label for="ton" value="Equivalencia en toneladas" />
+                            <jet-label for="ton" value="= en toneladas" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="ton"
                             step="0.1"
                             min="0"
                             v-model.number="form.ton"/>
                             <jet-input-error :message="form.errors.ton" class="mt-2" />
+                        </div>
+                        <!-- limit day -->
+                        <div class="col-span-6 lg:col-span-1">
+                            <jet-label for="limit_day" value="Limite por día" />
+                            <jet-input type="number" class="mt-1 block w-full"
+                            id="limit_day"
+                            step="0.1"
+                            min="0"
+                            v-model.number="form.limit_day"/>
+                            <jet-input-error :message="form.errors.limit_day" class="mt-2" />
                         </div>
 			            <!-- Description -->
 			            <div class="col-span-6 lg:col-span-6">
@@ -104,6 +114,7 @@
                     description: null,
                     cubic_meters: 0,
                     ton: 0,
+                    limit_day: 0,
                     photos: []
                 }),
             }

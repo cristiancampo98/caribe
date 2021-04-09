@@ -54,6 +54,9 @@
                              <td-responsive-component>
                                 {{item.cubic_meters}} m3 /  {{item.ton}} ton
                             </td-responsive-component>
+                             <td-responsive-component>
+                                {{item.limit_day}}
+                            </td-responsive-component>
                             <td-responsive-component>
                                 {{item.description}}
                             </td-responsive-component>
@@ -118,9 +121,9 @@
         data () {
             return {
                
-                titles: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado','Opciones'],
+                titles: ['#','Nombre','Equivalencia','Límite por día','Descripción','Referencia','Estado','Opciones'],
                 document_name: 'Listado pagina de productos',
-                columns: ['#','Nombre','Equivalencia','Descripción','Referencia','Estado'],
+                columns: ['#','Nombre','Equivalencia','Límite por día','Descripción','Referencia','Estado'],
                 json_fields: {
                     '#' : 'id',
                     Nombre : 'name',
@@ -129,6 +132,7 @@
                             return `${value.cubic_meters} m3 /  ${value.ton} ton`
                         },
                     },
+                    'Límite por día': 'limit_day',
                     'Descripción': 'description',
                     Referencia: 'reference',
                     Estado: {

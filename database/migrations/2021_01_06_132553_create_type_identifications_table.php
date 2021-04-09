@@ -15,7 +15,7 @@ class CreateTypeIdentificationsTable extends Migration
     {
         Schema::create('type_identifications', function (Blueprint $table) {
             $table->id();
-            $table->string('description',30);
+            $table->string('description',50);
             $table->string('acronym',5);
             $table->boolean('available')->default(1);
             $table->timestamps();

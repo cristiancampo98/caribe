@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Events\StoredRemission;
 use App\Http\Requests\StoreRemissionRequest;
+use App\Http\Requests\UpdateRemissionRequest;
 use App\Traits\RemissionTrait;
+use App\Traits\Remission\Update\UpdateRemissionTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class RemissionController extends Controller
 {
     use RemissionTrait;
+    use UpdateRemissionTrait;
     /**
      * Display a listing of the resource.
      *
@@ -79,6 +82,10 @@ class RemissionController extends Controller
     public function edit($id)
     {
         Gate::authorize('haveaccess');
+
+        return inertia('Remission/Edit',[
+            'remission' => self::getRemissionByIdWithRelationships($id)
+        ]);
     }
 
     /**
@@ -88,8 +95,18 @@ class RemissionController extends Controller
      * @param  \App\Models\Remission  $remission
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRemissionRequest $request, $id)
     {
+        Gate::authorize('haveaccess');   
+
+        $response = self::updateRemission($id, $request);
+
+        if ($response) {
+            StoredRemission::dispatch($response);
+        }
+
+        return $response ? redirect()->route('remission.index')->with('success','La remisión se editó con éxito')
+                        : redirect()->back()->with('error','Sucedió un error, no se pudo editar la remisión');
         
     }
 

@@ -20,31 +20,7 @@ trait OrderTrait
 {
 	use MultimediaTrait;
 	use ConsignmentTrait;
-	/*
-	 * Valida el rol del usuario para retornar todas o solo las ordenes del usuario logueado
-	 */
-	public static function getOrdersByRole(){
-
-		$isAdmin = Auth::user()->isAdmin();
-		$orders = [];
-
-		$orders = Order::with([
-			'client',
-			'creator',
-			'consignments'
-		])
-		->where('user_id', Auth::id());
-
-		if ($isAdmin) {
-			$orders = Order::with([
-				'client',
-				'creator',
-				'consignments'
-			]);
-		}
-
-		return $orders->orderBy('id','desc')->paginate(request()->get('lenght'));
-	}
+	
 
 	public static function storeOrder($data){
 		
@@ -89,7 +65,8 @@ trait OrderTrait
             if (isset($data['consignment']['consignment_number'])) {
             	$consignment_id = DB::table('consignments')->insertGetId([
             		'consignment_number' => $data['consignment']['consignment_number'],
-            		'order_id' => $order_id,
+            		'client_id' => $data['user_id'],
+            		'created_by' => Auth::id(),
             		'created_at' => Carbon::now('America/Bogota'),
             		'updated_at' => Carbon::now('America/Bogota'),
             	]);
@@ -142,7 +119,6 @@ trait OrderTrait
 			'orderDetails.remissions.carrier.vehicle',
 			'client',
 			'creator',
-			'consignments'
 		])
 		->first();
 
@@ -234,10 +210,10 @@ trait OrderTrait
 	public static function cancelOrder($id, $data)
 	{
 		$order = self::findOrder($id);
-		if (count($order->consignments)) {
+		if (count($order->remissions)) {
 			return response()->json([
 				'type' => 'info',
-                'text' => 'No se puede cancelar este pedido porque ya existen consignaciones'
+                'text' => 'No se puede cancelar este pedido porque ya existen remisiones'
             ],200);
 		}
 
@@ -303,39 +279,7 @@ trait OrderTrait
 		],200);
 	}
 
-	public static function getOrdersByUserIdWithConsignmentsTrait()
-	{
-		$isCredit = User::find(request()->get('id'))->details;
-
-		$orders = [];
-		if ($isCredit->type_pay == 'crédito') {
-			$text = 'No se encontraron pedidos a crédito';
-			$orders = Order::where('user_id', request()->get('id'))
-					->where('status','activo')
-					->get();
-
-		}else{
-			$text = 'No se encontraron pedidos con consignaciones';
-			$orders = Order::where('user_id', request()->get('id'))
-					->whereHas('consignments')
-					->where('status','activo')
-					->get();
-		}
-
-		if (count($orders)) {
-			return response()->json([
-				'orders' => $orders,
-				'type' => 'success',
-				'text' => 'Se encontraron ' . count($orders). ' pedidos'
-			],200);
-		}
-
-		return response()->json([
-			'orders' => $orders,
-			'type' => 'info',
-			'text' => $text
-		],200);
-	}
+	
 
 	public static function getMultimediaOrderClientCredit($id)
 	{

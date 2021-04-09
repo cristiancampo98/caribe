@@ -33,14 +33,18 @@
                         <template #description>{{product.ton}}</template>   
                     </item-list-component>
                     <item-list-component class="bg-gray-100">
+                        <template #attribute>Limite por día</template>
+                        <template #description>{{product.limit_day}}</template> 
+                    </item-list-component>
+                    <item-list-component >
                         <template #attribute>Creador</template>
                         <template #description>{{product.creator.name}}</template> 
                     </item-list-component>
-                     <item-list-component >
+                     <item-list-component class="bg-gray-100">
                         <template #attribute>Estado</template>
                         <template #description>{{product.status ? 'Activo' : 'Inactivo'}}</template>   
                     </item-list-component>
-                    <item-list-component class="bg-gray-100">
+                    <item-list-component >
                         <template #attribute>Fecha</template>
                         <template #description>{{moment(product.created_at).format('DD/MM/YYYY')}}</template> 
                     </item-list-component>

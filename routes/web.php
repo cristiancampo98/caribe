@@ -128,6 +128,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('getOrdersByUserId/order',
         [OrderStorageController::class, 'getOrdersByUserId']
     );
+     Route::get('getOrdersByUserIdToRemission/order',
+        [OrderStorageController::class, 'getOrdersByUserIdToRemission']
+    );
     Route::get('getOrderDetailsByOrderId/orderDetail',
         [OrderDetailStorageController::class, 'getOrderDetailsByOrderId']
     );

@@ -149,20 +149,20 @@
 			            <div class="col-span-6 lg:col-span-2">
 			            	<label for="photo" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir Identificación</span>
-			            		<input type="file" id="photo" ref="photo" @change="uploadDocument" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
+			            		<input type="file" id="photo" ref="photo" @change="uploadDocument" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
 			            		
 			            	</label>
-			            	<p class="text-xs text-gray-500">PDF</p>
+			            	<p class="text-xs text-gray-500">PDF JPG PNG</p>
 			            	<span v-if="uploadedDocument" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			            <!-- rut document -->
 			            <div class="col-span-6 lg:col-span-2">
 			            	<label for="rut" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir RUT</span>
-			            		<input type="file"  id="rut"  ref="rut" @change="uploadRut" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf" />
+			            		<input type="file"  id="rut"  ref="rut" @change="uploadRut" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
 			            		
 			            	</label>
-			            	<p class="text-xs text-gray-500">PDF</p>
+			            	<p class="text-xs text-gray-500">PDF JPG PNG</p>
 			            	<span v-if="uploadedRut" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			            <!-- logo -->

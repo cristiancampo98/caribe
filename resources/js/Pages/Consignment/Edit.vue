@@ -99,13 +99,9 @@
 						                	</div>
 				                	 	</td-responsive-component>
 				                	 	<td-responsive-component>{{item.product.name}}</td-responsive-component>
-				                	 	<td-responsive-component>
-				                	 		
-				                	 	</td-responsive-component>
 				                	 </tr>
 				                </template>
 				            </table-responsive-component>
-				            {{details_order}}
 			        	</div>
 			        </template>
 			        <template #actions>

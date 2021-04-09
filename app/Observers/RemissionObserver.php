@@ -14,10 +14,6 @@ class RemissionObserver
      */
     public function created(Remission $remission)
     {
-        
-        $remission->consignment->taken = 1;
-        $remission->consignment->save();
-
         $total = Remission::where('order_details_id', $remission->order_details_id)->sum('delivered');
 
         if ($total == $remission->orderDetail->quantity) {

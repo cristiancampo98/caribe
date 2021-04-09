@@ -47,14 +47,22 @@
                             <td-responsive-component>
                                 {{item.id}}
                             </td-responsive-component>
-                            <td-responsive-component>
+                             <td-responsive-component>
                                 {{item.order.client.name}}
                             </td-responsive-component>
-                            <td-responsive-component>
+                             <td-responsive-component>
                                 {{item.order.id}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.consignment_number}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                <div v-if="item.fully_apply">
+                                    C. Total
+                                </div>
+                                <div v-else>
+                                    C. Parcial 
+                                </div>
                             </td-responsive-component>
                             <td-responsive-component>
                                  {{moment(item.created_at).format('DD/MM/YYYY')}}
@@ -135,14 +143,20 @@
         data () {
             return {
                
-                titles: ['#','Cliente','# Pedido','# Consignación','Fecha','Opciones'],
+                titles: ['#','Cliente','# Pedido','# Consignación','Tipo','Fecha','Opciones'],
                 document_name: 'Listado pagina consignación',
-                columns: ['#','Cliente','# Pedido','# Consignación','Fecha'],
+                columns: ['#','Cliente','# Pedido','# Consignación','Tipo','Fecha'],
                 json_fields: {
-                    '#' : 'users.id',
-                    Cliente : 'order.client.name',
-                    'Número de pedido': 'order.id',
+                    '#' : 'id',
                     'Número de consignación': 'consignment_number',
+                    Cliente: 'order.client.name',
+                    'Número de pedido': 'order.id',
+                    Tipo: {
+                        field: 'fully_apply',
+                        callback: (value) => {
+                            return value ? 'C. Total' : 'C. Parcial'
+                        }
+                    },
                     Fecha: {
                         Fecha: 'created_at',
                         callback: (value) => {
@@ -174,10 +188,7 @@
                 .then( res => {
                     this.options.splice(this.key, 1);
                     this.modalDestroy = false;
-                    this.status = {
-                        type: res.data.type,
-                        text: res.data.text,
-                    }
+                    this.setStatusFlash(res.data.type, res.data.text);
                 })
                 .finally( () => {
                     this.endLoading();

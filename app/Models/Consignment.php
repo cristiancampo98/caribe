@@ -12,13 +12,25 @@ class Consignment extends Model
     protected $table = 'consignments';
 
     protected $fillable = [
-    	'order_id',
-    	'consignment_number',
-        'taken'
+        'consignment_number',
+        'available',
+        'fully_apply',
+        'order_id',
+        'created_by'
     ];
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 
     public function order()
     {
-    	return $this->belongsTo(Order::class, 'order_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
+
+    public function detail()
+    {
+        return $this->hasMany(OrderDetail::class, 'consignment_id', 'id');
     }
 }

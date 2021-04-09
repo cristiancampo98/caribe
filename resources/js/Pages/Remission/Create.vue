@@ -1,5 +1,5 @@
 <template>
-	<admin-layout :status="status">
+	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Crear remissión
@@ -96,13 +96,16 @@
 	                        	</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
-	                        	<jet-input type="number" class="mt-1 block w-full"
-	                        	:max="getLimitUp(item.quantity,item.remissions)"
+	                        	<jet-input type="number" class="mt-4 block w-full"
+	                        	:max="getLimitUp(item)"
 	                        	step="0.1"
 	                        	min="0"
 	                        	@change.native="validateQuantity(item)"
-	                        	this.del
 	                        	v-model.number="item.cantidad"/>
+	                        	<jet-label :value="`Limite por día ${item.product.limit_day}`"/>
+	                        	<p class="text-sm text-red-500">
+	                        		Limite disponible {{item.quantity - total_delivered(item.remissions)}}
+	                        	</p>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	<v-select v-if="vehicles.length"
@@ -131,35 +134,27 @@
 	                        	{{item.order.shipping_address}}
 	                        </td-responsive-component>
 	                        <td-responsive-component>
-	                        	<v-select v-if="item.order.consignments.length"
-	                        	label="consignment_number"
-	                        	class="min-w-full lg:min-w-max"
-						        :options="item.order.consignments" 
-						        v-model="item.consignment_id"
-						        :reduce= "consignment_number => consignment_number.id"
-						        :selectable="option => ! option.taken"
-						        >
-						        	<template slot="option" slot-scope="option">
-								      <div class="d-center">
-								        <p> Consecutivo #: {{ option.id }}</p>
-								        <cite># consignación: {{ option.consignment_number }}</cite>
-								       </div>
-								    </template>
-								    <template slot="selected-option" slot-scope="option">
-								      <div class="selected d-center">
-								      	 <p> Consecutivo #: {{ option.id }}</p>
-								      	 <cite># consignación: {{ option.consignment_number }}</cite>
-								      </div>
-								    </template>
-							        
-								</v-select>
-						      	<span v-else>No hay consignaciones</span>
+	                        	<div v-if="item.consignment_id && item.order.client.details.type_pay== 'contado'">
+	                        		<jet-button 
+	                        		v-if="fullyDispatched(item)" 
+	                        		type="button" 
+	                        		@click.native="storeRemission(item)">
+	                        			Remisión
+	                        		</jet-button>
+	                        	</div>
+	                        	<div v-else-if="item.order.client.details.type_pay== 'crédito'">
+	                        		<jet-button 
+	                        		v-if="fullyDispatched(item)" 
+	                        		type="button" 
+	                        		@click.native="storeRemission(item)">
+	                        			Remisión
+	                        		</jet-button>
+	                        	</div>
+	                        	<div v-else>
+	                        		<p class="text-red-500">Sin consignación</p>
+	                        	</div>	
 	                        </td-responsive-component>
-	                        <td-responsive-component>
-	                        	<jet-button v-if="fullyDispatched(item)" type="button" @click.native="storeRemission(item)">
-	                        		Remisión
-	                        	</jet-button>
-	                        </td-responsive-component>
+	                        
 	                     
 	                    </tr>
 	                </template>
@@ -168,33 +163,6 @@
 	            	<div>
 	            		<jet-button type="button" @click.native="openModalStoreVehicle">Agregar vehículo</jet-button>
 	            	</div>
-	            	<div>
-			        	<label for="firm" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1 ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-			        		<span>Subir firma</span>
-			        		<input type="file"  id="firm"  ref="firm" @change="uploadFirm" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
-			        	</label>
-			        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
-			        	<span v-if="uploadedFirm" class="ml-4 text-green-500">¡Hecho!</span>
-	            	</div>
-	            	<div>
-			        	<label for="plate" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1 ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-			        		<span>Subir foto placa</span>
-			        		<input type="file"  id="plate"  ref="plate" @change="uploadPlate" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
-			        	</label>
-			        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
-			        	<span v-if="uploadedPlate" class="ml-4 text-green-500">¡Hecho!</span>
-	            	</div>
-	            	<div>
-			        	<label for="delivery" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 p-1 ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-			        		<span>Subir foto entrega</span>
-			        		<input type="file"  id="delivery"  ref="delivery" @change="uploadDelivery" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
-			        	</label>
-			        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
-			        	<span v-if="uploadedDelivery" class="ml-4 text-green-500">¡Hecho!</span>
-	            	</div>
-	            </div>
-	            <div class="mt-8 relative">
-	            	<iframe src="http://szimek.github.io/signature_pad/" class="inset-0 w-full h-screen"></iframe>
 	            </div>
 	        </div>
             <!-- end table  -->
@@ -272,14 +240,8 @@
             TdResponsiveComponent,
     	},
     	mixins: [FormComponentMixin],
-    	props: {
-    		flash: {
-    			type: Object
-    		}
-    	},
     	data(){
             return {
-            	status:{},
                 clients: [],
                 vehicles: [],
                 orders: [],
@@ -291,7 +253,6 @@
                 	'Remisionar',
                 	'Vehículo',
                 	'Dirección Entrega',
-                	'Consignación'
                 ],
                 error_client: null,
                 user_id: null,
@@ -299,9 +260,6 @@
                 order_id: null,
                 showModalFormVehicle: false,
                 uploadedImagen: false,
-                uploadedFirm: false,
-                uploadedPlate: false,
-                uploadedDelivery: false,
                 form: this.$inertia.form({
                     license_plate: '',
                     brand: '',
@@ -314,10 +272,6 @@
                     delivered: null,
             		order_details_id: null,
             		vehicle_users_id: null,
-            		consignment_id: null,
-            		firm: null,
-            		plate: null,
-            		delivery: null
                 })
             }
         },
@@ -362,17 +316,6 @@
         		this.remi.delivered = item.cantidad;
         		this.remi.order_details_id = item.id;
         		this.remi.vehicle_users_id = item.vehicle_user;
-        		this.remi.consignment_id = item.consignment_id;
-
-            	if (this.$refs.firm.files[0]) {
-                    this.remi.firm = this.$refs.firm.files[0]
-                }
-                if (this.$refs.plate.files[0]) {
-                    this.remi.plate = this.$refs.plate.files[0]
-                }
-                if (this.$refs.delivery.files[0]) {
-                    this.remi.delivery = this.$refs.delivery.files[0]
-                }
 
                 this.remi.post(route('remission.store'), {
                     preserveScroll: true,
@@ -413,7 +356,7 @@
 		    		}
 		    	})
 		    	axios.get(
-		    		`/getOrdersByUserId/order?id=${value}`
+		    		`/getOrdersByUserIdToRemission/order?id=${value}`
 		    	).then( res => {
 		    		this.orders = res.data.orders;
 		    		this.setStatusFlash(res.data.type, res.data.text);
@@ -433,11 +376,20 @@
 		    validateQuantity(item){
 		    	var deli = this.total_delivered(item.remissions);
 		    	var total = item.quantity - deli;
-		    	if (item.cantidad < 1 || item.cantidad > total) {
-		    		item.cantidad = 1;
-	    			let type = "warning";
-	    			let text = "La cantidad no puede ser menor a 1 o mayor a la cantidad del detalle";
+
+		    	if (item.cantidad < 0 || item.cantidad > item.product.limit_day) {
+		    		item.cantidad = item.product.limit_day;
+	    			let type = "error";
+	    			let text = `La cantidad no puede ser menor a 1 o mayor a ${item.product.limit_day}`;
 		    		this.setStatusFlash(type, text);
+		    	}
+		    	if (total < item.product.limit_day) {
+		    		if (item.cantidad < 0 || item.cantidad > total) {
+		    			item.cantidad = total;
+		    			let type = "warning";
+		    			let text = `La cantidad no puede ser menor a 1 o mayor a ${total}`;
+			    		this.setStatusFlash(type, text);
+		    		}
 		    	}
 		    },
 		    openModalStoreVehicle(){
@@ -446,18 +398,13 @@
 		    closeModalFormVehicle(){
 		    	this.showModalFormVehicle = false;	
 		    },
+		   
 		    uploadImagen(){
 		    	this.uploadedImagen = true;
 		    },
-		    uploadFirm(){
-		    	this.uploadedFirm = true;
-		    },
-		    uploadPlate(){
-		    	this.uploadedPlate = true;
-		    },
-		    uploadDelivery(){
-		    	this.uploadedDelivery = true;
-		    },
+		   	/*
+		   	 * @ Obtiene el total despachado de las remisiones de un producto
+		   	 */
 		    total_delivered(remissions){
 		    	var res = 0;
         		if (remissions.length) {
@@ -467,9 +414,18 @@
         		}
         		return res;
         	},
-        	getLimitUp(original,  remissions){
-        		var deli = this.total_delivered(remissions)
-        		return original - deli;
+        	/*
+		   	 * @ Obtiene el limite posible para despachar
+		   	 */
+        	getLimitUp(item){
+        		var deli = this.total_delivered(item.remissions)
+        		var total = item.quantity - deli;
+
+        		if (total > item.product.limit_day) {
+        			return item.product.limit_day;
+        		}else {
+        			return total;
+        		}
         	},
         	fullyDispatched(item){
         		var dispatched = this.total_delivered(item.remissions);

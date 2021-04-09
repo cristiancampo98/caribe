@@ -17,6 +17,7 @@ class Product extends Model
 	    'description',
         'cubic_meters',
         'ton',
+        'limit_day',
         'user_id',
         'status'
     ];

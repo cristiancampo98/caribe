@@ -15,9 +15,10 @@ class CreateOrderDetailsTable extends Migration
     {
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id') ->constrained();
-            $table->foreignId('product_id') ->constrained();
-            $table->decimal('quantity',3,1);
+            $table->foreignId('order_id')->constrained();
+            $table->foreignId('product_id')->constrained();
+            $table->foreignId('consignment_id')->nullable()->constrained();
+            $table->decimal('quantity', 3, 1);
             $table->boolean('status')->default(1);
             $table->timestamps();
         });

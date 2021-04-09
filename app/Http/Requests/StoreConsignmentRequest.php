@@ -25,7 +25,8 @@ class StoreConsignmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'order_id' => ['required','numeric', 'exists:orders,id' ,new isActiveOrder],
+            'order_id' => ['required', 'numeric', 'exists:orders,id', new isActiveOrder],
+            'details_order' => 'required_if:fully_apply,true|array',
             'consignment_number' => 'required|unique:consignments,consignment_number|numeric',
         ];
     }
@@ -39,6 +40,8 @@ class StoreConsignmentRequest extends FormRequest
             'consignment_number.required' => 'El número de consignación es requerido',
             'consignment_number.unique' => 'El número de consignación ya se encuentra registrado',
             'consignment_number.numeric' => 'La consignación debe ser númerica',
+            'details_order.required_if' => 'Los items son requeridos cuando la consignación es parcial',
+            'details_order.array' => 'Debes seleccionar uno o mas items',
         ];
     }
 }

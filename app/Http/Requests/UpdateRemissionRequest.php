@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\LimitDeliveryUpdate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRemissionRequest extends FormRequest
@@ -24,7 +25,7 @@ class UpdateRemissionRequest extends FormRequest
     public function rules()
     {
         return [
-            'delivered' => 'required|numeric|min:1',
+            'delivered' => ['required','numeric','min:0', new LimitDeliveryUpdate($this->route('remission'))],
             'vehicle_users_id' => 'required|exists:vehicles,id',
             'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'plate' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',

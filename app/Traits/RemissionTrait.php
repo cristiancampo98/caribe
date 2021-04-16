@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Remission;
 use App\Traits\MultimediaTrait;
+use App\Traits\Remission\Query\QueryRemissionTrait;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 trait RemissionTrait
 {
     use MultimediaTrait;
+    use QueryRemissionTrait;
 
     public static function storeRemission($data)
     {
@@ -24,7 +26,8 @@ trait RemissionTrait
 
     public static function getPaginateAllRemissionsTrait()
     {
-        return Remission::with(
+
+        $remissions = Remission::with(
             'orderDetail.order',
             'orderDetail.product',
             'creator',
@@ -33,6 +36,19 @@ trait RemissionTrait
         )
             ->orderBy('id', 'desc')
             ->paginate(request()->get('lenght'));
+
+        return self::remissionsAreSigned($remissions);
+    }
+
+    public static function remissionsAreSigned($remissions)
+    {
+        foreach ($remissions as $value) {
+            $firm = self::getMultimediaByParams('remission', 'remission_id', $value->id, 'remission_firm');
+            $isSigned = count($firm);
+            $value->isSigned = $isSigned;
+        }
+        return $remissions;
+
     }
 
     public static function getMultimediaFilesByRemissionTrait($id)
@@ -59,13 +75,16 @@ trait RemissionTrait
 
     public static function getRemissionByIdWithRelationships($id)
     {
-        return Remission::where('id', $id)
+        $data = Remission::where('id', $id)
             ->with(
                 'orderDetail.order.client',
                 'orderDetail.product',
+                'orderDetail.remissions',
                 'creator',
                 'carrier.vehicle'
             )
             ->first();
+        $data->orderDetail->limit = $data->delivered + $data->orderDetail->product->limit_day - self::getRemissionByProductTrait($data->orderDetail->product_id);
+        return $data;
     }
 }

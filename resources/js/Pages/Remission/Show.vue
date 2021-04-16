@@ -7,6 +7,14 @@
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <vs-button
+                class="tracking-widest"
+                dark
+                border
+                @click="exportPDF"
+                >
+                    <i class="bx bx-printer"></i> Imprimir
+                </vs-button>
             	<description-list-component>
             		<template #title>Remisión</template>
             		<template #subtitle>Visualiza la información de la remisión</template>
@@ -113,6 +121,9 @@
             updateNotifications(data){
                 this.status = data;
             },
+            exportPDF(){
+                window.print()
+            }
         }
 
     }

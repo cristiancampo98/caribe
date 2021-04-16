@@ -78,6 +78,9 @@
                                 </ul>
                             </td-responsive-component>
                             <td-responsive-component>
+                                {{item.isSigned ? 'Si' : 'No'}}
+                            </td-responsive-component>
+                            <td-responsive-component>
                                 {{moment(item.created_at).format('DD/MM/YYYY')}}
                             </td-responsive-component>
                            
@@ -129,9 +132,9 @@
         },
         data () {
             return {
-                titles: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Fecha','Opciones'],
+                titles: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Firmado','Fecha','Opciones'],
                 document_name: 'Listado pagina de remisiones',
-                columns: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Fecha'],
+                columns: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Firmado','Fecha'],
                 json_fields: {
                     '#' : 'id',
                     Pedido : 'order_detail.order_id',
@@ -157,6 +160,12 @@
                     Vehiculo: {
                         callback: (value) => {
                             return `Placa: ${value.carrier.vehicle.license_plate} / Conductor: ${value.carrier.carrier}`
+                        }
+                    },
+                    Firma: {
+                        field: 'isSigned',
+                        callback: (value) => {
+                            return value ? 'Si' : 'No'
                         }
                     },
                     Fecha: {

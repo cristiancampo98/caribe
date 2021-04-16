@@ -102,10 +102,17 @@
 	                        	min="0"
 	                        	@change.native="validateQuantity(item)"
 	                        	v-model.number="item.cantidad"/>
-	                        	<jet-label :value="`Limite por día ${item.product.limit_day}`"/>
-	                        	<p class="text-sm text-red-500">
-	                        		Limite disponible {{item.quantity - total_delivered(item.remissions)}}
-	                        	</p>
+	                        </td-responsive-component>
+	                        <td-responsive-component>
+	                        	<div class="bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-14 w-14 flex items-center text-center p-4 mx-2 shadow-2xl">
+	                        		{{item.limit}}
+	                        	</div>
+	                        	
+	                        </td-responsive-component>
+	                        <td-responsive-component>
+	                        	<div class="bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-14 w-14 flex items-center text-center p-4 mx-2 shadow-2xl">
+	                        		{{item.quantity - total_delivered(item.remissions)}}
+	                        	</div>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	<v-select v-if="vehicles.length"
@@ -232,6 +239,8 @@
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
     import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
+    import moment from 'moment';
+    moment.locale('es')
 
     export default {
     	components: {
@@ -242,6 +251,7 @@
     	mixins: [FormComponentMixin],
     	data(){
             return {
+            	moment: moment,
                 clients: [],
                 vehicles: [],
                 orders: [],
@@ -251,6 +261,8 @@
                 	'Cantidad',
                 	'Entregado',
                 	'Remisionar',
+                	'Lim. planta',
+                	'C. disponible',
                 	'Vehículo',
                 	'Dirección Entrega',
                 ],
@@ -377,17 +389,17 @@
 		    	var deli = this.total_delivered(item.remissions);
 		    	var total = item.quantity - deli;
 
-		    	if (item.cantidad < 0 || item.cantidad > item.product.limit_day) {
-		    		item.cantidad = item.product.limit_day;
+		    	if (item.cantidad < 0 || item.cantidad > item.limit) {
+		    		item.cantidad = item.limit;
 	    			let type = "error";
-	    			let text = `La cantidad no puede ser menor a 1 o mayor a ${item.product.limit_day}`;
+	    			let text = `El valor no puede ser menor a 0. Nota: El limite de la producción es ${item.limit}`;
 		    		this.setStatusFlash(type, text);
 		    	}
-		    	if (total < item.product.limit_day) {
+		    	if (total < item.limit) {
 		    		if (item.cantidad < 0 || item.cantidad > total) {
 		    			item.cantidad = total;
 		    			let type = "warning";
-		    			let text = `La cantidad no puede ser menor a 1 o mayor a ${total}`;
+		    			let text = `El valor no puede ser menor a 0. Nota: La cantidad disponible es ${total}`;
 			    		this.setStatusFlash(type, text);
 		    		}
 		    	}
@@ -408,7 +420,7 @@
 		    total_delivered(remissions){
 		    	var res = 0;
         		if (remissions.length) {
-        			remissions.map(item => {
+        			remissions.map(item => {		
         				res += parseFloat(item.delivered)
         			});
         		}
@@ -421,8 +433,8 @@
         		var deli = this.total_delivered(item.remissions)
         		var total = item.quantity - deli;
 
-        		if (total > item.product.limit_day) {
-        			return item.product.limit_day;
+        		if (total > item.limit) {
+        			return item.limit;
         		}else {
         			return total;
         		}

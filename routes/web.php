@@ -114,6 +114,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [RemissionStorageController::class, 'getMultimediaFilesByRemission']
     );
 
+    Route::get('getRemissionByProduct/{id}/remission',
+        [RemissionStorageController::class, 'getRemissionByProduct']
+    );
+    
+
 
 
     Route::get('getPaginateAllUsers/users',

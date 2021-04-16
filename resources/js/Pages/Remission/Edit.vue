@@ -6,9 +6,9 @@
             </h2>
         </template>
         <div class="py-12">
+        	
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-				
 			       <jet-form-section @submitted="updateRemission">
 			        <template #title>
 			            Información de remisión
@@ -46,15 +46,29 @@
 			        	</div>
 			           <!-- Delivered -->
 			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="delivered" value="Entregar" />
-			                <jet-input id="delivered" type="number" class="mt-1 block w-full" v-model="form.delivered"/>
-			                <jet-input-error :message="form.errors.delivered" class="mt-2" />
+			            	<jet-label for="delivered" value="Entregar"/>
+			               	<jet-input type="number" class="mt-1 block w-full"
+	                        	id="delivered"
+	                        	step="0.1"
+	                        	min="0"
+	                        	:max="getLimitUp(remission.order_detail)"
+	                        	@change.native="validateQuantity(remission.order_detail)"
+	                        	v-model.number="form.delivered"/>
+	                        	<small class="text-blue-500">Las cantidades a continúación tienen en cuenta la cantidad de la remisión actual</small>
+	                        	<div class="grid lg:grid-flow-col lg:auto-cols-max sm:grid-flow-row sm:auto-rows-max gap-4 mt-4 justify-center">
+					        		<div class="bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-28 w-28 flex items-center text-center p-4 mx-2 shadow-2xl">
+					        			Limite por producción {{remission.order_detail.limit}} m3
+					        		</div>
+					        		<div class="bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-28 w-28 flex items-center text-center p-4 mx-2 shadow-2xl">
+					        			Cantidad pendiente {{remission.order_detail.quantity - total_delivered()}} m3
+					        		</div>
+								</div>
 			            </div>
 			            <!-- Vehicle -->
 			            <div class="col-span-6 lg:col-span-4">
 			            	<jet-label for="vehicle_users_id" value="Vehículo" />
 			            	<v-select v-if="vehicles.length"
-			            	class="w-72"
+			            	class="lg:w-72 sm:w-60"
 					        label="license_plate" 
 					        :options="vehicles" 
 					        v-model="form.vehicle_users_id"
@@ -80,6 +94,7 @@
 				        		<span>Subir firma</span>
 				        		<input type="file"  id="firm"  ref="firm" @change="uploadFirm" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
 				        	</label>
+				        	<jet-input-error :message="form.errors.firm" class="mt-2" />
 				        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
 				        	<span v-if="uploadedFirm" class="ml-4 text-green-500">¡Hecho!</span>
 			            	
@@ -193,6 +208,46 @@
 		    },
 		    uploadPlate(){
 		    	this.uploadedPlate = true;
+		    },
+		    total_delivered(){
+		    	var res = 0;
+        		if (this.remission.order_detail.remissions.length) {
+        			this.remission.order_detail.remissions.map(item => {
+        				res += parseFloat(item.delivered)
+        			});
+        		}
+        		res -= parseFloat(this.remission.delivered)
+        		return res;
+        	},
+        	getLimitUp(item){
+
+        		var deli = this.total_delivered()
+        		var total = item.quantity - deli;
+
+        		if (total > item.limit) {
+        			return item.limit;
+        		}else {
+        			return total;
+        		}
+        	},
+        	validateQuantity(item){
+		    	var deli = this.total_delivered()
+		    	var total = item.quantity - deli;
+
+		    	if (this.form.delivered < 0 || this.form.delivered > item.limit) {
+		    		this.form.delivered = item.limit;
+	    			let type = "error";
+	    			let text = `El valor no puede ser menor a 0. Nota: El limite de la producción es ${item.limit}`;
+		    		this.setStatusFlash(type, text);
+		    	}
+		    	if (total < item.limit) {
+		    		if (this.form.delivered < 0 || this.form.delivered > total) {
+		    			this.form.delivered = total;
+		    			let type = "warning";
+		    			let text = `El valor no puede ser menor a 0. Nota: La cantidad disponible es ${total}`;
+			    		this.setStatusFlash(type, text);
+		    		}
+		    	}
 		    },
     	}
 

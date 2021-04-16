@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\LimitDeliveryStore;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRemissionRequest extends FormRequest
@@ -24,7 +25,7 @@ class StoreRemissionRequest extends FormRequest
     public function rules()
     {
         return [
-            'delivered' => 'required|numeric|min:1',
+            'delivered' => ['required','numeric','min:0', new LimitDeliveryStore($this->order_details_id)],
             'order_details_id' => 'required|numeric|min:1',
             'vehicle_users_id' => 'required|numeric|min:1'
         ];

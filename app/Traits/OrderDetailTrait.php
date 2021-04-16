@@ -3,13 +3,14 @@
 namespace App\Traits;
 
 use App\Models\OrderDetail;
+use App\Traits\Remission\Query\QueryRemissionTrait;
 
 /**
  *
  */
 trait OrderDetailTrait
 {
-
+    use QueryRemissionTrait;
 
     public static function getOrderDetailsByOrderTrait()
     {
@@ -17,6 +18,10 @@ trait OrderDetailTrait
             ->with('product', 'order.client.details', 'remissions')
             ->get();
 
+        foreach ($details as $value) {
+            $value->limit = $value->product->limit_day - self::getRemissionByProductTrait($value->product_id);
+        }
+        
         if (count($details)) {
             return response()->json([
                 'details' => $details,

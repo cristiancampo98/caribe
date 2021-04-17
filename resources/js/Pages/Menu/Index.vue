@@ -11,7 +11,17 @@
         			Crear menú
         		</jet-button>
         	</jet-nav-link>
-            <div class="mt-8">
+            <div class="mt-8" v-if="options.length">
+                <div class="col-span-3">
+                    <label for="lenght">Paginar: </label>
+                    <v-select
+                    id="lenght"
+                    class="w-20 bg-white"
+                    v-model="lenght"
+                    :options="pages"
+                    @input="getPaginate"
+                    :clearable="false"></v-select>
+                </div>
                 <table-responsive-component>
                     <template #title>
                         <tr>
@@ -62,6 +72,9 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <paginate-component 
+                :package="package"
+                @updatingData="updateData"></paginate-component>
             </div>
         </div>
     </admin-layout>

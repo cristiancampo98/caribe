@@ -20,9 +20,6 @@
                                 <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </jet-nav-link>
-                                <jet-nav-link v-for="(item,index) in pages" :href="route(item.route)" :active="route().current(item.route)" :key="index">
-                                    {{item.name}}
-                                </jet-nav-link>
                             </div>
                         </div>
 
@@ -257,11 +254,6 @@
         data() {
             return {
                 showingNavigationDropdown: false,
-                pages: [
-                    {name: 'Productos',route: 'product.index'   },
-                    {name: 'Pedidos',route: 'order.index'   },
-                    {name: 'Remisiones',route: 'remission.index'   },
-                ]
             }
         },
 

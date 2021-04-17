@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\PaymentLink;
 use App\Notifications\UpdatedOrder;
 use App\Traits\ConsignmentTrait;
+use App\Traits\Consignment\Store\StoreConsignmentTrait;
 use App\Traits\MultimediaTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ trait OrderTrait
 {
 	use MultimediaTrait;
 	use ConsignmentTrait;
+	use StoreConsignmentTrait;
 	
 
 	public static function storeOrder($data){
@@ -62,31 +64,17 @@ trait OrderTrait
         		);
         	}
 
-            if (isset($data['consignment']['consignment_number'])) {
-            	$consignment_id = DB::table('consignments')->insertGetId([
-            		'consignment_number' => $data['consignment']['consignment_number'],
-            		'client_id' => $data['user_id'],
-            		'created_by' => Auth::id(),
-            		'created_at' => Carbon::now('America/Bogota'),
-            		'updated_at' => Carbon::now('America/Bogota'),
-            	]);
+        	$consignment_id = null;
 
-            	if(request()->file('consignment')) {
-            		self::storeSingleFileMultimedia(
-            			request()->file('consignment')['imagen'], 
-		                'consignments', 
-		                'consignment', 
-		                'consignment_file', 
-		                'consignment_id', 
-		                $consignment_id
-            		);
-            	}
+            if (isset($data['consignment']['consignment_number'])) {
+            	$consignment_id = self::StoreConsignmentFromOrder($data,$order_id, request()->file('consignment'));
             }
 
             foreach ($data['order_details'] as $value) {
                 DB::table('order_details')->insert([
                     'order_id' => $order_id,
                     'product_id' => $value['product_id'],
+                    'consignment_id' => $consignment_id,
                     'quantity' => $value['quantity'],
                     'status' => 1,
                     'created_at' => $date,
@@ -119,6 +107,7 @@ trait OrderTrait
 			'orderDetails.remissions.carrier.vehicle',
 			'client',
 			'creator',
+			'consignments'
 		])
 		->first();
 

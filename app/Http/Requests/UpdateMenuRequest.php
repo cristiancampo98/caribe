@@ -24,7 +24,7 @@ class UpdateMenuRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:menus,name',
+            'name' => 'required|unique:menus,name,' . $this->route('menu')->id,
             'slug' => 'required|string|max:50',
             'icon' => 'required|string|max:50',
             'available' => 'required|boolean',

@@ -91,15 +91,21 @@
 			               	<textarea id="note" class="mt-1 block w-full rounded-lg" v-model="form.note"></textarea>
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
+
 			           	<!--  consignment_number-->
+			           	<div class="col-span-6 lg:col-span-6">
+			           		<p class="text-sm text-blue-500">
+			            		Nota: Si completas los campos de <strong>consignación</strong> se tomará por defecto como una <strong>consignación total</strong> para el pedido. Tenlo en cuenta al momento de guardar el pedido.
+			            	</p>
+			           	</div>
 			            <div class="col-span-6 lg:col-span-2">
-			            	<jet-label for="consignment_number" value="Consignación" />
+			            	<jet-label for="consignment_number" value="Número de consignación" />
 			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment.consignment_number" />
 			            </div>
 			            <!-- imagen -->
 			            <div class="col-span-6 lg:col-span-1">
 			            	<label for="imagen" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
-			            		<span>Subir imagen</span>
+			            		<span>Imagen consignación</span>
 			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
 			            		
 			            	</label>

@@ -157,7 +157,7 @@
              <vs-dialog auto-width not-center v-model="modalConsignment">
                 <template #header>
                   <h4 class="mr-8">
-                    Crea un consignación para este pedido con la información requerida.
+                    Crea un <strong>consignación total</strong> para este pedido con la información requerida.
                   </h4>
                 </template>
                 <form-consignment

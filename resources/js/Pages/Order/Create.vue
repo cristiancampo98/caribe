@@ -93,12 +93,7 @@
 			            </div>
 
 			           	<!--  consignment_number-->
-			           	<div class="col-span-6 lg:col-span-6">
-			           		<p class="text-sm text-blue-500">
-			            		Nota: Si completas los campos de <strong>consignación</strong> se tomará por defecto como una <strong>consignación total</strong> para el pedido. Tenlo en cuenta al momento de guardar el pedido.
-			            	</p>
-			           	</div>
-			            <div class="col-span-6 lg:col-span-2">
+			           	<div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="consignment_number" value="Número de consignación" />
 			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment.consignment_number" />
 			            </div>
@@ -131,6 +126,11 @@
 			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedPurchaseOrder" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
+			            <div class="col-span-6 lg:col-span-6">
+			           		<p class="text-sm text-blue-500">
+			            		Nota: Tener en cuenta que al crear la <strong>consignación</strong> por este medio se tomará por defecto como <strong>consignación total</strong> para el pedido.
+			            	</p>
+			           	</div>
 			           <div class="col-span-6 lg:col-span-6">
 				           	<h3>Pedido</h3>
 				            <p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
@@ -150,7 +150,7 @@
 			            <!-- quantity -->
 			             <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="quantity" value="Cantidad en m3" />
-			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="0" v-model="quantity" step="0.1"/>
+			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" v-model="quantity" step="0.1"/>
 			            </div>
 			           <div class="col-span-6 lg:col-span-1">
 				           	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
@@ -350,6 +350,8 @@
 						//Si no lo encuentra agrega el nuevo producto
 						this.form.order_details.push(pedido);
 					}
+					this.product_detail = null
+					this.quantity = 1
             	}else{
             		this.error_product = true
             	}

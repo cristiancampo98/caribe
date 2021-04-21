@@ -19,6 +19,12 @@
 
 			        <template #form>
 
+                        <!-- name company -->
+                        <div class="col-span-6 lg:col-span-4">
+                            <jet-label for="name_company" value="Empresa" />
+                            <jet-input id="name_company" type="text" class="mt-1 block w-full" v-model="form.name_company" autocomplete="name_company" />
+                            <jet-input-error :message="form.errors.name_company" class="mt-2" />
+                        </div>
 			            <!-- Name -->
 			            <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="name" value="Nombre Completo" />
@@ -63,6 +69,7 @@
     	data(){
             return {
                 form: this.$inertia.form({
+                    name_company: '',
                     name: '',
                     email: '',
                 }),

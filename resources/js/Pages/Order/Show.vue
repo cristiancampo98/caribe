@@ -69,16 +69,16 @@
                                 <li>Descuento: {{item.discount}}</li>
                             </ul>
                             <div v-if="item.remissions.length" class="bg-white p-3">
-                                <h4>Remisiones</h4>
+                                <strong>Remisiones</strong>
                                 <ul v-for="(remi) in item.remissions">
                                     <h3>Remisión # {{remi.id}}</h3>
-                                    <li >Entregado {{remi.delivered}} m3 de {{item.quantity}} m3</li>
-                                    <li >Placa de vehículo 
+                                    <li class="ml-5" type="disc">Entregado {{remi.delivered}} m3 de {{item.quantity}} m3</li>
+                                    <li class="ml-5" type="disc">Placa de vehículo 
                                         <span class="uppercase">
                                             {{remi.carrier.vehicle.license_plate}}
                                         </span>
                                     </li>
-                                    <li >Remitido el  {{moment(remi.created_at).format('DD/MM/YYYY')}}</li>
+                                    <li class="ml-5" type="disc">Remitido el  {{moment(remi.created_at).format('DD/MM/YYYY')}}</li>
                                 </ul>
                             </div>
                         </template>
@@ -99,7 +99,11 @@
                         <template #description>
                             <ul class="mx-auto">
                                 <li>No. consignación: {{item.consignment_number}}</li>
+                                <li>Tipo: {{item.fully_apply ? 'Total' : 'Parcial'}}</li>
                                 <li>Fecha: {{moment(item.created_at).format('DD/MM/YYYY')}}</li>
+                                <li class="grid gap-4 grid-flow-col auto-cols-max">
+                                    <span class="border-2 border-green-500 p-1"v-for="detail in item.detail">Producto: {{detail.product.name}}</span>
+                                </li>
                             </ul>
                         </template>
                     </item-list-component>

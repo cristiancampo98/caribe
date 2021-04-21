@@ -33,7 +33,7 @@
 			            </div>
                         <!-- Cubic meters -->
                         <div class="col-span-6 lg:col-span-1">
-                            <jet-label for="cubic_meters" value="= en metros cúbicos" />
+                            <jet-label for="cubic_meters" value="= en m3" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="cubic_meters"
                             step="0.1"
@@ -43,7 +43,7 @@
                         </div>
                         <!-- Ton -->
                         <div class="col-span-6 lg:col-span-1">
-                            <jet-label for="ton" value="= en toneladas" />
+                            <jet-label for="ton" value="= en ton" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="ton"
                             step="0.1"
@@ -53,7 +53,7 @@
                         </div>
                         <!-- limit day -->
                         <div class="col-span-6 lg:col-span-1">
-                            <jet-label for="limit_day" value="Limite por día" />
+                            <jet-label for="limit_day" value="Limite por día m3" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="limit_day"
                             step="0.1"

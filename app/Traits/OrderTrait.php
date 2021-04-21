@@ -107,7 +107,7 @@ trait OrderTrait
 			'orderDetails.remissions.carrier.vehicle',
 			'client',
 			'creator',
-			'consignments'
+			'consignments.detail.product'
 		])
 		->first();
 

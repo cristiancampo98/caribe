@@ -43,6 +43,7 @@ export const DataTableComponentMixin = {
             pages:[
                 5,10,20
             ],
+            valueParams: {},
             options: [],
             url: null,
             btn_name_excel: "XLS",
@@ -60,7 +61,14 @@ export const DataTableComponentMixin = {
     methods: {
         getPaginate(){
             this.startLoading();
+
             var param = '?lenght='+this.lenght;
+            var data = this.paramsStringFormat()
+
+            if (data.length) {
+                param += data
+            }
+            
             var total_url = this.url + param;
             axios.get(total_url)
             .then(res => {
@@ -88,6 +96,17 @@ export const DataTableComponentMixin = {
         	doc.save(vm.document_name)
         	this.endLoading();
         },
+        paramsStringFormat() {
+            var format = ''
+            for(var i in this.valueParams) {
+                format += `&${i}=${this.valueParams[i]}`
+            }
+            return format
+        },
+        clean() {
+            this.valueParams = {}
+            this.getPaginate()
+        }
     }
 	
 }

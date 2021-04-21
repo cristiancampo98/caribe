@@ -57,6 +57,11 @@ class LimitDeliveryStore implements Rule
      */
     public function message()
     {
-        return 'El valor de entrega es '.$this->value.' y debe ser menor o igual a '.$this->limit;
+        if ($this->limit) {
+            return 'El valor de la remisión es '.$this->value.' y no puede ser mayor a '.$this->limit;    
+        }
+        return 'No es posible crear la remisión porque el limíte de la producción diaría es '.$this->limit;
+
+        
     }
 }

@@ -86,7 +86,7 @@ trait QueryOrderTrait
             'creator',
             'remissions'
         ])
-            ->where('user_id', Auth::id());
+        ->where('user_id', Auth::id());
 
         if ($isAdmin) {
             $orders = Order::with([
@@ -94,7 +94,27 @@ trait QueryOrderTrait
                 'creator',
                 'remissions'
             ]);
+
+            if (request()->has('name')) {
+                $orders->whereHas('client.details', function(Builder $query) {
+                    $query->where('name','like','%'.request()->get('name').'%')
+                    ->orWhere('name_company','like','%'.request()->get('name').'%');
+                });
+            }
+            if (request()->has('type_pay')) {
+                $orders->whereHas('client.details', function(Builder $query) {
+                    $query->where('type_pay',request()->get('type_pay'));
+                });
+            }
         }
+        
+        if (request()->has('status')) {
+            $orders->where('status',request()->get('status'));
+        }
+        if (request()->has('start_date') && request()->has('end_date')) {
+            $orders->whereBetween('created_at',[request()->get('start_date'), request()->get('end_date')]);
+        }
+
 
         return $orders->orderBy('id', 'desc')->paginate(request()->get('lenght'));
     }

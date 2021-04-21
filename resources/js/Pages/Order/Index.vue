@@ -21,18 +21,70 @@
             :name="`${document_name}.xls`">
                 {{ btn_name_excel }}
             </json-excel>
-            <div class="mt-8" v-if="options.length">
-                <div class="col-span-3">
-                    <label for="lenght">Paginar: </label>
-                    <v-select
-                    id="lenght"
-                    class="w-20 bg-white"
-                    v-model="lenght"
-                    :options="pages"
-                    @input="getPaginate"
-                    :clearable="false"></v-select>
+            <div class="mt-8" >
+                <div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-cols-min items-end">
+                    <div>
+                        <label for="lenght">Paginar: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 bg-white"
+                        v-model="lenght"
+                        :options="pages"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Empresa o cliente: </label>
+                        <input type="text"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.name">
+                    </div>
+                    <div>
+                        <label for="lenght">Tipo: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-max bg-white"
+                        v-model="valueParams.type_pay"
+                        :options="params.type_pay"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Estado: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-max bg-white"
+                        v-model="valueParams.status"
+                        :options="params.status"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha inicio: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.start_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha fin: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.end_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <button type="button" class="bg-red-500 text-white py-1 px-2 rounded-md" @click="clean">
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
-                <table-responsive-component>
+                
+
+                <table-responsive-component v-if="options.length">
                     <template #title>
                         <tr>
                             <th-responsive-component 
@@ -121,11 +173,13 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <div v-else>No hay datos</div>
                 <paginate-component 
+                v-if="options.length"
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
-            <div v-else>No hay datos</div>
+           
             
             <!-- modal delete -->
             <vs-dialog width="300px" not-center v-model="modal">
@@ -237,6 +291,17 @@
                     {name: 'Editar', route:'order.edit'},
                     {name: 'Ver', route:'order.show'},
                 ],
+                params: {
+                    type_pay: [
+                        {label:'Contado',value:'contado'},
+                        {label:'Crédito',value:'crédito'}
+                    ],
+                    status: [
+                        {label:'Activo',value:'activo'},
+                        {label:'Cancelado',value:'cancelado'},
+                        {label:'Finalizado',value:'finalizado'}
+                    ]
+                },
                 modal: false,
                 modalConsignment:false,
                 form:{

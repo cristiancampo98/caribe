@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\isCredit;
 
 class StoreOrderRequest extends FormRequest
 {
@@ -30,8 +31,12 @@ class StoreOrderRequest extends FormRequest
             'order_details' => 'required|array|min:1',
             'order_details.*.quantity' => 'numeric|max:999.9|min:1',
             'order_id' => 'nullable|numeric',
-            'contract' => 'required_if:type_pay,true',
-            'purchaseOrder' => 'required_if:type_pay,true',
+            'type_pay' => [
+                new IsCredit(
+                $this->type_pay, 
+                $this->consignment['consignment_number']
+                )
+            ],
             'consignment.consignment_number' => 'nullable|unique:consignments,consignment_number'
         ];
     }

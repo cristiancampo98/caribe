@@ -28,7 +28,7 @@
 			            <!-- consignment -->
 			            <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="consignment_id" value="No. consignación" />
-			                <jet-input id="consignment_id" type="number" class="mt-1 block w-full" v-model="remission.order_detail.consignment_id" disabled/>
+			                <jet-input id="consignment_id" type="number" class="mt-1 block w-full" v-model="remission.order_detail.consignment.consignment_number" disabled/>
 			            </div>
 			            <!-- product -->
 			            <div class="col-span-6 lg:col-span-2">
@@ -56,10 +56,10 @@
 	                        	v-model.number="form.delivered"/>
 	                        	<small class="text-blue-500">Las cantidades a continúación tienen en cuenta la cantidad de la remisión actual</small>
 	                        	<div class="grid lg:grid-flow-col lg:auto-cols-max sm:grid-flow-row sm:auto-rows-max gap-4 mt-4 justify-center">
-					        		<div class="bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-28 w-28 flex items-center text-center p-4 mx-2 shadow-2xl">
+					        		<div class="text-xs bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-20 w-20 flex items-center text-center p-1 mx-2 shadow-2xl">
 					        			Limite por producción {{remission.order_detail.limit}} m3
 					        		</div>
-					        		<div class="bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-28 w-28 flex items-center text-center p-4 mx-2 shadow-2xl">
+					        		<div class="text-xs bg-red-500 ring ring-pink-600 ring-offset-2 text-white rounded-full h-20 w-20 flex items-center text-center p-1 mx-2 shadow-2xl">
 					        			Cantidad pendiente {{remission.order_detail.quantity - total_delivered()}} m3
 					        		</div>
 								</div>

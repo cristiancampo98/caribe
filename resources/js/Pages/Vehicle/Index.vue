@@ -122,6 +122,7 @@
                 },
             	actions: [
                     {name: 'Editar', route:'vehicle.edit'},
+                    {name: 'Clientes del vehiculo', route:'vehicle-user.edit'},
                     {name: 'Ver', route:'vehicle.show'},
                     {name: 'Actualizar estado', route:'editStatus.vehicle'},
                 ],

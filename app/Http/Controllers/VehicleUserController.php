@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\VehicleUser;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class VehicleUserController extends Controller
@@ -55,9 +57,21 @@ class VehicleUserController extends Controller
      * @param  \App\Models\VehicleUser  $vehicleUser
      * @return \Illuminate\Http\Response
      */
-    public function edit(VehicleUser $vehicleUser)
+    public function edit($id)
     {
-        //
+        $data = VehicleUser::where('vehicle_id',$id)
+        ->with('vehicle','client.details')
+        ->orderBy('id','desc')
+        ->get();
+
+        $clients = User::whereHas('roles', function(Builder $query) {
+            $query->where('roles.id',3);
+        })->get();
+
+        return inertia('Vehicle/Users/Edit', [
+            'data' => $data,
+            'clients' => $clients
+        ]);
     }
 
     /**
@@ -69,7 +83,12 @@ class VehicleUserController extends Controller
      */
     public function update(Request $request, VehicleUser $vehicleUser)
     {
-        //
+        $vehicleUser->update($request->all());
+        return response()->json([
+            'item' => $vehicleUser,
+            'type' => 'success',
+            'text' => '¡El registro ha sido actualizado!'
+        ], 200);
     }
 
     /**

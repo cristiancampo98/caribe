@@ -21,9 +21,9 @@
             :name="`${document_name}.xls`">
                {{ btn_name_excel }}
             </json-excel>
-            <div class="mt-8" v-if="options.length">
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-3">
+            <div class="mt-8" >
+                <div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-cols-min items-end">
+                    <div>
                         <label for="lenght">Paginar: </label>
                         <v-select
                         id="lenght"
@@ -33,8 +33,52 @@
                         @input="getPaginate"
                         :clearable="false"></v-select>
                     </div>
+                    <div>
+                        <label for="lenght">Cliente o empresa: </label>
+                       <input type="text"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.name">
+                    </div>
+                    <div>
+                        <label for="lenght">Consignación: </label>
+                       <input type="text"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.consignment_number">
+                    </div>
+                    <div>
+                        <label for="lenght">Tipo: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 w-max bg-white"
+                        v-model="valueParams.fully_apply"
+                        :options="params.fully_apply"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha inicio: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.start_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha fin: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.end_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <button type="button" class="bg-red-500 text-white py-1 px-2 rounded-md" @click="clean">
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
-                <table-responsive-component>
+                <table-responsive-component v-if="options.length">
                     <template #title>
                         <tr>
                             <th-responsive-component 
@@ -47,7 +91,10 @@
                             <td-responsive-component>
                                 {{item.id}}
                             </td-responsive-component>
-                             <td-responsive-component>
+                            <td-responsive-component>
+                                {{item.order.client.details.name_company}}
+                            </td-responsive-component>
+                            <td-responsive-component>
                                 {{item.order.client.name}}
                             </td-responsive-component>
                              <td-responsive-component>
@@ -102,11 +149,13 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <div v-else>No hay datos</div>
                 <paginate-component 
                 :package="package"
+                v-if="options.length"
                 @updatingData="updateData"></paginate-component>
             </div>
-            <div v-else>No hay datos</div>
+            
             <vs-dialog width="550px" not-center v-model="modalDestroy">
                 <template #header>
                   <h4 class="not-margin">
@@ -143,12 +192,13 @@
         data () {
             return {
                
-                titles: ['#','Cliente','# Pedido','# Consignación','Tipo','Fecha','Opciones'],
+                titles: ['#','Empresa','Cliente','# Pedido','# Consignación','Tipo','Fecha','Opciones'],
                 document_name: 'Listado pagina consignación',
-                columns: ['#','Cliente','# Pedido','# Consignación','Tipo','Fecha'],
+                columns: ['#','Empresa','Cliente','# Pedido','# Consignación','Tipo','Fecha'],
                 json_fields: {
                     '#' : 'id',
                     'Número de consignación': 'consignment_number',
+                    Empresa: 'order.client.details.name_company',
                     Cliente: 'order.client.name',
                     'Número de pedido': 'order.id',
                     Tipo: {
@@ -168,6 +218,12 @@
                     {name: 'Editar', route:'consignment.edit'},
                     {name: 'Ver', route:'consignment.show'},
                 ],
+                params: {
+                    fully_apply: [
+                        {label:'Total',value:1},
+                        {label:'Parcial',value:0}
+                    ]
+                },
                 consecutive: null,
                 modalDestroy: false,
                 key: null,

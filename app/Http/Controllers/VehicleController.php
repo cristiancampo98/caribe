@@ -6,12 +6,14 @@ use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Vehicle;
 use App\Traits\VehicleTrait;
+use App\Traits\Vehicle\Store\StoreVehicleTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class VehicleController extends Controller
 {
     use VehicleTrait;
+    use StoreVehicleTrait;
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +48,12 @@ class VehicleController extends Controller
      */
     public function store(StoreVehicleRequest $request)
     {
-        $response = self::storeVehicleFromRemission();
+        if ($request->index) {
+            $response = self::storeVehicle($request);
+        }else {
+            $response = self::storeVehicleFromRemission();    
+        }
+        
 
         if ($response) {
             if ($request->index) {

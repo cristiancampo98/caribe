@@ -3,8 +3,10 @@
 namespace App\Traits;
 
 use App\Models\Consignment;
+use App\Traits\Consignment\Query\QueryConsignmentFromOrderTrait;
 use App\Traits\MultimediaTrait;
 use App\Traits\OrderDetailTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -12,14 +14,19 @@ use Illuminate\Support\Facades\Auth;
  */
 trait ConsignmentTrait
 {
-    use MultimediaTrait, OrderDetailTrait;
+    use MultimediaTrait, OrderDetailTrait, QueryConsignmentFromOrderTrait; 
 
 
     public static function storeConsignment()
     {
         if (self::validateWhenConsignmentIsFilled(request()->all())) {
+            $fully_apply = request()->get('fully_apply');
+            if (count(self::getConsignmentsByOrderId(request()->get('order_id')))) {
+                $fully_apply = 0;
+            }
 
             $data = (new Consignment)->fill(request()->all());
+            $data->fully_apply = $fully_apply;
             $data->created_by = Auth::id();
             $data->save();
 
@@ -51,15 +58,34 @@ trait ConsignmentTrait
         $isAdmin = Auth::user()->isAdmin();
         if ($isAdmin) {
             $data = Consignment::with([
-                'order.client',
+                'order.client.details',
                 'detail.order.client'
-            ])
-            ->orderBy('id', 'desc')
-            ->paginate(request()->get('lenght'));
+            ]);
         } else {
             $data = self::getAllConsignmentsById();
         }
-        return $data;
+
+        if (request()->filled('name')) {
+            $data->whereHas('order.client.details', function(Builder $query) {
+                $query->where('name','like','%'.request()->get('name').'%')
+                ->orWhere('name_company','like','%'.request()->get('name').'%');
+            });
+        }
+
+        if (request()->filled('consignment_number')) {
+            $data->where('consignment_number', 'like','%'.request()->get('consignment_number').'%');
+        }
+
+        if (request()->filled('fully_apply')) {
+            $data->where('fully_apply', request()->get('fully_apply'));
+        }
+
+        if (request()->filled('start_date') && request()->filled('end_date')) {
+            $data->whereBetween('created_at',[request()->get('start_date'), request()->get('end_date')]);
+        }
+
+        return $data->orderBy('id', 'desc')
+            ->paginate(request()->get('lenght'));
     }
 
     public static function getAllConsignmentsById()

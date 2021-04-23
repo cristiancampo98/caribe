@@ -29,6 +29,11 @@ class OrderDetail extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public function consignment()
+    {
+        return $this->belongsTo(Consignment::class);
+    }
+
     public function remissions()
     {
         return  $this->hasMany(Remission::class, 'order_details_id');

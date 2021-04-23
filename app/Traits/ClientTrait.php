@@ -153,9 +153,13 @@ trait ClientTrait
     {
     	$clients =  User::join('user_details','users.id','user_details.user_id')
     	->where('name','like','%'. request()->get('q').'%')
+    	->where('users.status',1)
     	->orWhere('name_company','like','%'. request()->get('q').'%')
+    	->where('users.status',1)
     	->without('roles')
-    	->with('vehicles')
+    	->with(['vehicles' => function ($query) {
+    		$query->where('state',1);
+    	}])
     	->has('orders')
     	->select('users.id','users.name','user_details.name_company')
 		->get();

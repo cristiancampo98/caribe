@@ -26,6 +26,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserStorageController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleStorageController;
+use App\Http\Controllers\VehicleUserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -71,6 +72,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'user' => UserController::class,
         'client' => ClientController::class,
         'vehicle' => VehicleController::class,
+        'vehicle-user' => VehicleUserController::class,
         'consignment' => ConsignmentController::class
     ]);
     Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);

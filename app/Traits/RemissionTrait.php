@@ -30,6 +30,7 @@ trait RemissionTrait
         $remissions = Remission::with(
             'orderDetail.order',
             'orderDetail.product',
+            'orderDetail.consignment',
             'creator',
             'carrier.client',
             'carrier.vehicle'
@@ -80,6 +81,7 @@ trait RemissionTrait
                 'orderDetail.order.client',
                 'orderDetail.product',
                 'orderDetail.remissions',
+                'orderDetail.consignment',
                 'creator',
                 'carrier.vehicle'
             )

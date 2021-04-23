@@ -51,8 +51,8 @@
                                 No. {{item.order_detail.order_id}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.order_detail.consignment_id
-                                    ? item.order_detail.consignment_id
+                                {{item.order_detail.consignment
+                                    ? item.order_detail.consignment.consignment_number
                                     : 'Pendiente '}}
                             </td-responsive-component>
                             <td-responsive-component>

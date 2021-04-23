@@ -44,8 +44,8 @@
                             label="name" 
                             :filterable="false" 
                             :options="clients" 
-                            v-model="form.user_id"
-                            :reduce= "clients => clients.id"
+                            v-model="form.users_id"
+                            multiple
                             @search="onSearch">
                                 <template slot="no-options">
                                   Escribe el nombre de un cliente o empresa
@@ -62,7 +62,7 @@
                                   </div>
                                 </template>
                             </v-select>
-                            <jet-input-error :message="form.errors.user_id" class="mt-2" />
+                            <jet-input-error :message="form.errors.users_id" class="mt-2" />
                         </div>
                     </template>
                     <template #actions>
@@ -93,7 +93,7 @@
                 form: this.$inertia.form({
                     license_plate: null,
                     brand: null,
-                    user_id: null,
+                    users_id: [],
                     state: 1,
                     photo_plate: null,
                     index: true

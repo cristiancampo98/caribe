@@ -25,7 +25,8 @@ class StoreVehicleRequest extends FormRequest
     {
         return [
             'license_plate' => 'required|string|max:10',
-            'user_id'       =>  'required|numeric'
+            'user_id'       =>  'required_if:users_id,null|numeric',
+            'users_id'       =>  'required_if:user_id,null|array',
         ];
     }
 
@@ -33,7 +34,8 @@ class StoreVehicleRequest extends FormRequest
     {
         return[
             'license_plate.required'     =>  'La placa es requerida',
-            'user_id.required'           =>  'El cliente es requerido'
+            'user_id.required_if'           =>  'El cliente es requerido',
+            'users_id.required_if'       =>  'Debes seleccionar al menos un cliente',
         ];
     }
 }

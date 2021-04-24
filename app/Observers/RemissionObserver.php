@@ -20,6 +20,9 @@ class RemissionObserver
             
             $remission->orderDetail->status = 0;
             $remission->orderDetail->save();
+        } else {
+            $remission->orderDetail->status = 1;
+            $remission->orderDetail->save();
         }
     }
 

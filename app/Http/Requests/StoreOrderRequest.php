@@ -49,7 +49,7 @@ class StoreOrderRequest extends FormRequest
             'city.required' => 'La ciudad es obligatoria',
             'order_details.required' => 'Seleccione un producto',
             'order_details.array' => 'Debes seleccionar uno o más productos',
-            'order_details.*.quantity.max' => 'La cantidad del pedido no puede ser mayor a 999.9',
+            'order_details.*.quantity.max' => 'La cantidad de cada producto debe ser menor a 999.9',
             'order_details.*.quantity.min' => 'La cantidad del pedido no puede ser menor a  1',
             'order_details.*.quantity.numeric' => 'La cantidad del pedido debe ser númerica',
             'contract.required_if' => 'El contrato es requerido porque el tipo de pago es crédito',

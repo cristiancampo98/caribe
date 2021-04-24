@@ -29,7 +29,10 @@ class OrderDetailObserver
                 ->where('status',1)
                 ->get();
 
-        if (! count($active)) {
+        if (count($active)) {
+            $orderDetail->order->status = 'activo';
+            $orderDetail->order->save();
+        } else {
             $orderDetail->order->status = 'finalizado';
             $orderDetail->order->save();
         }

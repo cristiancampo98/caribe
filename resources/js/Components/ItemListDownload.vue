@@ -25,7 +25,7 @@
 						        icon
 						        border
 						        color="success"
-						       :href="`/storage/${item.path}`"
+						       :href="`/public/${item.path}`"
 						        blank
 						      	>
 							        <i class='bx bxs-show' ></i>

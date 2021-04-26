@@ -193,10 +193,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [PermissionStorageController::class, 'getPaginateAllPermissions']
     );
 
-    // End TODO API
+    Route::get('clear-cache', function() {
+        Artisan::call('config:cache');
+        return redirect()->route('dashboard')->with('success','Cache renovado');
+    });
+
+    Route::get('link-storage', function () {
+        Artisan::call('storage:link');
+        return redirect()->route('dashboard')->with('success','Enlace generado');
+    });
 });
 
-Route::get('artisanCall', function () {
-    Artisan::call('config:cache');
-    Artisan::call('storage:link');
-});
+

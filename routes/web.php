@@ -194,13 +194,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
 
     Route::get('clear-cache', function() {
-        Artisan::call('config:cache');
-        return redirect()->route('dashboard')->with('success','Cache renovado');
-    });
-
-    Route::get('link-storage', function () {
-        Artisan::call('storage:link');
-        return redirect()->route('dashboard')->with('success','Enlace generado');
+        Artisan::call('cache:clear');
+        echo 'ejecutado';
     });
 });
 

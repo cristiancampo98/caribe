@@ -9,6 +9,7 @@ class ItemSeeder extends Seeder
 {
 	protected $items = [
 		
+		['Limites planta','limits'],
 		['Menu','menu.index'],
 		['Permisos','permission.index'],
 		['Roles','role.index'],

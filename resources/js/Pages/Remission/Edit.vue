@@ -65,7 +65,7 @@
 								</div>
 			            </div>
 			            <!-- Vehicle -->
-			            <div class="col-span-6 lg:col-span-4">
+			            <div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="vehicle_users_id" value="Vehículo" />
 			            	<v-select v-if="vehicles.length"
 			            	class="lg:w-72 sm:w-60"
@@ -89,7 +89,12 @@
 							</v-select>
 							<span v-else>No hay vehículos</span>
 			            </div>
-			            <div class="col-span-6 lg:col-span-1">
+			            <div class="col-span-6 lg:col-span-2 mt-4">
+			            	<inertia-link :href="route('vehicle.edit',remission.carrier.vehicle_id)" class="block underline hover:text-blue-500">Editar datos vehículo</inertia-link>
+			            	<inertia-link :href="route('vehicle-user.edit',remission.carrier.vehicle_id)" class="block underline hover:text-blue-500">Editar datos conductor </inertia-link>
+			            	
+			            </div>
+			            <div class="col-span-6 lg:col-span-2">
 				            <label for="firm" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 				        		<span>Subir firma</span>
 				        		<input type="file"  id="firm"  ref="firm" @change="uploadFirm" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
@@ -99,7 +104,7 @@
 				        	<span v-if="uploadedFirm" class="ml-4 text-green-500">¡Hecho!</span>
 			            	
 			            </div>
-			            <div class="col-span-6 lg:col-span-1">
+			            <div class="col-span-6 lg:col-span-2">
 			            	<label for="plate" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 				        		<span>Subir foto placa</span>
 				        		<input type="file"  id="plate"  ref="plate" @change="uploadPlate" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".jpg, .png" />
@@ -114,6 +119,14 @@
 				        	</label>
 				        	<p class="mt-2 text-xs text-gray-500">JPG, PNG</p>
 				        	<span v-if="uploadedDelivery" class="ml-4 text-green-500">¡Hecho!</span>
+			            </div>
+			            <div class="col-span-6 lg:col-span-2" 
+			            v-if="remission.files.length" 
+			            v-for="item in remission.files">
+			            	<vue-image
+			            	:title="item.filename"
+			            	:path="item.path"
+			            	:description="item.reason"></vue-image>
 			            </div>
 			              
 			        </template>
@@ -140,7 +153,11 @@
 </template>
 <script>
 	import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
+	import VueImage from '@/Components/VueImage'
 	export default {
+		components: {
+			VueImage
+		},
 		mixins: [FormComponentMixin],
     	props: {
     		remission: {

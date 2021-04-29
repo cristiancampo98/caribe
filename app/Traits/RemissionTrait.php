@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Remission;
 use App\Traits\MultimediaTrait;
 use App\Traits\Remission\Query\QueryRemissionTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -28,25 +29,50 @@ trait RemissionTrait
     {
 
         $remissions = Remission::with(
-            'orderDetail.order',
+            'orderDetail.order.client.details',
             'orderDetail.product',
             'orderDetail.consignment',
             'creator',
             'carrier.client',
             'carrier.vehicle'
-        )
-            ->orderBy('id', 'desc')
-            ->paginate(request()->get('lenght'));
+        );
 
-        return self::remissionsAreSigned($remissions);
+        if (request()->filled('name')) {
+            $remissions->whereHas('orderDetail.order.client.details', function(Builder $query) {
+                $query->where('name','like','%'.request()->get('name').'%')
+                ->orWhere('name_company','like','%'.request()->get('name').'%');
+            });
+        }
+
+        if (request()->filled('order_id')) {
+            $remissions->whereHas('orderDetail.order', function(Builder $query) {
+                $query->where('id','like','%'.request()->get('order_id').'%');
+            });
+        }
+
+        if (request()->filled('start_date') && request()->filled('end_date')) {
+            $remissions->whereBetween('created_at',[request()->get('start_date'), request()->get('end_date')]);
+        }
+
+        if (request()->filled('isSigned')) {
+            $remissions->where('isSigned', request()->get('isSigned'));
+        }
+
+        $data = $remissions->orderBy('id', 'desc')->paginate(request()->get('lenght'));
+
+        return self::remissionsAreSigned($data);
+
+        
     }
 
     public static function remissionsAreSigned($remissions)
     {
         foreach ($remissions as $value) {
             $firm = self::getMultimediaByParams('remission', 'remission_id', $value->id, 'remission_firm');
-            $isSigned = count($firm);
-            $value->isSigned = $isSigned;
+            if (count($firm)) {
+                $value->isSigned = 1;
+                $value->save();
+            }
         }
         return $remissions;
 
@@ -86,6 +112,7 @@ trait RemissionTrait
                 'carrier.vehicle'
             )
             ->first();
+        $data->files = self::getMultimediaFilesByRemissionTrait($id);
         $data->orderDetail->limit = $data->delivered + $data->orderDetail->product->limit_day - self::getRemissionByProductTrait($data->orderDetail->product_id);
         return $data;
     }

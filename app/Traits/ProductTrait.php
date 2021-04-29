@@ -49,7 +49,7 @@ trait ProductTrait
 	{
 		$product = self::findProduct($id);
 
-		if (count($data['photos'])) {
+		if (isset($data['photos']) && count($data['photos'])) {
 
 			self::storeMultimedia(
 				$data['photos'], 

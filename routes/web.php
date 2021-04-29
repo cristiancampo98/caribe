@@ -100,6 +100,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [ProductStorageController::class, 'getMultimediaFilesByProduct']
     );
 
+    Route::get('editProductionLimits',
+        [ProductStorageController::class, 'editProductionLimits']
+    )->name('limit');
+
+    Route::put('updateLimits/{id}',
+        [ProductStorageController::class, 'updateLimits']
+    )->name('updateLimits');
+
     Route::get('getMultimediaFilesByClient/{id}/client',
         [ClientStorageController::class, 'getMultimediaFilesByClient']
     );
@@ -193,9 +201,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [PermissionStorageController::class, 'getPaginateAllPermissions']
     );
 
-    Route::get('clear-cache', function() {
-        Artisan::call('cache:clear');
-        echo 'ejecutado';
+    Route::get('config-clear', function() {
+        Artisan::call('config:clear');
+        echo '<a href='. url('dashboard') .'>Se ha limpiado la configuración, volver al sistema.</a>';
     });
 });
 

@@ -102,7 +102,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::get('editProductionLimits',
         [ProductStorageController::class, 'editProductionLimits']
-    )->name('limit');
+    )->name('limits');
 
     Route::put('updateLimits/{id}',
         [ProductStorageController::class, 'updateLimits']

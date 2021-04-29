@@ -33,7 +33,7 @@ class isCredit implements Rule
     {
         if ($this->type_pay && !isset($this->consignment_number)) {
 
-            if (request()->hasFile('contract') && request()->hasFile('purchaseOrder')) {
+            if (request()->hasFile('contract') || request()->hasFile('purchaseOrder')) {
                 return true;
             }
             return false;
@@ -48,6 +48,6 @@ class isCredit implements Rule
      */
     public function message()
     {
-        return 'Los documentos son requeridos porque el tipo de pago es a crédito y porque no se esta ingresando una consignación.';
+        return 'Si  no se ingresa una consignación es requerido algun documento: Orden de Compra O el Contrato para continuar con el proceso de pedido';
     }
 }

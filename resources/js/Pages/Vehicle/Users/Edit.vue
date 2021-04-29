@@ -24,6 +24,9 @@
                     		<jet-input type="text" class="mt-1 block w-full" v-model="item.carrier" required/>
                     	</td-responsive-component>
                     	<td-responsive-component>
+                    		<jet-input type="text" class="mt-1 block w-full" v-model="item.identification_number" required/>
+                    	</td-responsive-component>
+                    	<td-responsive-component>
                     		<button type="button" @click="updateVehicleUser(item)" class="border-2 border-green-500 hover:bg-green-500 hover:text-white p-1 rounded-md">Actualizar</button>
                     	</td-responsive-component>
                     </tr>
@@ -64,7 +67,7 @@
 		},
 		data() {
 			return {
-				titles: ['Cliente/Empresa','Vehiculo','Marca','Conductor','Opciones']
+				titles: ['Cliente/Empresa','Vehiculo','Marca','Conductor','Número de identificación','Opciones']
 			}
 		},
 		methods: {
@@ -74,7 +77,8 @@
 					id: item.id,
 					user_id: item.user_id,
 					vehicle_id: item.vehicle_id,
-					carrier: item.carrier
+					carrier: item.carrier,
+					identification_number: item.identification_number
 				}
 				axios.put(`/vehicle-user/${data.id}`, data)
 				.then( res => {

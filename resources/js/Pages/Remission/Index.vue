@@ -21,9 +21,9 @@
             :name="`${document_name}.xls`">
                 {{ btn_name_excel }}
             </json-excel>
-            <div class="mt-8" v-if="options.length">
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-3">
+            <div class="mt-8" >
+                <div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-cols-min items-end">
+                    <div>
                         <label for="lenght">Paginar: </label>
                         <v-select
                         id="lenght"
@@ -33,8 +33,52 @@
                         @input="getPaginate"
                         :clearable="false"></v-select>
                     </div>
+                    <div>
+                        <label for="lenght">Empresa o cliente: </label>
+                        <input type="text"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.name">
+                    </div>
+                    <div>
+                        <label for="lenght">Pedido: </label>
+                        <input type="number"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.order_id">
+                    </div>
+                    <div>
+                        <label for="lenght">Firmado: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-max bg-white"
+                        v-model="valueParams.isSigned"
+                        :options="params.isSigned"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha inicio: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.start_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha fin: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.end_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <button type="button" class="bg-red-500 text-white py-1 px-2 rounded-md" @click="clean">
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
-                 <table-responsive-component>
+                 <table-responsive-component v-if="options.length">
                     <template #title>
                         <tr>
                             <th-responsive-component 
@@ -48,6 +92,12 @@
                                 {{item.id}}
                             </td-responsive-component>
                             <td-responsive-component>
+                                {{item.order_detail.order.client.details.name_company}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.order_detail.order.client.name}}
+                            </td-responsive-component>
+                            <td-responsive-component>
                                 No. {{item.order_detail.order_id}}
                             </td-responsive-component>
                             <td-responsive-component>
@@ -59,14 +109,13 @@
                                 {{item.order_detail.product.name}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.delivered}}
-                                m3
-                            </td-responsive-component>
-                            <td-responsive-component>
                                 {{item.order_detail.quantity}}
                                 m3
                             </td-responsive-component>
-                           
+                            <td-responsive-component>
+                                {{item.delivered}}
+                                m3
+                            </td-responsive-component>
                             <td-responsive-component>
                                 <ul>
                                     <li >Placa: 
@@ -113,11 +162,13 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <div v-else>No hay datos</div>
                 <paginate-component 
+                v-if="options.length"
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
-            <div v-else>No hay datos</div>
+            
         </div>
     </admin-layout>
 </template>
@@ -132,11 +183,13 @@
         },
         data () {
             return {
-                titles: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Firmado','Fecha','Opciones'],
+                titles: ['#','Empresa','Cliente','Pedido','Consignación','Producto','Cantidad','Entregado','Vehiculo','Firmado','Fecha','Opciones'],
                 document_name: 'Listado pagina de remisiones',
-                columns: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Firmado','Fecha'],
+                columns: ['#','Empresa','Cliente','Pedido','Consignación','Producto','Cantidad','Entregado','Vehiculo','Firmado','Fecha'],
                 json_fields: {
                     '#' : 'id',
+                    Empresa : 'order_detail.order.client.details.name_company',
+                    Cliente : 'order_detail.order.client.name',
                     Pedido : 'order_detail.order_id',
                     'Consignación': {
                         field: 'order_detail.consignment_id',
@@ -145,14 +198,14 @@
                         }
                     },
                     Producto: 'order_detail.product.name',
-                    Entregado: {
-                        field: 'delivered',
+                    Cantidad: {
+                        field: 'order_detail.quantity',
                         callback: (value) => {
                             return `${value} m3`
                         }
                     },
-                    Cantidad: {
-                        field: 'order_detail.quantity',
+                    Entregado: {
+                        field: 'delivered',
                         callback: (value) => {
                             return `${value} m3`
                         }
@@ -179,6 +232,12 @@
                     {name: 'Ver', route:'remission.show'},
                     {name: 'Editar', route:'remission.edit'},
                 ],
+                params: {
+                    isSigned: [
+                        {label:'Si',value: 1},
+                        {label:'No',value: 0},
+                    ]
+                },
             }
         },
         methods: {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Traits\ProductTrait;
 use Faker\Guesser\Name;
 use Illuminate\Http\Request;
@@ -86,13 +87,8 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
-       $this->validate($request,[
-
-        'name' => 'required|string|max:100|unique:products,name,'.$id
-
-       ]);
        $response = self::updateProduct($id, $request);
 
        return $response ? redirect()->route('product.index')

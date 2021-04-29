@@ -11,7 +11,7 @@ class VehicleUser extends Model
 
     protected $table = 'vehicle_users';
 
-    protected $fillable = ['user_id','vehicle_id','carrier'];
+    protected $fillable = ['user_id','vehicle_id','carrier','identification_number'];
 
     public function vehicle()
     {

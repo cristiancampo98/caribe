@@ -92,7 +92,8 @@ trait QueryOrderTrait
             $orders = Order::with([
                 'client',
                 'creator',
-                'remissions'
+                'remissions',
+                'consignments'
             ]);
 
             if (request()->filled('name')) {

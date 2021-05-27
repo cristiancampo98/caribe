@@ -149,10 +149,10 @@
                                             Activar
                                         </button>
                                         <button type="button"
-                                        v-if="item.status == 'activo' && $page.props.isAdmin"
+                                        v-if="item.status == 'activo' && $page.props.isAdmin && !item.consignments.length"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         @click="openModalConsignment(item)">
-                                            Agregar Consignación
+                                            Agregar Consignación total
                                         </button>
                                         <button type="button"
                                         v-if="!item.remissions.length && item.status != 'cancelado'"

@@ -48,6 +48,7 @@
 			            <div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="delivered" value="Entregar"/>
 			               	<jet-input type="number" class="mt-1 block w-full"
+			               		:disabled="form.files"
 	                        	id="delivered"
 	                        	step="0.1"
 	                        	min="0"
@@ -73,6 +74,7 @@
 					        :options="vehicles" 
 					        v-model="form.vehicle_users_id"
 					        :reduce= "vehicles => vehicles.pivot.id"
+					        :disabled="form.files"
 					        >
 						        <template slot="option" slot-scope="option">
 							      <div class="d-center">
@@ -90,8 +92,8 @@
 							<span v-else>No hay vehículos</span>
 			            </div>
 			            <div class="col-span-6 lg:col-span-2 mt-4">
-			            	<inertia-link :href="route('vehicle.edit',remission.carrier.vehicle_id)" class="block underline hover:text-blue-500">Editar datos vehículo</inertia-link>
-			            	<inertia-link :href="route('vehicle-user.edit',remission.carrier.vehicle_id)" class="block underline hover:text-blue-500">Editar datos conductor </inertia-link>
+			            	<a target="_blank" :href="route('vehicle.edit',remission.carrier.vehicle_id)" class="block underline hover:text-blue-500">Editar datos vehículo</a>
+			            	<a target="_blank" :href="route('vehicle-user.edit',remission.carrier.vehicle_id)" class="block underline hover:text-blue-500">Editar datos conductor </a>
 			            	
 			            </div>
 			            <div class="col-span-6 lg:col-span-2">
@@ -142,7 +144,7 @@
 			        </template>
 			    </jet-form-section>
 			    <div class="mt-8 relative">
-	            	<iframe src="http://szimek.github.io/signature_pad/" class="inset-0 w-full h-screen"></iframe>
+	            	<iframe src="https://szimek.github.io/signature_pad/" class="inset-0 w-full h-screen"></iframe>
 	            </div>	
             </div>
         </div>
@@ -180,7 +182,8 @@
                     vehicle_users_id: this.remission.vehicle_users_id,
                     firm: null,
             		plate: null,
-            		delivery: null
+            		delivery: null,
+            		files: this.remission.files.length
                 }),
     		}
     	},

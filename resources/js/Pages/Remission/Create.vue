@@ -97,6 +97,7 @@
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	<jet-input type="number" class="mt-4 block w-full"
+	                        	v-if="fullyDispatched(item)" 
 	                        	:max="getLimitUp(item)"
 	                        	step="0.1"
 	                        	min="0"
@@ -115,7 +116,7 @@
 	                        	</div>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
-	                        	<v-select v-if="vehicles.length"
+	                        	<v-select v-if="vehicles.length && fullyDispatched(item)" 
 	                        	class="w-52"
 						        label="license_plate" 
 						        :options="vehicles" 
@@ -135,7 +136,10 @@
 								      </div>
 								    </template>
 								</v-select>
-								<span v-else>No hay vehículos</span>
+								<span v-else>
+									<p v-if="!vehicles.length">No hay vehículos</p>
+									<p v-if="!fullyDispatched(item)">N/A</p>
+								</span>
 	                        </td-responsive-component>
 	                        <td-responsive-component>
 	                        	{{item.order.shipping_address}}
@@ -262,7 +266,7 @@
                 	'Entregado',
                 	'Remisionar',
                 	'Lim. planta',
-                	'C. disponible',
+                	'Pendiente',
                 	'Vehículo',
                 	'Dirección Entrega',
                 ],
@@ -338,9 +342,9 @@
 				  		this.uploadedImagen = false;
 				  	},
 				  	onFinish: () => {
-				  		this.getStatusFlash();
 				  		this.endLoading();
 				  		this.remi.reset()
+
 				  	},
                 });
             },

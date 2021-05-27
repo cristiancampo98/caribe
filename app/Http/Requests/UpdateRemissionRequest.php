@@ -24,13 +24,24 @@ class UpdateRemissionRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'delivered' => ['required','numeric','min:0', new LimitDeliveryUpdate($this->route('remission'))],
-            'vehicle_users_id' => 'required|exists:vehicles,id',
-            'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'plate' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-            'delivery' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-        ];
+        if ($this->get('files')) {
+
+            return [
+                'delivered' => ['required','numeric','min:0', new LimitDeliveryUpdate($this->route('remission'))],
+                'vehicle_users_id' => 'required|exists:vehicles,id',
+            ];
+        } else {
+            
+            return [
+                'delivered' => ['required','numeric','min:0', new LimitDeliveryUpdate($this->route('remission'))],
+                'vehicle_users_id' => 'required|exists:vehicles,id',
+                'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
+                'plate' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+                'delivery' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            ];
+
+        }
+        
     }
 
     public function messages()

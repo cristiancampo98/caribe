@@ -107,6 +107,13 @@ trait ClientTrait
         return RoleUser::where('role_id',3)->get();
     }
 
+    public static function getAllUsersClient()
+    {
+    	return User::whereHas('roles', function(Builder $query) {
+    		$query->where('role_id', 3);
+    	})->get();
+    }
+
 	public static function getAllClientsPaginate(){
 		$user = User::whereHas('roles',function(Builder $query) {
 			$query->where('role_id', 3);

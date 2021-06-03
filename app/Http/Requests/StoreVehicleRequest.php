@@ -23,19 +23,28 @@ class StoreVehicleRequest extends FormRequest
      */
     public function rules()
     {
+        //if the form in coming from vehicle's module
+        if ($this->get('index')) {
+            return [
+                'license_plate' => 'required|unique:vehicles,license_plate|string|max:10',
+                'users_id'       =>  'required|array',
+            ];    
+        }
+
         return [
             'license_plate' => 'required|string|max:10',
             'user_id'       =>  'required_if:users_id,null|numeric',
-            'users_id'       =>  'required_if:user_id,null|array',
         ];
     }
 
     public function messages()
     {
         return[
-            'license_plate.required'     =>  'La placa es requerida',
+            'license_plate.required'     =>  'La placa del vehículo es requerida',
+            'license_plate.unique'     =>  'La placa del vehículo ya ha sido registrada',
+            'license_plate.max'     =>  'La placa del vehículo no puede exceder 10 carácteres',
             'user_id.required_if'           =>  'El cliente es requerido',
-            'users_id.required_if'       =>  'Debes seleccionar al menos un cliente',
+            'users_id.required'       =>  'Debes seleccionar al menos un cliente',
         ];
     }
 }

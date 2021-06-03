@@ -19,7 +19,7 @@ class SecurityController extends Controller
     public function assignPermission($id)
     {
     	$role = $this->role->getPermissionsByRol($id);
-    	$permissions = Permission::all();
+    	$permissions = Permission::all()->sortBy('controller')->groupBy('controller');
     	return inertia('Security/AssignPermission', [
     		'permissions' => $permissions, 
     		'role' => $role

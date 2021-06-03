@@ -81,8 +81,9 @@
     	mixins: [FormComponentMixin],
     	props: {
     		vehicle: {
-    			type: Object
-    		}
+    			type: Object,
+    			required: true
+    		},
     	},
     	data(){
             return {
@@ -95,7 +96,6 @@
             }
         },
         mounted(){
-
         },
         methods: {
             updateVehicle(){
@@ -113,7 +113,7 @@
                         this.endLoading();
                     },
                 });
-            }
+            },
         }
 
     }

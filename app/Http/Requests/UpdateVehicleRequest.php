@@ -24,8 +24,9 @@ class UpdateVehicleRequest extends FormRequest
     public function rules()
     {
         return [
-            'license_plate' => 'required|string|max:10',
-            'user_id'       =>  'required|numeric'
+            'license_plate' => 'required|string|max:10|
+                                unique:vehicles,license_plate,'. $this->route('vehicle')->id,
+            'users_id' => 'required|array'
         ];
     }
 

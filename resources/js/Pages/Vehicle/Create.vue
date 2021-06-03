@@ -41,19 +41,19 @@
                         <div class="col-span-6 lg:col-span-4">
                             <jet-label for="user_id" value="Cliente" />
                             <v-select 
-                            label="name" 
-                            :filterable="false" 
-                            :options="clients" 
+                            label="name"
+                            id="user_id"
+                            :options="users" 
+                            :reduce="users =>users.id"
                             v-model="form.users_id"
-                            multiple
-                            @search="onSearch">
+                            multiple>
                                 <template slot="no-options">
                                   Escribe el nombre de un cliente o empresa
                                 </template>
                                 <template slot="option" slot-scope="option">
                                   <div class="d-center">
                                     <p> Nombre: {{ option.name }}</p>
-                                    <cite>Empresa: {{ option.name_company }}</cite>
+                                    <cite>Empresa: {{ option.details.name_company }}</cite>
                                     </div>
                                 </template>
                                 <template slot="selected-option" slot-scope="option">
@@ -86,9 +86,14 @@
     export default {
        
         mixins: [FormComponentMixin],
+        props: {
+            users: {
+                type: Array,
+                required: true
+            }
+        },
         data(){
             return {
-                clients: [],
                 uploadedImagen: false,
                 form: this.$inertia.form({
                     license_plate: null,
@@ -120,20 +125,6 @@
                     },
                 });
             },
-            onSearch(search, loading) {
-              if(search.length >= 3) {
-                loading(true);
-                this.search(loading, search, this);
-              }
-            },
-            search: _.debounce((loading, search, vm) => {
-              axios.get(
-                `/getClients/client?q=${search}`
-              ).then(res => {
-                vm.clients = res.data;
-                loading(false);
-              });
-            }, 350),
             uploadImagen(){
                 this.uploadedImagen = true;
             },

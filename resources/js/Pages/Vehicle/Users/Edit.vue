@@ -27,7 +27,12 @@
                     		<jet-input type="text" class="mt-1 block w-full" v-model="item.identification_number" required/>
                     	</td-responsive-component>
                     	<td-responsive-component>
-                    		<button type="button" @click="updateVehicleUser(item)" class="border-2 border-green-500 hover:bg-green-500 hover:text-white p-1 rounded-md">Actualizar</button>
+                    		<button type="button" @click="updateVehicleUser(item)" class="border-2 border-green-500 hover:bg-green-500  p-1 rounded-md">
+                    			<img src="/img/clipboard-check.svg">
+                    		</button>
+                    		<button type="button" @click="updateVehicleUser(item)" class="border-2 border-red-500 hover:bg-red-500  p-1 rounded-md">
+                    			<img src="/img/ban.svg">
+                    		</button>
                     	</td-responsive-component>
                     </tr>
                 </template>
@@ -57,11 +62,11 @@
 		},
 		props: {
 			data: {
-				type: Object,
+				type: Array,
 				required: true
 			},
 			clients: {
-				type: Object,
+				type: Array,
 				required: true
 			},
 		},

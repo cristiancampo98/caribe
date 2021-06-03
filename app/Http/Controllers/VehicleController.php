@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Vehicle;
+use App\Traits\ClientTrait;
 use App\Traits\VehicleTrait;
 use App\Traits\Vehicle\Store\StoreVehicleTrait;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class VehicleController extends Controller
 {
     use VehicleTrait;
     use StoreVehicleTrait;
+    use ClientTrait;
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +39,11 @@ class VehicleController extends Controller
     {
         Gate::authorize('haveaccess');
 
-        return inertia('Vehicle/Create');
+        $users = self::getAllUsersClient();
+
+        return inertia('Vehicle/Create', [
+            'users' => $users
+        ]);
     }
 
     /**
@@ -94,6 +100,8 @@ class VehicleController extends Controller
     {
         Gate::authorize('haveaccess');
 
+        $users = self::getAllUsersClient();
+
         return inertia('Vehicle/Edit', [
             'vehicle' => $vehicle
         ]);
@@ -108,11 +116,18 @@ class VehicleController extends Controller
      */
     public function update(UpdateVehicleRequest $request, Vehicle $vehicle)
     {
+        try {
+            $vehicle->users()->sync($request->users_id);
+        } catch (Exception $e) {
+            dd($e);
+        }
         $vehicle = $vehicle->update($request->all());
 
         if ($vehicle) {
+
             return redirect()->route('vehicle.index')->with('success','El vehículo se actualizó con éxito');
         }
+
         return redirect()->back()->with('error','Sucedió un error,el vehículo no se actualizó con éxito');
     }
 

@@ -15,7 +15,7 @@ class CreateRemissionsTable extends Migration
     {
         Schema::create('remissions', function (Blueprint $table) {
             $table->id();
-            $table->decimal('delivered',4,1);
+            $table->decimal('delivered',7,3);
             $table->foreignId('order_details_id')->constrained();
             $table->foreignId('vehicle_users_id')->nullable()->constrained();
             $table->foreignId('created_by')->constrained('users');

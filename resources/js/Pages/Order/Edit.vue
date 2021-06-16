@@ -141,7 +141,7 @@
 			            <!-- quantity -->
 			             <div class="col-span-6 lg:col-span-1" v-if="!order.order_details[0].remissions.length">
 			                <jet-label for="quantity" value="Cantidad en m3" />
-			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" step="0.1"/>
+			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" step="0.001"/>
 			            </div>
 			            <div class="col-span-6 lg:col-span-1" v-if="!order.order_details[0].remissions.length">
 			            	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">

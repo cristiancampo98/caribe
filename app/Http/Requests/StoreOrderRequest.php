@@ -29,7 +29,7 @@ class StoreOrderRequest extends FormRequest
             'shipping_address' => 'required|string|max:100' ,
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1',
-            'order_details.*.quantity' => 'numeric|max:999.9|min:1',
+            'order_details.*.quantity' => 'numeric|max:9999.999|min:1',
             'order_id' => 'nullable|numeric',
             'type_pay' => [
                 new IsCredit(
@@ -49,7 +49,7 @@ class StoreOrderRequest extends FormRequest
             'city.required' => 'La ciudad es obligatoria',
             'order_details.required' => 'Seleccione un producto',
             'order_details.array' => 'Debes seleccionar uno o más productos',
-            'order_details.*.quantity.max' => 'La cantidad de cada producto debe ser menor a 999.9',
+            'order_details.*.quantity.max' => 'La cantidad de cada producto debe ser menor a 9999.999',
             'order_details.*.quantity.min' => 'La cantidad del pedido no puede ser menor a  1',
             'order_details.*.quantity.numeric' => 'La cantidad del pedido debe ser númerica',
             'contract.required_if' => 'El contrato es requerido porque el tipo de pago es crédito',

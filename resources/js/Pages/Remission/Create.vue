@@ -99,7 +99,7 @@
 	                        	<jet-input type="number" class="mt-4 block w-full"
 	                        	v-if="fullyDispatched(item)" 
 	                        	:max="getLimitUp(item)"
-	                        	step="0.1"
+	                        	step="0.001"
 	                        	min="0"
 	                        	@change.native="validateQuantity(item)"
 	                        	v-model.number="item.cantidad"/>

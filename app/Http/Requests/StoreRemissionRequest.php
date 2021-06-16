@@ -25,7 +25,7 @@ class StoreRemissionRequest extends FormRequest
     public function rules()
     {
         return [
-            'delivered' => ['required','numeric','min:0','max:999.9',new LimitDeliveryStore($this->order_details_id)],
+            'delivered' => ['required','numeric','min:0','max:9999.999',new LimitDeliveryStore($this->order_details_id)],
             'order_details_id' => 'required|numeric|min:1',
             'vehicle_users_id' => 'required|numeric|min:1'
         ];
@@ -36,7 +36,7 @@ class StoreRemissionRequest extends FormRequest
         return[
             'delivered.required' => 'La cantidad entregada es requerida',
             'delivered.min' => 'El valor mínimo es 0',
-            'delivered.max' => 'El valor máximo es 999.9',
+            'delivered.max' => 'El valor máximo es 9999.999',
             'order_details_id.required' => 'El detalle de la orden es requerido',
             'vehicle_users_id.required' => 'El vehículo es obligatorio'
         ];

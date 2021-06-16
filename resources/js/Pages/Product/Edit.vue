@@ -37,7 +37,7 @@
                             <jet-label for="cubic_meters" value="= en metros cúbicos" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="cubic_meters"
-                            step="0.1"
+                            step="0.001"
                             min="0"
                             v-model.number="form.cubic_meters"/>
                             <jet-input-error :message="form.errors.cubic_meters" class="mt-2" />
@@ -47,7 +47,7 @@
                             <jet-label for="ton" value="= en toneladas" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="ton"
-                            step="0.1"
+                            step="0.001"
                             min="0"
                             v-model.number="form.ton"/>
                             <jet-input-error :message="form.errors.ton" class="mt-2" />
@@ -57,7 +57,7 @@
                             <jet-label for="limit_day" value="Limite por día" />
                             <jet-input type="number" class="mt-1 block w-full"
                             id="limit_day"
-                            step="0.1"
+                            step="0.001"
                             min="0"
                             v-model.number="form.limit_day"/>
                             <jet-input-error :message="form.errors.limit_day" class="mt-2" />

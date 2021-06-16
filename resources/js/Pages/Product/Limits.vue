@@ -19,7 +19,7 @@
                     <tr v-for="(item, key) in products" :key="key">
                     	<td-responsive-component class="uppercase">{{item.name}}</td-responsive-component>
                     	<td-responsive-component>
-                    		<jet-input type="number" class="mt-1 block w-full" v-model.number="item.limit_day" min="1" max="999.9" required/>
+                    		<jet-input type="number" class="mt-1 block w-full" v-model.number="item.limit_day" min="1" max="999.9" required step="0.001"/>
                     	</td-responsive-component>
                     	<td-responsive-component>
                     		<button type="button" @click="updateLimits(item)" class="border-2 border-green-500 hover:bg-green-500 hover:text-white p-1 rounded-md">Actualizar</button>

@@ -7,7 +7,8 @@
 		<ul class="mb-8" v-if="$page.props.menu">
 			<div v-for="(item, index) in $page.props.menu" 
 			:key="index"
-			class="hover:bg-white px-1 py-0.5 rounded-md" 
+			class="hover:bg-white px-1 py-0.5 rounded-md"
+			:class="route().current(item.slug) ? 'bg-white' : ''" 
 			>
 				<li class="flex   text-gray-900" v-if="item.items.length">
 					
@@ -30,7 +31,7 @@
 	                    <template #content>
 	                        <!-- Account Management -->
 	                        <div class="block px-4 py-2 text-xs text-gray-400">
-	                            Manage Account
+	                            Submenú
 	                        </div>
 
 	                        <jet-dropdown-link v-for="(value, key) in item.items"

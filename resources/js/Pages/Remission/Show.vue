@@ -2,48 +2,92 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-               Consultar cliente
+               Consultar remisión
             </h2>
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <vs-button
+                class="tracking-widest"
+                dark
+                border
+                @click="exportPDF"
+                >
+                    <i class="bx bx-printer"></i> Imprimir
+                </vs-button>
             	<description-list-component>
-            		<template #title>Remission</template>
+            		<template #title>Remisión</template>
             		<template #subtitle>Visualiza la información de la remisión</template>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Empresa </template>
+                        <template #description>
+                            {{remission.order_detail.order.client.details.name_company}}
+                        </template> 
+                    </item-list-component>
             		<item-list-component >
             			<template #attribute>Cliente </template>
             			<template #description>
-            				{{remission.order_detail.order.client.name}}
-            				<br>
-            				{{remission.order_detail.order.client.email}}
+            				{{remission.order_detail.order.client.name}} {{remission.order_detail.order.client.email}}
             			</template>	
             		</item-list-component>
-            		<item-list-component class="bg-gray-100">
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Correo</template>
+                        <template #description>
+                            {{remission.order_detail.order.client.email}}
+                        </template> 
+                    </item-list-component>
+                    <item-list-component>
+                        <template #attribute>Departamento</template>
+                        <template #description>
+                            {{remission.order_detail.order.client.details.deparment}}
+                        </template> 
+                    </item-list-component>
+                    <item-list-component class="bg-gray-100">
+                        <template #attribute>Ciudad</template>
+                        <template #description>
+                            {{remission.order_detail.order.client.details.city}}
+                        </template> 
+                    </item-list-component>
+                    <item-list-component>
+                        <template #attribute>Dirección</template>
+                        <template #description>
+                            {{remission.order_detail.order.client.details.street_address}}
+                        </template> 
+                    </item-list-component>
+                     <item-list-component class="bg-gray-100">
+                        <template #attribute>Telefono</template>
+                        <template #description>
+                            {{remission.order_detail.order.client.details.phones}}
+                        </template> 
+                    </item-list-component>
+            		<item-list-component>
             			<template #attribute>No. Pedido</template>
             			<template #description>{{remission.order_detail.order_id}}</template>
             		</item-list-component>
-            		<item-list-component>
+            		<item-list-component class="bg-gray-100">
             			<template #attribute>Cantidad entregada</template>
             			<template #description>{{remission.delivered}} m3</template>
             		</item-list-component>
-            		<item-list-component class="bg-gray-100">
+            		<item-list-component>
             			<template #attribute>Cantidad del producto</template>
             			<template #description>{{remission.order_detail.quantity}} m3</template>
             		</item-list-component>
-            		<item-list-component >
+            		<item-list-component class="bg-gray-100">
             			<template #attribute>Producto</template>
             			<template #description>{{remission.order_detail.product.name}}</template>	
             		</item-list-component>
-            		<item-list-component class="bg-gray-100">
+            		<item-list-component>
             			<template #attribute>Vehículo</template>
             			<template #description>
             				<ul>
             					<li class="capitalize">Conductor: {{remission.carrier.carrier}}</li>
+                                <li class="capitalize">Identificación: {{remission.carrier.identification_number}}</li>
             					<li>Placa: <span class="uppercase">{{remission.carrier.vehicle.license_plate}}</span></li>
+                                <li>Marca: <span class="uppercase">{{remission.carrier.vehicle.brand}}</span></li>
             				</ul>
             			</template>
             		</item-list-component>
-            		<item-list-component >
+            		<item-list-component class="bg-gray-100">
             			<template #attribute>Remitido por </template>
             			<template #description>{{remission.creator.name}}</template>	
             		</item-list-component>
@@ -113,17 +157,9 @@
             updateNotifications(data){
                 this.status = data;
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
+            exportPDF(){
+                window.print()
             }
-
         }
 
     }

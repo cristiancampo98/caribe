@@ -7,6 +7,7 @@
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
 				<jet-form-section @submitted="storeConsignment">
 			        <template #title>
 			            Información de consignación
@@ -15,36 +16,7 @@
 			            Crea un consignación con la información requerida.
 			        </template>
 			        <template #form>
-
-			            <!-- user id or cliente -->
-			            <div class="col-span-6 lg:col-span-2">
-			                <jet-label for="user_id" value="Consecutivo pedido"/>
-			                <v-select 
-					        label="name" 
-					        class="mt-1"
-					        :filterable="false" 
-					        :options="orders" 
-					        v-model="form.order_id"
-					        :reduce= "orders => orders.id"
-					        @search="onSearch">
-							    <template slot="no-options">
-							      Escribe el consecutivo del pedido
-							    </template>
-							    <template slot="option" slot-scope="option">
-							      <div class="d-center">
-							        <p> Consecutivo: #{{ option.id }}</p>
-							        <cite>Client: {{ option.name }}</cite>
-							        </div>
-							    </template>
-							    <template slot="selected-option" slot-scope="option">
-							      <div class="selected d-center">
-							      	 <p> #{{ option.id }}</p>
-							      </div>
-							    </template>
-							</v-select>
-			                <jet-input-error :message="form.errors.order_id" class="mt-2" />
-			            </div>
-			           	<!--  consignment_number-->
+			        	<!--  consignment_number-->
 			            <div class="col-span-6 lg:col-span-2">
 			            	<jet-label for="consignment_number" value="Consignación" />
 			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment_number" />
@@ -52,14 +24,69 @@
 			            </div>
 			            <!-- imagen -->
 			            <div class="col-span-6 lg:col-span-2">
-			            	<label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="imagen" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir imagen</span>
 			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF JPG PNG</p>
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
 			            	<jet-input-error :message="form.errors.imagen" class="mt-2" />
 			            </div>
-			           
+			        	<div class="col-span-6 lg:col-span-4">
+			        		<client-with-order-component
+			        		@getValueOrderId="setValueOrderId"
+			        		@getDetailsOrder="setDetailsOrder">
+			        		</client-with-order-component>
+			        	</div>
+			        	<div class="col-span-6 lg:col-span-6" v-if="form.order_id">
+			        		<jet-label for="consignment_number">
+		        			 	<div class="flex items-center">
+		        			 		<jet-checkbox v-model="form.fully_apply"/>
+		        			 		<div class="ml-2">
+			                            ¿Esto es una consignación total?
+			                        </div>
+		        			 	</div>
+			        		</jet-label>
+			        		<p class="text-sm text-blue-500 m-1">Si es una consignación parcial, deberás de marcar en la tabla el item que acogido por la consignación. En caso de no ser parcial se vinculará esta consignación a todos los items del pedido.
+			        		</p>
+			        	</div>
+			        	<div class="col-span-6 lg:col-span-6 self-center"
+			        	v-if="details_order.length && !form.fully_apply">
+				        	<div v-if="Object.keys(form.errors).length">
+			            		<ul class="bg-red-500 mt-3 p-2 text-white">
+			            			<li v-for="error in form.errors">
+			            				{{error}}
+			            			</li>
+			            		</ul>
+			            	</div>
+			        		<table-responsive-component>
+				                <template #title>
+				                    <tr>
+				                        <th-responsive-component
+				                        v-for="(title, key) in titles"
+				                        :key="key">{{title}}</th-responsive-component>
+				                        <th-responsive-component></th-responsive-component>
+				                    </tr>
+				                </template>
+				                <template #content>
+				                	 <tr v-for="(item, key) in details_order" :key="key">
+				                	 	<td-responsive-component>
+				                	 	<p class="text-sm text-green-500" v-if="item.consignment_id">¡Consignación asignada!</p>
+				                	 	<jet-label v-else="item.consignment_id">
+				                	 		<div class="flex items-center">
+				                	 			<jet-checkbox  v-model="item.apply"/>
+				                	 			<div class="ml-2">
+				                	 				Asignar consignación
+				                	 			</div>
+				                	 			
+				                	 		</div>
+				                	 	</jet-label>
+				                	 	</td-responsive-component>
+				                	 	<td-responsive-component>{{item.product.name}}</td-responsive-component>
+				                	 </tr>
+				                </template>
+				            </table-responsive-component>
+			        	</div>
 			        </template>
 			        <template #actions>
 			            <jet-action-message :on="form.recentlySuccessful" class="mr-3">
@@ -75,71 +102,113 @@
         </div>
 	</admin-layout>
 
-	
+
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
+    import ClientWithOrderComponent from '@/Components/Client/ClientWithOrderComponent'
+    import TableResponsiveComponent from '@/Components/TableResponsive'
+	import ThResponsiveComponent from '@/Components/THResponsive'
+	import TdResponsiveComponent from '@/Components/TDResponsive'
+	import JetCheckbox from '@/Jetstream/Checkbox'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-            vSelect
+    		ClientWithOrderComponent,
+    		TableResponsiveComponent,
+		    ThResponsiveComponent,
+		    TdResponsiveComponent,
+		    JetCheckbox
     	},
+    	mixins: [FormComponentMixin],
     	data(){
             return {
                 form: this.$inertia.form({
                     consignment_number: null,
                     order_id: null,
-                    imagen: null
+                    details_order: [],
+                    imagen: null,
+                    fully_apply: false
                 }),
-                orders: [],
+                titles: ['Confirmar','Producto'],
+                details_order: [],
                 uploadedImagen: false
             }
         },
         mounted(){
-        	
+
+        },
+        watch: {
+        	details_order()	{
+        		if (!this.details_order.length) {
+        			this.form.details_order = []
+        		}
+        	}
         },
         methods: {
         	uploadImagen(){
 
         	},
-            storeConsignment(){
+            async storeConsignment(){
             	if (this.$refs.imagen) {
                     this.form.imagen = this.$refs.imagen.files[0]
                 }
-                this.form.post(route('consignment.store'), {
+
+                if (this.form.fully_apply) {
+                	this.form.details_order = []
+                } else {
+                	this.form.details_order = await this.buildDataRemission()
+                }
+
+                this.form
+                .transform((data) => ({
+                	...data,
+				    fully_apply: data.fully_apply ? 1 : 0,
+				}))
+                .post(route('consignment.store'), {
                     errorBag: 'storeConsignment',
-                    preserveScroll: true
-                });
+                    preserveScroll: true,
+                    onStart: () => {
+                        this.startLoading()
+                    },
+                    onSuccess: () => {
+                        this.loader.text = "¡Hecho!"
+                    },
+                    onFinish: () => {
+                        this.endLoading()
+                    },
+                })
             },
-            onSearch(search, loading) {
-		      if(search.length) {
-		        loading(true);
-		        this.search(loading, search, this);
-		      }
+		    setValueOrderId(value) {
+		    	if (typeof value === 'number') {
+		    		this.form.order_id = value	
+		    	} else {
+		    		this.form.order_id = null
+		    	}
 		    },
-		    search: _.debounce((loading, search, vm) => {
-		      axios.get(
-		        `/getOrderByConsecutiveOrClient/order?q=${search}`
-		      ).then(res => {
-		      	vm.orders = res.data;
-		        loading(false);
-		      });
-		    }, 350)
+		    setDetailsOrder(value) {
+		    	if (value.length) {
+		    		this.details_order = value
+		    	} else {
+		    		this.details_order = []
+		    	}
+		    },
+		    buildDataRemission() {
+		    	let data = []
+		    	if (!this.form.fully_apply) {
+		    		this.details_order.map(element => {
+			    		if (element.apply) {
+			    			const obj = {
+				    			order_details_id: element.id,
+				    			apply: element.apply
+				    		}
+				    		data.push(obj)
+			    		}
+			    	})
+		    	}
+		    	return data
+		    }
         }
 
     }

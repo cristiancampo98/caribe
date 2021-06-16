@@ -12,18 +12,26 @@ class OrderDetail extends Model
     protected $table = 'order_details';
 
     protected $fillable = [
-    	'order_id',
-    	'product_id',
-    	'quantity',
-    	'status',
+        'order_id',
+        'product_id',
+        'consignment_id',
+        'quantity',
+        'status',
     ];
 
-    public function order(){
-    	return $this->belongsTo(Order::class);
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 
-    public function product(){
-    	return $this->belongsTo(Product::class);
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function consignment()
+    {
+        return $this->belongsTo(Consignment::class);
     }
 
     public function remissions()

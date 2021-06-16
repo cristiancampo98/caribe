@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreConsignmentRequest;
 use App\Traits\ConsignmentTrait;
+use App\Traits\Consignment\Update\UpdateConsignment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 
 class ConsignmentController extends Controller
 {
     use ConsignmentTrait;
+    use UpdateConsignment;
 
     /**
      * Display a listing of the resource.
@@ -17,6 +21,8 @@ class ConsignmentController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Index');
     }
 
@@ -27,6 +33,8 @@ class ConsignmentController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Create');
     }
 
@@ -36,13 +44,8 @@ class ConsignmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreConsignmentRequest $request)
     {
-        $this->validate($request, [
-            'order_id' => 'required|numeric',
-            'consignment_number' => 'required|unique:consignments,consignment_number',
-        ]);
-
         $data = self::storeConsignment();
 
         if ($data) {
@@ -50,17 +53,17 @@ class ConsignmentController extends Controller
                 return response()->json([
                     'type' => 'success',
                     'text' => 'Se creo la consignación satisfactoriamente'
-                ],200);
+                ], 200);
             }
-            return redirect()->route('consignment.index')->with('success','Se creo la consignación satisfactoriamente');
+            return redirect()->route('consignment.index')->with('success', 'Se creo la consignación satisfactoriamente');
         }
         if ($request->wantsJson()) {
             return response()->json([
                 'type' => 'error',
                 'text' => 'Sucedió un error, no se pudo crear la consignación'
-            ],200);
+            ], 200);
         }
-        return redirect()->back()->with('error','Sucedió un error, no se pudo crear la consignación');
+        return redirect()->back()->with('error', 'Sucedió un error, no se pudo crear la consignación');
     }
 
     /**
@@ -71,6 +74,8 @@ class ConsignmentController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Show', [
             'consignment' => self::getConsignmentByIdWithRelationship($id)
         ]);
@@ -84,6 +89,8 @@ class ConsignmentController extends Controller
      */
     public function edit($id)
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Consignment/Edit', [
             'consignment' => self::findConsignment($id)
         ]);
@@ -101,7 +108,6 @@ class ConsignmentController extends Controller
         self::updateConsignment($id);
 
         return redirect()->route('consignment.index');
-        
     }
 
     /**
@@ -112,11 +118,13 @@ class ConsignmentController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('haveaccess');
+
         $response = self::destroyConsignmentTrait($id);
 
         if (request()->wantsJson()) {
-            $data = $response ? ['type'=>'success','text'=>'Se eliminó la consignación y los archivos con éxito']
-                    : ['type'=>'error','text'=>'Sucedió un error,no se eliminó la consignación y los archivos'];
+            $data = $response ? ['type' => 'success', 'text' => 'Se eliminó la consignación y los archivos con éxito']
+                : ['type' => 'error', 'text' => 'Sucedió un error,no se eliminó la consignación y los archivos'];
             return response()->json($data, 200);
         }
     }

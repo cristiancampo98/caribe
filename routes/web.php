@@ -6,6 +6,7 @@ use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ConsignmentStorageController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuStorageController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\OrderDetailStorageController;
 use App\Http\Controllers\OrderStorageController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
+use App\Http\Controllers\PermissionStorageController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductStorageController;
 use App\Http\Controllers\RemissionController;
@@ -24,6 +26,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserStorageController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleStorageController;
+use App\Http\Controllers\VehicleUserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -69,6 +72,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         'user' => UserController::class,
         'client' => ClientController::class,
         'vehicle' => VehicleController::class,
+        'vehicle-user' => VehicleUserController::class,
         'consignment' => ConsignmentController::class
     ]);
     Route::get('security/getAccessMenu', [MenuAccessController::class, 'getAccessMenu']);
@@ -96,6 +100,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [ProductStorageController::class, 'getMultimediaFilesByProduct']
     );
 
+    Route::get('editProductionLimits',
+        [ProductStorageController::class, 'editProductionLimits']
+    )->name('limits');
+
+    Route::put('updateLimits/{id}',
+        [ProductStorageController::class, 'updateLimits']
+    )->name('updateLimits');
+
     Route::get('getMultimediaFilesByClient/{id}/client',
         [ClientStorageController::class, 'getMultimediaFilesByClient']
     );
@@ -112,6 +124,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [RemissionStorageController::class, 'getMultimediaFilesByRemission']
     );
 
+    Route::get('getRemissionByProduct/{id}/remission',
+        [RemissionStorageController::class, 'getRemissionByProduct']
+    );
+    
+
 
 
     Route::get('getPaginateAllUsers/users',
@@ -125,6 +142,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     );
     Route::get('getOrdersByUserId/order',
         [OrderStorageController::class, 'getOrdersByUserId']
+    );
+     Route::get('getOrdersByUserIdToRemission/order',
+        [OrderStorageController::class, 'getOrdersByUserIdToRemission']
     );
     Route::get('getOrderDetailsByOrderId/orderDetail',
         [OrderDetailStorageController::class, 'getOrderDetailsByOrderId']
@@ -173,10 +193,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [MultimediaController::class, 'download']
     );
 
-    // End TODO API
+    Route::get('getPaginateAllMenus/menu',
+        [MenuStorageController::class, 'getPaginateAllMenus']
+    );
+
+    Route::get('getPaginateAllPermissions/permission',
+        [PermissionStorageController::class, 'getPaginateAllPermissions']
+    );
+
+    Route::get('config-clear', function() {
+        Artisan::call('config:clear');
+        echo '<a href='. url('dashboard') .'>Se ha limpiado la configuración, volver al sistema.</a>';
+    });
 });
 
-Route::get('artisanCall', function () {
-    Artisan::call('config:cache');
-    Artisan::call('storage:link');
-});
+

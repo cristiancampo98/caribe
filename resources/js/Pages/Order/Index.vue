@@ -11,18 +11,80 @@
                     Crear pedido
                 </jet-button>
             </jet-nav-link>
-            <div class="mt-8" v-if="options.length">
-                <div class="col-span-3">
-                    <label for="lenght">Paginar: </label>
-                    <v-select
-                    id="lenght"
-                    class="w-20 bg-white"
-                    v-model="lenght"
-                    :options="pages"
-                    @input="getPaginate"
-                    :clearable="false"></v-select>
+            <jet-button type="button" @click.native="exportPDF">
+                PDF
+            </jet-button>
+            <json-excel class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            :data="options"
+            :fields="json_fields"
+            worksheet="Tabla"
+            :name="`${document_name}.xls`">
+                {{ btn_name_excel }}
+            </json-excel>
+            <div class="mt-8" >
+                <div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-cols-min items-end">
+                    <div>
+                        <label for="lenght">Paginar: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-20 bg-white"
+                        v-model="lenght"
+                        :options="pages"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Empresa o cliente: </label>
+                        <input type="text"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.name">
+                    </div>
+                    <div>
+                        <label for="lenght">Tipo: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-max bg-white"
+                        v-model="valueParams.type_pay"
+                        :options="params.type_pay"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Estado: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-max bg-white"
+                        v-model="valueParams.status"
+                        :options="params.status"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha inicio: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.start_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha fin: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.end_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <button type="button" class="bg-red-500 text-white py-1 px-2 rounded-md" @click="clean">
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
-                <table-responsive-component>
+                
+
+                <table-responsive-component v-if="options.length">
                     <template #title>
                         <tr>
                             <th-responsive-component 
@@ -34,6 +96,9 @@
                         <tr v-for="(item, key) in options" :key="key">
                             <td-responsive-component>
                                 {{item.id}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.client.details.name_company}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.client.name}}
@@ -84,13 +149,13 @@
                                             Activar
                                         </button>
                                         <button type="button"
-                                        v-if="item.status == 'activo' && $page.props.isAdmin"
+                                        v-if="item.status == 'activo' && $page.props.isAdmin && !item.consignments.length"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         @click="openModalConsignment(item)">
-                                            Agregar Consignación
+                                            Agregar Consignación total
                                         </button>
                                         <button type="button"
-                                        v-if="!item.consignments.length && item.status != 'cancelado'"
+                                        v-if="!item.remissions.length && item.status != 'cancelado'"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         @click="openModalDestroy(item)">
                                             Cancelar
@@ -98,7 +163,7 @@
                                         <button type="button"
                                         v-if="$page.props.isAdmin"
                                         class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        @click="sendEmail(item.id)">
+                                        @click="confirmNotification(item)">
                                             Notificar
                                         </button>
 
@@ -108,11 +173,13 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <div v-else>No hay datos</div>
                 <paginate-component 
+                v-if="options.length"
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
-            <div v-else>No hay datos</div>
+           
             
             <!-- modal delete -->
             <vs-dialog width="300px" not-center v-model="modal">
@@ -123,6 +190,9 @@
                 </template>
                 <div class="grid grid-cols-3">
                   <textarea v-model="form.note" class="rounded-md col-span-3"></textarea>
+                  <p v-if="error_note" v-for="error in error_note" class="text-sm text-red-500 mt-2 col-span-3">
+                    {{error}}
+                  </p>
                 </div>
                 <template #footer>
                   <div class="grid grid-cols-2">
@@ -141,11 +211,11 @@
              <vs-dialog auto-width not-center v-model="modalConsignment">
                 <template #header>
                   <h4 class="mr-8">
-                    Crea un consignación para este pedido con la información requerida.
+                    Crea un <strong>consignación total</strong> para este pedido con la información requerida.
                   </h4>
                 </template>
                 <form-consignment
-                @updatingNotifications="updateNotifications"
+                @closingModal="closeModal"
                 :order_id="order_id"/>
                 <template #footer>
                   <div class="grid grid-cols-2">
@@ -157,93 +227,102 @@
                 </template>
              </vs-dialog>
             <!-- end form consignment -->
+            <!-- confirm notification -->
+            <vs-dialog width="550px" not-center v-model="modalNotify">
+                <template #header>
+                  <h4 class="not-margin">
+                    Enviar notificación por correo a <b>{{dataNotify.name}}</b>
+                  </h4>
+                </template>
+
+
+                <div class="con-content">
+                  <p>
+                    ¿Quieres enviar una notificación al usuario informandole que su pedido ha sido actualizado?. <br>
+                    Enviar una notificación al usuario podrá causar que la operación tarde mas ¿Quieres enviarla?
+                  </p>
+                </div>
+
+                <template #footer>
+                  <div class="con-footer">
+                    <vs-button @click="sendNotify(true)" transparent>
+                      Si, enviar notificación
+                    </vs-button>
+                    <vs-button @click="sendNotify(false)" dark transparent>
+                      No enviar notificación
+                    </vs-button>
+                  </div>
+                </template>
+            </vs-dialog>
+            <!-- end confirm notification -->
         </div>
     </admin-layout>
 </template>
 
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-    import JetNavLink from '@/Jetstream/NavLink'
-    import JetButton from '@/Jetstream/Button'
-    import TableResponsiveComponent from '@/Components/TableResponsive'
-    import ThResponsiveComponent from '@/Components/THResponsive'
-    import TdResponsiveComponent from '@/Components/TDResponsive'
-    import PaginateComponent from '@/Components/Paginate'
-    import JetDropdown from '@/Jetstream/Dropdown'
-    import JetDropdownLink from '@/Jetstream/DropdownLink'
+    import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
     import FormConsignment from './Modal/AddConsigment.vue'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
-    import moment from 'moment';
-    moment.locale('es')
-    
 
     export default {
+        mixins: [DataTableComponentMixin],
         components: {
-            AdminLayout,
-            JetNavLink,
-            JetButton,
-            TableResponsiveComponent,
-            ThResponsiveComponent,
-            TdResponsiveComponent,
-            PaginateComponent,
-            JetDropdown,
-            JetDropdownLink,
             FormConsignment,
-            vSelect
-            
         },
         data () {
             return {
-                status: {},
-                loading: false,
-                lenght: 5,
-                page: this.lenght,
-                pages:[
-                    5,10,20
-                ],
-                titles: ['#','Cliente','Tipo','Email','Estado','Creador','Creado','Opciones'],
-                options: [],
-                package: [],
+                titles: ['#','Empresa','Cliente','Tipo','Email','Estado','Creador','Fecha','Opciones'],
+                document_name: 'Listado pagina pedidos',
+                columns: ['#','Empresa','Cliente','Tipo','Email','Estado','Creador','Fecha'],
+                json_fields: {
+                    '#' : 'id',
+                    Cliente : 'client.name',
+                    Tipo: 'client.details.type_pay',
+                    Email: 'client.email',
+                    Estado: 'status',
+                    Creador: 'creator.name',
+                    Fecha: {
+                        Fecha: 'created_at',
+                        callback: (value) => {
+                            return this.moment(value.created_at).format('DD/MM/YYYY');
+                        },
+                    }
+                },
                 actions: [
                     {name: 'Editar', route:'order.edit'},
                     {name: 'Ver', route:'order.show'},
                 ],
+                params: {
+                    type_pay: [
+                        {label:'Contado',value:'contado'},
+                        {label:'Crédito',value:'crédito'}
+                    ],
+                    status: [
+                        {label:'Activo',value:'activo'},
+                        {label:'Cancelado',value:'cancelado'},
+                        {label:'Finalizado',value:'finalizado'}
+                    ]
+                },
                 modal: false,
                 modalConsignment:false,
                 form:{
                     note:null,
                     id:null
                 },
+                modalNotify: false,
+                dataNotify:{
+                    id: null,
+                    name: null,
+                },
                 order_id:false,
-                moment: moment,
-
+                error_note: null
             }
         },
         created(){
-            this.getPaginate();
+            this.url = '/getAllOrders/order';
         },
         methods: {
-            getPaginate(){
-                 this.startLoading();
-                var url = '/getAllOrders/order';
-                var param = '?lenght='+this.lenght;
-                var total_url = url + param;
-                axios.get(total_url)
-                .then(res => {
-                    this.options = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => this.endLoading());
-
-            },
-            updateData(data){
-                this.options = data.data;
-                this.package = data;
-            },
-            updateNotifications(data){
-                this.modalConsignment = false;
-                this.status = data;
+            closeModal(data){
+                this.modalConsignment = data;
             },
             openModalConsignment(item){
                 this.modalConsignment = true;
@@ -260,21 +339,22 @@
             destroyOrder(item){
                 this.startLoading();
                 axios.put('cancel/'+this.form.id+'/order',{
-                    delete_note: this.form.note
+                    note: this.form.note
                 })
                 .then( res => {
                     this.modal = false;
-                    this.status = {type: res.data.type ,text: res.data.text}
+                    this.setStatusFlash(res.data.type, res.data.text)
                     this.options.map(item => {
                         if(item.id == this.form.id){
                             item.status = 'cancelado';
                         }
-                    })
+                    });
+                    this.error_note = null;
                 })
                 .finally( () => this.endLoading())
                 .catch( error => {
-                    //error.response.data.errors
-                    this.status = {type: 'error' ,text: 'Error, escribe el motivo para cancelar.'}  
+                    this.error_note = error.response.data.errors;
+                    this.setStatusFlash('error', 'Error, verifica los datos.')
                 });
             },
             updateStatusOrder(item){
@@ -292,21 +372,25 @@
                this.startLoading();
                 axios.get('sendEmailUpdate/'+id+'/order')
                 .then( res => {
-                    this.status = {type: res.data.type, text: res.data.text}
-                    this.loading.text = '¡Hecho!';
+                    this.setStatusFlash(res.data.type, res.data.text);
+                    this.loader.text = '¡Hecho!';
                 }).finally( () => {
                     this.endLoading();
                 });
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
+            confirmNotification(item) {
+                this.modalNotify = true
+                this.dataNotify.id = item.id;
+                this.dataNotify.name = item.client.name;
+
             },
-            endLoading(){
-                this.loading.close();
+            sendNotify(value) {
+
+                this.modalNotify = false;
+                if (value) {
+                    this.sendEmail(this.dataNotify.id);    
+                }
+                this.dataNotify = {};
             }
         }
     }

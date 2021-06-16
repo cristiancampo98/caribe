@@ -41,19 +41,19 @@
                         <div class="col-span-6 lg:col-span-4">
                             <jet-label for="user_id" value="Cliente" />
                             <v-select 
-                            label="name" 
-                            :filterable="false" 
-                            :options="clients" 
-                            v-model="form.user_id"
-                            :reduce= "clients => clients.id"
-                            @search="onSearch">
+                            label="name"
+                            id="user_id"
+                            :options="users" 
+                            :reduce="users =>users.id"
+                            v-model="form.users_id"
+                            multiple>
                                 <template slot="no-options">
                                   Escribe el nombre de un cliente o empresa
                                 </template>
                                 <template slot="option" slot-scope="option">
                                   <div class="d-center">
                                     <p> Nombre: {{ option.name }}</p>
-                                    <cite>Empresa: {{ option.name_company }}</cite>
+                                    <cite>Empresa: {{ option.details.name_company }}</cite>
                                     </div>
                                 </template>
                                 <template slot="selected-option" slot-scope="option">
@@ -62,7 +62,7 @@
                                   </div>
                                 </template>
                             </v-select>
-                            <jet-input-error :message="form.errors.user_id" class="mt-2" />
+                            <jet-input-error :message="form.errors.users_id" class="mt-2" />
                         </div>
                     </template>
                     <template #actions>
@@ -80,36 +80,25 @@
     </admin-layout>
 </template>
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+   
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
-        components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-            vSelect
-    	},
+       
+        mixins: [FormComponentMixin],
+        props: {
+            users: {
+                type: Array,
+                required: true
+            }
+        },
         data(){
             return {
-                clients: [],
                 uploadedImagen: false,
-                loading: false,
                 form: this.$inertia.form({
                     license_plate: null,
                     brand: null,
-                    user_id: null,
+                    users_id: [],
                     state: 1,
                     photo_plate: null,
                     index: true
@@ -128,7 +117,7 @@
                       this.startLoading();
                     },
                     onSuccess: () => {
-                        this.loading.text = "¡Hecho!";
+                        this.loader.text = "¡Hecho!";
                         this.uploadedImagen = false;
                     },
                     onFinish: () => {
@@ -136,33 +125,9 @@
                     },
                 });
             },
-            onSearch(search, loading) {
-              if(search.length >= 3) {
-                loading(true);
-                this.search(loading, search, this);
-              }
-            },
-            search: _.debounce((loading, search, vm) => {
-              axios.get(
-                `/getClients/client?q=${search}`
-              ).then(res => {
-                vm.clients = res.data;
-                loading(false);
-              });
-            }, 350),
             uploadImagen(){
                 this.uploadedImagen = true;
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

@@ -6,6 +6,7 @@ use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PermissionController extends Controller
 {
@@ -16,6 +17,8 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         $permissions = Permission::all();
         
         return inertia('Permission/Index', [
@@ -30,6 +33,8 @@ class PermissionController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Permission/Create');
     }
 
@@ -54,9 +59,14 @@ class PermissionController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('haveaccess');
+
+        $permission = Permission::where('id',$id)
+                    ->with('roles')
+                    ->first();
 
         return inertia('Permission/Show', [
-            'permissions' => Permission::find($id),
+            'permissions' => $permission,
         ]);
     }
 
@@ -68,7 +78,8 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        //
+        Gate::authorize('haveaccess');
+
         return inertia('Permission/Edit', ['permission' => $permission]);
     }
 
@@ -84,7 +95,8 @@ class PermissionController extends Controller
         //
        
         $permission->update($request->all());
-        return redirect()->back();
+        return redirect()->route('permission.index')
+            ->with('success', 'Registo actualizado');
     }
 
     /**
@@ -95,6 +107,6 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 }

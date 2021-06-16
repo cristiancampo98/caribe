@@ -17,6 +17,7 @@ class Product extends Model
 	    'description',
         'cubic_meters',
         'ton',
+        'limit_day',
         'user_id',
         'status'
     ];
@@ -24,5 +25,10 @@ class Product extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function orderDetails() 
+    {
+        return $this->hasMany(OrderDetail::class, 'product_id', 'id');
     }
 }

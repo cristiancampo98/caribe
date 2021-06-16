@@ -36,7 +36,13 @@ trait ClientTrait
 		$user = (new User)->fill(request()->all());
 		$user->password = Hash::make('12345678');
 		$user->save();
+
+		$user->details()->create([
+			'name_company' => request()->get('name_company')
+		]);
+
 		$user->roles()->sync(3);
+		
 		return $user;
 	}
 
@@ -101,9 +107,35 @@ trait ClientTrait
         return RoleUser::where('role_id',3)->get();
     }
 
+    public static function getAllUsersClient()
+    {
+    	return User::whereHas('roles', function(Builder $query) {
+    		$query->where('role_id', 3);
+    	})->get();
+    }
+
 	public static function getAllClientsPaginate(){
-        
-        return RoleUser::where('role_id',3)->paginate(request()->get('lenght'));
+		$user = User::whereHas('roles',function(Builder $query) {
+			$query->where('role_id', 3);
+		});
+
+		if (request()->get('type_pay') && !request()->get('status')) {
+
+			$user->whereHas('details',function(Builder $query) {
+				$query->where('type_pay', request()->get('type_pay'));
+			});
+		}
+
+		if (request()->has('status') && !request()->get('type_pay')) {
+			$user->where('status', request()->get('status'));
+		}
+
+		if (request()->has('status') && request()->get('type_pay')) {
+			$user->whereHas('details',function(Builder $query) {
+				$query->where('type_pay', request()->get('type_pay'));
+			})->where('status', request()->get('status'));
+		}
+		return $user->paginate(request()->get('lenght'));
     }
 
     public static function getClientsToOrder(){
@@ -111,9 +143,11 @@ trait ClientTrait
     	->join('user_details', 'users.id','user_details.user_id')
     	->join('role_users', 'users.id','role_users.user_id')
     	->where('role_id',3)
+    	->where('status',1)
     	->where('users.name', 'like', '%'.request()->get('q').'%')
     	->orWhere('user_details.name_company', 'like', '%'.request()->get('q').'%')
     	->where('role_id',3)
+    	->where('status',1)
     	->select(
     		'users.id as id',
     		'users.name as name',
@@ -124,10 +158,17 @@ trait ClientTrait
 
     public static function getClientWithOrdersTrait()
     {
-    	$clients =  User::where('name','like','%'. request()->get('q').'%')
-    	->without('details','roles')
-    	->with('vehicles')
-    	->select('id','name')
+    	$clients =  User::join('user_details','users.id','user_details.user_id')
+    	->where('name','like','%'. request()->get('q').'%')
+    	->where('users.status',1)
+    	->orWhere('name_company','like','%'. request()->get('q').'%')
+    	->where('users.status',1)
+    	->without('roles')
+    	->with(['vehicles' => function ($query) {
+    		$query->where('state',1);
+    	}])
+    	->has('orders')
+    	->select('users.id','users.name','user_details.name_company')
 		->get();
 
 		if (count($clients)) {

@@ -20,18 +20,48 @@
 
 			        <template #form>
 
-			            <!-- Name -->
-			            <div class="col-span-6 lg:col-span-3">
+			           <!-- Name -->
+			            <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="name" value="Nombre" />
 			                <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autocomplete="name" maxlength="100" />
 			                <jet-input-error :message="form.errors.name" class="mt-2" />
 			            </div>
 			            <!-- Reference -->
-			            <div class="col-span-6 lg:col-span-3">
+			            <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="reference" value="Referencia" />
 			                <jet-input id="reference" type="text" class="mt-1 block w-full" v-model="form.reference" autocomplete="reference" maxlength="50" />
 			                <jet-input-error :message="form.errors.reference" class="mt-2" />
 			            </div>
+                        <!-- Cubic meters -->
+                        <div class="col-span-6 lg:col-span-1">
+                            <jet-label for="cubic_meters" value="= en metros cúbicos" />
+                            <jet-input type="number" class="mt-1 block w-full"
+                            id="cubic_meters"
+                            step="0.001"
+                            min="0"
+                            v-model.number="form.cubic_meters"/>
+                            <jet-input-error :message="form.errors.cubic_meters" class="mt-2" />
+                        </div>
+                        <!-- Ton -->
+                        <div class="col-span-6 lg:col-span-1">
+                            <jet-label for="ton" value="= en toneladas" />
+                            <jet-input type="number" class="mt-1 block w-full"
+                            id="ton"
+                            step="0.001"
+                            min="0"
+                            v-model.number="form.ton"/>
+                            <jet-input-error :message="form.errors.ton" class="mt-2" />
+                        </div>
+                         <!-- limit day -->
+                        <div class="col-span-6 lg:col-span-1">
+                            <jet-label for="limit_day" value="Limite por día" />
+                            <jet-input type="number" class="mt-1 block w-full"
+                            id="limit_day"
+                            step="0.001"
+                            min="0"
+                            v-model.number="form.limit_day"/>
+                            <jet-input-error :message="form.errors.limit_day" class="mt-2" />
+                        </div>
 			           
 			            <!-- Description -->
 			            <div class="col-span-6 lg:col-span-6">
@@ -66,34 +96,25 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+
     import DrapZoneComponent from '@/components/DrapZone'
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
             DrapZoneComponent
     	},
-	   data(){
+    	mixins: [FormComponentMixin],
+	   	data(){
             return {
                 form: this.$inertia.form({
                 	_method: 'PUT',
                     name: this.product.name,
                     reference: this.product.reference,
-                  
                     description: this.product.description,
+                    cubic_meters: this.product.cubic_meters,
+                    ton: this.product.ton,
+                    limit_day: this.product.limit_day,
 					photos: []
                 }),
             }
@@ -110,7 +131,16 @@
             updateProduct(){
 				this.form.post(route('product.update', { id: this.product.id }), {
                     errorBag: 'updateProduct',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                        this.startLoading();
+                    },
+                    onSuccess: () => {
+                        this.loader.text = "¡Hecho!";
+                    },
+                    onFinish: () => {
+                        this.endLoading();
+                    },
                 });	
             },
             getFiles(files){

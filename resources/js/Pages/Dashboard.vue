@@ -39,6 +39,9 @@
         components: {
             AppLayout,
         },
+        mounted(){
+            axios.get('/api/user');
+        },
         props: {
             menu:{
                 type: [Object,Array]

@@ -19,6 +19,12 @@
 
 			        <template #form>
 
+                        <!-- name company -->
+                        <div class="col-span-6 lg:col-span-4">
+                            <jet-label for="name_company" value="Empresa" />
+                            <jet-input id="name_company" type="text" class="mt-1 block w-full" v-model="form.name_company" autocomplete="name_company" />
+                            <jet-input-error :message="form.errors.name_company" class="mt-2" />
+                        </div>
 			            <!-- Name -->
 			            <div class="col-span-6 sm:col-span-4">
 			                <jet-label for="name" value="Nombre Completo" />
@@ -54,27 +60,16 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+	
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
-    	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-    	},
+    	
+        mixins: [FormComponentMixin],
     	data(){
             return {
                 form: this.$inertia.form({
+                    name_company: '',
                     name: '',
                     email: '',
                 }),
@@ -87,7 +82,16 @@
             storeClient(){
                 this.form.post(route('client.store'), {
                     errorBag: 'storeClient',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                        this.startLoading();
+                    },
+                    onSuccess: () => {
+                        this.loader.text = "¡Hecho!";
+                    },
+                    onFinish: () => {
+                        this.endLoading();
+                    },
                 });
             }
         }

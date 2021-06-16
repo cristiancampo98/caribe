@@ -21,8 +21,7 @@
 
 			            <!-- user id or cliente -->
 			            <div class="col-span-6 lg:col-span-3" v-if="$page.props.isAdmin">
-			                <jet-label for="user_id" 
-			                :value="`Cliente: ${order.client.name}`" />
+			                <jet-label for="user_id" value="Cliente" />
 			                <v-select 
 					        label="name" 
 					        :filterable="false" 
@@ -88,17 +87,17 @@
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
 			             <!-- pse_url -->
-				        <div class="col-span-6 lg:col-span-3">
+				        <!-- <div class="col-span-6 lg:col-span-3">
 				        	<jet-label for="pse_url" value="Link PSE" />
 				        	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.pse_url" />
 				            <jet-input-error :message="form.errors.pse_url" class="mt-2" />
-				        </div>
+				        </div> -->
 				        <!-- pse_number -->
-				        <div class="col-span-6 lg:col-span-3">
+				       <!--  <div class="col-span-6 lg:col-span-3">
 				        	<jet-label for="pse_number" value="PSE # radicado" />
 				        	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.pse_number" />
 				            <jet-input-error :message="form.errors.pse_number" class="mt-2" />
-				        </div>
+				        </div> -->
 			             <!-- contrato -->
 			            <div class="col-span-6 lg:col-span-3" v-if="type_pay == 'crédito'">
 			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -142,7 +141,7 @@
 			            <!-- quantity -->
 			             <div class="col-span-6 lg:col-span-1" v-if="!order.order_details[0].remissions.length">
 			                <jet-label for="quantity" value="Cantidad en m3" />
-			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" step="0.1"/>
+			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="1" v-model.number="quantity" step="0.001"/>
 			            </div>
 			            <div class="col-span-6 lg:col-span-1" v-if="!order.order_details[0].remissions.length">
 			            	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
@@ -221,34 +220,19 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+	
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
-            vSelect
-
     	},
+    	mixins: [FormComponentMixin],
     	props: {
     		order: {
     			type: Object
@@ -281,8 +265,8 @@
                     department: this.order.department,
                     city: this.order.city,
                     note: this.order.note,
-                    pse_url: this.order.pse_url,
-                    pse_number: this.order.pse_number,
+                    // pse_url: this.order.pse_url,
+                    // pse_number: this.order.pse_number,
                     contract: null,
                     purchaseOrder: null,
                     order_details: [],
@@ -304,11 +288,13 @@
                 uploadedContract: false,
                 uploadedPurchaseOrder: false,
                 type_pay: null,
-                loading: false
 
             }
         },
-        mounted(){
+        async mounted(){
+        	if (this.order.user_id) {
+    			await this.getClientsByLikeName(this.order.client.name)
+    		}
         	this.loadFileColombiaJson();
         	this.setProductStorageToFormOrderDetails()
         	this.type_pay = this.order.client.details.type_pay;
@@ -364,7 +350,7 @@
                     	this.startLoading();
                     },
 				  	onSuccess: () => { 
-				  		this.loading.text = "¡Hecho!"
+				  		this.loader.text = "¡Hecho!"
 				  	},
 				  	onFinish: () => {
 				  		this.endLoading();
@@ -422,6 +408,7 @@
             	this.form.order_details.splice(index,1)
             },
             onSearch(search, loading) {
+            	console.log(search);
 		      if(search.length >= 3) {
 		        loading(true);
 		        this.search(loading, search, this);
@@ -441,16 +428,13 @@
 		    		this.type_pay = found.type_pay;
 		    	}
 		    },
-		    startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            },
+		    getClientsByLikeName(search) {
+		    	axios.get(
+			        `/getClients/client?q=${search}`
+			    ).then(res => {
+			     	this.clients = res.data;
+			    });
+		    }
         }
 
     }

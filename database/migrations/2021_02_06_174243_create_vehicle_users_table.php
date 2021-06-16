@@ -18,6 +18,8 @@ class CreateVehicleUsersTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('vehicle_id')->constrained()->onDelete('cascade');
             $table->string('carrier',100)->nullable();
+            $table->string('identification_number',100)->nullable();
+
             $table->timestamps();
         });
     }

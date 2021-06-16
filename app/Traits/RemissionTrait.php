@@ -4,73 +4,83 @@ namespace App\Traits;
 
 use App\Models\Remission;
 use App\Traits\MultimediaTrait;
+use App\Traits\Remission\Query\QueryRemissionTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * 
+ *
  */
 trait RemissionTrait
 {
-	use MultimediaTrait;
+    use MultimediaTrait;
+    use QueryRemissionTrait;
 
-	public static function storeRemission($data)
-	{
-		$remission = (new Remission)->fill($data->all());
-		$remission->created_by = Auth::id();
-		$remission->save();
-		
-		if ($data->hasFile('firm')) {
-			self::storeSingleFileMultimedia(
-				$data->file('firm'),
-				'remission',
-				'remission',
-				'remission_firm',
-				'remission_id',
-				$remission->id
-			);
-		}
+    public static function storeRemission($data)
+    {
+        $remission = (new Remission)->fill($data->all());
+        $remission->created_by = Auth::id();
+        $remission->save();
 
-		if ($data->hasFile('plate')) {
-			self::storeSingleFileMultimedia(
-				$data->file('plate'),
-				'remission',
-				'remission',
-				'remission_plate',
-				'remission_id',
-				$remission->id
-			);
-		}
+        return $remission;
+    }
 
-		if ($data->hasFile('delivery')) {
-			self::storeSingleFileMultimedia(
-				$data->file('delivery'),
-				'remission',
-				'remission',
-				'remission_delivery',
-				'remission_id',
-				$remission->id
-			);
-		}
+    public static function getPaginateAllRemissionsTrait()
+    {
 
-		return $remission;
-	}
+        $remissions = Remission::with(
+            'orderDetail.order.client.details',
+            'orderDetail.product',
+            'orderDetail.consignment',
+            'creator',
+            'carrier.client',
+            'carrier.vehicle'
+        );
 
-	public static function getPaginateAllRemissionsTrait()
-	{
-		return Remission::with(
-							'orderDetail.order',
-							'orderDetail.product',
-							'creator',
-							'carrier.client',
-							'carrier.vehicle',
-							'consignment'
-						)
-						->paginate(request()->get('lenght'));
-	}
+        if (request()->filled('name')) {
+            $remissions->whereHas('orderDetail.order.client.details', function(Builder $query) {
+                $query->where('name','like','%'.request()->get('name').'%')
+                ->orWhere('name_company','like','%'.request()->get('name').'%');
+            });
+        }
 
-	public static function getMultimediaFilesByRemissionTrait($id)
-	{
-		$firm = self::getMultimediaByParams('remission', 'remission_id', $id, 'remission_firm');
+        if (request()->filled('order_id')) {
+            $remissions->whereHas('orderDetail.order', function(Builder $query) {
+                $query->where('id','like','%'.request()->get('order_id').'%');
+            });
+        }
+
+        if (request()->filled('start_date') && request()->filled('end_date')) {
+            $remissions->whereBetween('created_at',[request()->get('start_date'), request()->get('end_date')]);
+        }
+
+        if (request()->filled('isSigned')) {
+            $remissions->where('isSigned', request()->get('isSigned'));
+        }
+
+        $data = $remissions->orderBy('id', 'desc')->paginate(request()->get('lenght'));
+
+        return self::remissionsAreSigned($data);
+
+        
+    }
+
+    public static function remissionsAreSigned($remissions)
+    {
+        foreach ($remissions as $value) {
+            $firm = self::getMultimediaByParams('remission', 'remission_id', $value->id, 'remission_firm');
+            if (count($firm)) {
+                $value->isSigned = 1;
+                $value->save();
+            }
+        }
+        return $remissions;
+
+    }
+
+    public static function getMultimediaFilesByRemissionTrait($id)
+    {
+        $firm = self::getMultimediaByParams('remission', 'remission_id', $id, 'remission_firm');
         $plate = self::getMultimediaByParams('remission', 'remission_id', $id, 'remission_plate');
         $delivery = self::getMultimediaByParams('remission', 'remission_id', $id, 'remission_delivery');
         $array = [];
@@ -88,19 +98,22 @@ trait RemissionTrait
         }
 
         return $array;
-	}
+    }
 
-	public static function getRemissionByIdWithRelationships($id)
-	{
-		return Remission::where('id', $id)
-				->with(
-					'orderDetail.order.client',
-					'orderDetail.product',
-					'creator',
-					'carrier.vehicle'
-				)
-				->first();
-	}
-
-    
+    public static function getRemissionByIdWithRelationships($id)
+    {
+        $data = Remission::where('id', $id)
+            ->with(
+                'orderDetail.order.client',
+                'orderDetail.product',
+                'orderDetail.remissions',
+                'orderDetail.consignment',
+                'creator',
+                'carrier.vehicle'
+            )
+            ->first();
+        $data->files = self::getMultimediaFilesByRemissionTrait($id);
+        $data->orderDetail->limit = $data->delivered + $data->orderDetail->product->limit_day - self::getRemissionByProductTrait($data->orderDetail->product_id);
+        return $data;
+    }
 }

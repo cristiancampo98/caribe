@@ -31,20 +31,20 @@ trait UserTrait
                 }
             }
         }
-        
-        if (! empty($this->role->permissions)) {
-            foreach ($this->role->permissions as $perm) {
-                if ($perm->slug == $permission) {
-                    $isTrue = true;
-                    break;
-
+        if (count($this->roles)) { 
+            foreach ($this->roles as $rol) {
+                if (count($rol->permissions)) {
+                    foreach ($rol->permissions as $perm) {
+                        if ($perm->slug == $permission) {
+                            $isTrue = true;
+                            break;
+                        }
+                    }
                 }
             }
         }
-        
         return $isTrue;
-        
-    }
+    } 
 
     /*
      * Valida si el usuario logueado tiene un rol administrador y retorna un boolean

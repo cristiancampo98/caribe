@@ -6,6 +6,7 @@ use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
 {
@@ -16,6 +17,8 @@ class RoleController extends Controller
      */
     public function index()
     {
+        Gate::authorize('haveaccess');
+
         $roles = Role::all();
         return inertia('Role/Index', [
             'roles' => $roles
@@ -29,6 +32,8 @@ class RoleController extends Controller
      */
     public function create()
     {
+        Gate::authorize('haveaccess');
+
         return inertia('Role/Create');
     }
 
@@ -55,7 +60,7 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 
     /**
@@ -66,7 +71,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 
     /**
@@ -89,6 +94,6 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        Gate::authorize('haveaccess');
     }
 }

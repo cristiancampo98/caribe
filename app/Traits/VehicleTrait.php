@@ -95,7 +95,7 @@ trait VehicleTrait
 
 	public static function getVehiclesPaginate(){
         
-        return Vehicle::paginate(request()->get('lenght'));
+        return Vehicle::orderBy('id','desc')->paginate(request()->get('lenght'));
     }
 
     public static function getVehicleWithRelationship($id)

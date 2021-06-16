@@ -12,16 +12,16 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-    	'user_id',
-    	'shipping_address',
+        'user_id',
+        'shipping_address',
         'department',
-    	'city',
-    	'note',
+        'city',
+        'note',
         'delete_note',
-    	'status',
+        'status',
         'pse_url',
         'pse_number',
-    	'created_by'
+        'created_by'
     ];
 
     public function orderDetails()
@@ -29,18 +29,30 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class, 'order_id', 'id');
     }
 
+    public function client()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
     public function consignments()
     {
         return $this->hasMany(Consignment::class, 'order_id', 'id');
     }
 
-    public function client(){
-        return $this->belongsTo(User::class, 'user_id', 'id');
+    public function remissions()
+    {
+        return $this->hasManyThrough(
+            Remission::class,
+            OrderDetail::class,
+            'order_id', // Foreign key on the environments table...
+            'order_details_id', // Foreign key on the deployments table...
+            'id', // Local key on the projects table...
+            'id' // Local key on the environments table...
+        );
     }
-
-    public function creator(){
-        return $this->belongsTo(User::class, 'created_by', 'id');
-    }
-
-    
 }

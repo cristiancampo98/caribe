@@ -39,6 +39,23 @@
                             <td-responsive-component>{{item.id}}</td-responsive-component>
                             <td-responsive-component>{{item.name}}</td-responsive-component>
                             <td-responsive-component>
+                                <div class="center">
+                                  <vs-tooltip>
+                                    <vs-button flat>
+                                      Ver roles
+                                    </vs-button>
+                                    <template #tooltip>
+                                      <ul>
+                                        <li v-for="(rol, key) in item.roles">{{rol.name}}</li>
+                                      </ul>
+                                    </template>
+                                  </vs-tooltip>
+                                </div>
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.email}}
+                            </td-responsive-component>
+                            <td-responsive-component>
                                 {{item.details.number_identification}}
                             </td-responsive-component>
                             <td-responsive-component>
@@ -46,23 +63,6 @@
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.details.city}}
-                            </td-responsive-component>
-                            <td-responsive-component>
-                                <div class="center">
-							      <vs-tooltip>
-							        <vs-button flat>
-							          Ver roles
-							        </vs-button>
-							        <template #tooltip>
-							          <ul>
-							          	<li v-for="(rol, key) in item.roles">{{rol.name}}</li>
-							          </ul>
-							        </template>
-							      </vs-tooltip>
-							    </div>
-                            </td-responsive-component>
-                            <td-responsive-component>
-                                {{item.email}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 <span :class="item.classStatus">{{item.status}}</span>
@@ -123,6 +123,7 @@
     import 'vue-select/dist/vue-select.css'
     import JetDropdown from '@/Jetstream/Dropdown'
     import JetDropdownLink from '@/Jetstream/DropdownLink'
+    import { loadingMixin} from '@/Mixins/loadingMixin'
 
     export default {
         components: {
@@ -137,6 +138,7 @@
             JetDropdown,
             JetDropdownLink
         },
+        mixins: [loadingMixin],
         props: {
 
         },
@@ -146,8 +148,7 @@
         data() {
             return {
                 status: {},
-                titles: ['#','Nombre','No. Documento','Dirección','Ciudad','Correo','Roles','Estado'],
-                loading: false,
+                titles: ['#','Nombre','Roles','Correo','No. Documento','Dirección','Ciudad','Estado'],
                 lenght: 5,
                 page: this.lenght,
                 pages:[
@@ -242,16 +243,6 @@
                 })
                 .finally( () => this.endLoading() )
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

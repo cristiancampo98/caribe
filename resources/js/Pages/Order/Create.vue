@@ -54,6 +54,13 @@
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
 			            </div>
+			             <!-- shipping address -->
+			            <div class="col-span-6 lg:col-span-1">
+			                <jet-label for="shipping_address" value="Dirección envío" />
+			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
+			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
+			            </div>
+			            <!-- department -->
 			             <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
@@ -77,50 +84,53 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
-			            <!-- shipping address -->
-			            <div class="col-span-6 lg:col-span-1">
-			                <jet-label for="shipping_address" value="Dirección envío" />
-			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
-			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
-			            </div>
+			           
 			           <!-- note -->
 			            <div class="col-span-6 lg:col-span-6">
 			                <jet-label for="note" value="Nota" />
 			               	<textarea id="note" class="mt-1 block w-full rounded-lg" v-model="form.note"></textarea>
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
+
 			           	<!--  consignment_number-->
-			            <div class="col-span-6 lg:col-span-2">
-			            	<jet-label for="consignment_number" value="Consignación" />
+			           	<div class="col-span-6 lg:col-span-2">
+			            	<jet-label for="consignment_number" value="Número de consignación" />
 			            	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="form.consignment.consignment_number" />
 			            </div>
 			            <!-- imagen -->
 			            <div class="col-span-6 lg:col-span-1">
-			            	<label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-			            		<span>Subir imagen</span>
+			            	<label for="imagen" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
+			            		<span>Imagen consignación</span>
 			            		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
-			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            		
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			             <!-- contrato -->
 			            <div class="col-span-6 lg:col-span-1" v-if="type_pay == 'crédito'">
-			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="contract" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir contrato</span>
 			            		<input type="file"  id="contract"  ref="contract" @change="uploadContract" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
-			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
+			            		
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedContract" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
 			             <!-- orden de compra -->
 			            <div class="col-span-6 lg:col-span-1" v-if="type_pay == 'crédito'">
-			            	<label for="purchaseOrder" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+			            	<label for="purchaseOrder" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150 cursor-pointer">
 			            		<span>Subir orden de compra</span>
 			            		<input type="file"  id="purchaseOrder"  ref="purchaseOrder" @change="uploadPurchaseOrder" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png" />
-			            		<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	</label>
+			            	<p class="text-xs text-gray-500">PDF, JPG, PNG</p>
 			            	<span v-if="uploadedPurchaseOrder" class="ml-4 text-green-500">¡Hecho!</span>
 			            </div>
+			            <div class="col-span-6 lg:col-span-6">
+			           		<p class="text-sm text-blue-500">
+			            		Nota: Tener en cuenta que al crear la <strong>consignación</strong> por este medio se tomará por defecto como <strong>consignación total</strong> para el pedido.
+			            	</p>
+			           	</div>
 			           <div class="col-span-6 lg:col-span-6">
 				           	<h3>Pedido</h3>
 				            <p class="text-sm">Selecciona un producto y su cantidad y presiona en <strong>el boton <u>Agregar</u></strong>  para agregarlo a la lista.</p>
@@ -140,7 +150,7 @@
 			            <!-- quantity -->
 			             <div class="col-span-6 lg:col-span-1">
 			                <jet-label for="quantity" value="Cantidad en m3" />
-			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" min="0" v-model="quantity" step="0.1"/>
+			               	<jet-input id="quantity" type="number" class="mt-1 block w-full" v-model="quantity" step="0.001"/>
 			            </div>
 			           <div class="col-span-6 lg:col-span-1">
 				           	<button type="button" @click="addToCar()" class="self-center inline-flex items-center px-4 py-2 mt-6 bg-green-500 border border-transparent rounded-md font-semibold text-xs text-black uppercase tracking-widest hover:bg-white hover:border-black active:bg-gray-900 focus:outline-none focus:border-black focus:shadow-outline-green transition ease-in-out duration-150">
@@ -196,36 +206,20 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+	
     import TableResponsiveComponent from '@/Components/TableResponsive'
     import ThResponsiveComponent from '@/Components/THResponsive'
     import TdResponsiveComponent from '@/Components/TDResponsive'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
     	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
             TableResponsiveComponent,
             ThResponsiveComponent,
             TdResponsiveComponent,
-            vSelect
-
     	},
+    	mixins: [FormComponentMixin],
     	props: {
-    		
     		products: {
     			type: [Object, Array],
     			required: true
@@ -267,7 +261,6 @@
                 uploadedContract: false,
                 uploadedPurchaseOrder: false,
                 type_pay: null,
-                loading: false
 
             }
         },
@@ -309,7 +302,7 @@
                       this.startLoading();
                     },
                     onSuccess: () => {
-                        this.loading.text = "¡Hecho!";
+                        this.loader.text = "¡Hecho!";
                         this.uploadedImagen = false;
                     },
                     onFinish: () => {
@@ -357,6 +350,8 @@
 						//Si no lo encuentra agrega el nuevo producto
 						this.form.order_details.push(pedido);
 					}
+					this.product_detail = null
+					this.quantity = 1
             	}else{
             		this.error_product = true
             	}
@@ -385,16 +380,7 @@
 		    		this.type_pay = found.type_pay;
 		    	}
 		    },
-		    startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-            },
-            endLoading(){
-                this.loading.close();
-            }
+		   
         }
 
     }

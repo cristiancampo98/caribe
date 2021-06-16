@@ -35,7 +35,7 @@ trait ProductTrait
 
 	public static function getPaginateAllProductsTrait()
 	{
-		$products = Product::paginate( request()->get('lenght'));
+		$products = Product::orderBy('id','desc')->paginate( request()->get('lenght'));
 
 		return $products;
 	}
@@ -49,7 +49,7 @@ trait ProductTrait
 	{
 		$product = self::findProduct($id);
 
-		if (count($data['photos'])) {
+		if (isset($data['photos']) && count($data['photos'])) {
 
 			self::storeMultimedia(
 				$data['photos'], 

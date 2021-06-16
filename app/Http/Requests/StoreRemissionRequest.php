@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\LimitDeliveryStore;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRemissionRequest extends FormRequest
@@ -24,28 +25,20 @@ class StoreRemissionRequest extends FormRequest
     public function rules()
     {
         return [
-            'delivered' => 'required|numeric|min:1',
+            'delivered' => ['required','numeric','min:0','max:9999.999',new LimitDeliveryStore($this->order_details_id)],
             'order_details_id' => 'required|numeric|min:1',
-            'vehicle_users_id' => 'required|numeric|min:1',
-            'consignment_id' => 'required|unique:remissions,consignment_id',
-            'firm' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
-            'plate' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-            'delivery' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
+            'vehicle_users_id' => 'required|numeric|min:1'
         ];
     }
 
     public function messages()
     {
         return[
-            'delivered.required'        =>  'La cantidad entregada es requerida',
-            'order_details_id.required'     =>  'El detalle de la orden es requerido',
-            'vehicle_users_id.required'      =>  'El vehículo es obligatorio',
-            'consignment_id.unique' => 'Este número de consignación ya fue usado',
-            'consignment_id.required' => 'El número de consignación es requerido',
-            'firm.required'     =>  'La firma es requerida',
-            'firm.image'    =>  'El archivo debe ser imagen en algunos de estos formatos:jpeg,png,jpg,gif,svg',
-            'plate.image'   =>  'El archivo debe ser imagen en algunos de estos formatos:jpeg,png,jpg,gif,svg',
-            'delivery.image'    =>  'El archivo debe ser imagen en algunos de estos formatos:jpeg,png,jpg,gif,svg'
+            'delivered.required' => 'La cantidad entregada es requerida',
+            'delivered.min' => 'El valor mínimo es 0',
+            'delivered.max' => 'El valor máximo es 9999.999',
+            'order_details_id.required' => 'El detalle de la orden es requerido',
+            'vehicle_users_id.required' => 'El vehículo es obligatorio'
         ];
     }
 }

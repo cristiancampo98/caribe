@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\PaymentLink;
 use App\Notifications\UpdatedOrder;
 use App\Traits\ConsignmentTrait;
+use App\Traits\Consignment\Store\StoreConsignmentTrait;
 use App\Traits\MultimediaTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -20,31 +21,8 @@ trait OrderTrait
 {
 	use MultimediaTrait;
 	use ConsignmentTrait;
-	/*
-	 * Valida el rol del usuario para retornar todas o solo las ordenes del usuario logueado
-	 */
-	public static function getOrdersByRole(){
-
-		$isAdmin = Auth::user()->isAdmin();
-		$orders = [];
-
-		$orders = Order::with([
-			'client',
-			'creator',
-			'consignments'
-		])
-		->where('user_id', Auth::id());
-
-		if ($isAdmin) {
-			$orders = Order::with([
-				'client',
-				'creator',
-				'consignments'
-			]);
-		}
-
-		return $orders->paginate(request()->get('lenght'));
-	}
+	use StoreConsignmentTrait;
+	
 
 	public static function storeOrder($data){
 		
@@ -86,30 +64,17 @@ trait OrderTrait
         		);
         	}
 
-            if (isset($data['consignment']['consignment_number'])) {
-            	$consignment_id = DB::table('consignments')->insertGetId([
-            		'consignment_number' => $data['consignment']['consignment_number'],
-            		'order_id' => $order_id,
-            		'created_at' => Carbon::now('America/Bogota'),
-            		'updated_at' => Carbon::now('America/Bogota'),
-            	]);
+        	$consignment_id = null;
 
-            	if(request()->file('consignment')) {
-            		self::storeSingleFileMultimedia(
-            			request()->file('consignment')['imagen'], 
-		                'consignments', 
-		                'consignment', 
-		                'consignment_file', 
-		                'consignment_id', 
-		                $consignment_id
-            		);
-            	}
+            if (isset($data['consignment']['consignment_number'])) {
+            	$consignment_id = self::StoreConsignmentFromOrder($data,$order_id, request()->file('consignment'));
             }
 
             foreach ($data['order_details'] as $value) {
                 DB::table('order_details')->insert([
                     'order_id' => $order_id,
                     'product_id' => $value['product_id'],
+                    'consignment_id' => $consignment_id,
                     'quantity' => $value['quantity'],
                     'status' => 1,
                     'created_at' => $date,
@@ -139,10 +104,10 @@ trait OrderTrait
 		$order = Order::where('id',$id)
 		->with([
 			'orderDetails.product',
-			'orderDetails.remissions',
+			'orderDetails.remissions.carrier.vehicle',
 			'client',
 			'creator',
-			'consignments'
+			'consignments.detail.product'
 		])
 		->first();
 
@@ -234,15 +199,15 @@ trait OrderTrait
 	public static function cancelOrder($id, $data)
 	{
 		$order = self::findOrder($id);
-		if (count($order->consignments)) {
+		if (count($order->remissions)) {
 			return response()->json([
 				'type' => 'info',
-                'text' => 'No se puede cancelar este pedido porque ya existen consignaciones'
+                'text' => 'No se puede cancelar este pedido porque ya existen remisiones'
             ],200);
 		}
 
 		$data = $order->update([
-			'delete_note' => $data['delete_note'],
+			'note' => $data['note'],
 			'status' => 'cancelado'
 		]);
 
@@ -267,7 +232,7 @@ trait OrderTrait
 			$order->status = 'activo';
 			$text = 'El pedido se activo con éxito';
 		}
-
+		
 		if ($order->save()) {
 			return response()->json([
 				'order' => $order,
@@ -303,38 +268,7 @@ trait OrderTrait
 		],200);
 	}
 
-	public static function getOrdersByUserIdWithConsignmentsTrait()
-	{
-		$isCredit = User::find(request()->get('id'))->details;
-
-		$orders = [];
-		if ($isCredit->type_pay == 'crédito') {
-
-			$orders = Order::where('user_id', request()->get('id'))
-					->where('status','activo')
-					->get();
-		}else{
-
-			$orders = Order::where('user_id', request()->get('id'))
-					->whereHas('consignments')
-					->where('status','activo')
-					->get();
-		}
-
-		if (count($orders)) {
-			return response()->json([
-				'orders' => $orders,
-				'type' => 'success',
-				'text' => 'Se encontraron ' . count($orders). ' pedidos'
-			],200);
-		}
-
-		return response()->json([
-			'orders' => $orders,
-			'type' => 'info',
-			'text' => 'No se encontraron pedidos'
-		],200);
-	}
+	
 
 	public static function getMultimediaOrderClientCredit($id)
 	{

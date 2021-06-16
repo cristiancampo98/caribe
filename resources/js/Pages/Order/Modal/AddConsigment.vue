@@ -4,21 +4,27 @@
         <ul class="bg-red-500 text-white py-2 px-8" v-if="Object.keys(errors).length">
             <li type="disc" v-for="error in errors">{{error[0]}}</li>
         </ul>
-    	<!--  consignment_number-->
-        <div class="col-span-6 lg:col-span-2">
-        	<jet-label for="consignment_number" value="Consignación" />
-        	<jet-input id="consignment_number" type="text" class="mt-1 block w-full" v-model="consignment_number" required />
+        <div class="grid grid-cols-4 gap-4">
+            <!--  consignment_number-->
+            <div class="col-span-4 lg:col-span-2">
+                <jet-label for="consignment_number" value="Número de consignación" />
+                <jet-input id="consignment_number" type="text" class="my-1 block w-full" v-model="consignment_number" required />
+            </div>
+            <!-- imagen -->
+            <div class="col-span-4 lg:col-span-2">
+                <label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                    <span>Subir imagen</span>
+                    <input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png"/>
+                </label>
+                <p class="mt-2 text-xs text-gray-500">PDF, JPG, PNG</p>
+                <span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
+            </div>
         </div>
-        <!-- imagen -->
-        <div class="col-span-6 lg:col-span-2">
-        	<label for="imagen" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-        		<span>Subir imagen</span>
-        		<input type="file"  id="imagen"  ref="imagen" @change="uploadImagen" class="w-px h-px opacity-0 overflow-hidden absolute" accept=".pdf, .jpg, .png"/>
-        	</label>
-        	<span v-if="uploadedImagen" class="ml-4 text-green-500">¡Hecho!</span>
-        </div>
+    	
         <div class="mt-4">
-
+            <p class="text-sm text-blue-500">
+                Nota: Al crear esta <strong>consignación</strong> se tomará por defecto como una <strong>consignación total</strong> para el pedido. Tenlo en cuenta al momento de guardar la consignación.
+            </p>
 	        <jet-button>
 	            Guardar
 	        </jet-button>
@@ -63,22 +69,27 @@
         		this.uploadedImagen = true
         	},
             storeConsignment(){
+                this.startLoading();
+
             	if (this.$refs.imagen.files.length) {
                     this.imagen = this.$refs.imagen.files[0]
                 }
+
                 var data = new FormData()
                 data.append('consignment_number', this.consignment_number )
                 data.append('imagen', this.imagen )
                 data.append('order_id', this.order_id )
+                data.append('fully_apply', 1 )
 
                 axios.post('/consignment', data)
                 .then( res => {
-                    const status = {type: res.data.type ,text: res.data.text}  
-                    this.$emit('updatingNotifications', status)
+                    this.setStatusFlash( res.data.type ,res.data.text );
+                    this.$emit('closingModal', false)
                     this.errors = null;
                 }).catch(error => {
                     this.errors = error.response.data.errors;
-                });
+                })
+                .finally( () => this.endLoading() );
             },
         }
     }

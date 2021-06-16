@@ -28,6 +28,7 @@ class UpdateOrderRequest extends FormRequest
             'shipping_address' => 'required|string|max:100' ,
             'city' => 'required|string|max:100' ,
             'order_details' => 'required|array|min:1',
+            'order_details.*.quantity' => 'numeric|max:999.9|min:1',
             'pse_url' => 'nullable|url',
             'pse_number' => 'nullable|numeric',
             'contract' => 'required_if:credit_documents,false',
@@ -38,13 +39,16 @@ class UpdateOrderRequest extends FormRequest
     public function messages()
     {
         return[
-            'user_id.required'   =>  'Seleccione un cliente',
-            'shipping_address.required'      =>  'La dirección de envío es obligatoria',
-            'city.required'     =>  'La ciudad es obligatoria',
-            'order_details.required'     =>  'Seleccione un producto',
-            'order_details.array'       =>  'Debes seleccionar uno o más productos',
-            'contract.required_if'     =>      'El contrato es requerido porque el  tipo de pago es crédito',
-            'purchaseOrder.required_if'     =>      'La orden de compra es  requerida porque el tipo de pago es crédito'
+            'user_id.required' => 'Seleccione un cliente',
+            'shipping_address.required' => 'La dirección de envío es obligatoria',
+            'city.required' => 'La ciudad es obligatoria',
+            'order_details.required' => 'Seleccione un producto',
+            'order_details.array' => 'Debes seleccionar uno o más productos',
+            'order_details.*.quantity.max' => 'La cantidad del pedido no puede ser mayor a 999.9',
+            'order_details.*.quantity.min' => 'La cantidad del pedido no puede ser menor a  1',
+            'order_details.*.quantity.numeric' => 'La cantidad del pedido debe ser númerica',
+            'contract.required_if' => 'El contrato es requerido porque el  tipo de pago es crédito',
+            'purchaseOrder.required_if' => 'La orden de compra es  requerida porque el tipo de pago es crédito'
         ];
     }
 }

@@ -8,12 +8,22 @@
         <div class="py-12">
             <jet-nav-link :href="route('remission.create')">
                 <jet-button type="button">
-                    Crear remission
+                    Crear remisión
                 </jet-button>
             </jet-nav-link>
-            <div class="mt-8" v-if="options.length">
-                <div class="grid grid-cols-6 gap-6">
-                    <div class="col-span-3">
+            <jet-button type="button" @click.native="exportPDF">
+                PDF
+            </jet-button>
+            <json-excel class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray transition ease-in-out duration-150"
+            :data="options"
+            :fields="json_fields"
+            worksheet="Tabla"
+            :name="`${document_name}.xls`">
+                {{ btn_name_excel }}
+            </json-excel>
+            <div class="mt-8" >
+                <div class="grid grid-flow-row lg:grid-flow-col gap-4 auto-cols-min items-end">
+                    <div>
                         <label for="lenght">Paginar: </label>
                         <v-select
                         id="lenght"
@@ -23,8 +33,52 @@
                         @input="getPaginate"
                         :clearable="false"></v-select>
                     </div>
+                    <div>
+                        <label for="lenght">Empresa o cliente: </label>
+                        <input type="text"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.name">
+                    </div>
+                    <div>
+                        <label for="lenght">Pedido: </label>
+                        <input type="number"
+                        @blur="getPaginate"
+                        class="w-20 w-max bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.order_id">
+                    </div>
+                    <div>
+                        <label for="lenght">Firmado: </label>
+                        <v-select
+                        id="lenght"
+                        class="w-max bg-white"
+                        v-model="valueParams.isSigned"
+                        :options="params.isSigned"
+                        :reduce="label => label.value"
+                        @input="getPaginate"
+                        :clearable="false"></v-select>
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha inicio: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.start_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <label for="lenght">Fecha fin: </label>
+                        <input type="date" 
+                        class="w-44 bg-white rounded-md h-9 border-gray-400"
+                        v-model="valueParams.end_date"
+                        @change="getPaginate">
+                    </div>
+                    <div>
+                        <button type="button" class="bg-red-500 text-white py-1 px-2 rounded-md" @click="clean">
+                            Limpiar
+                        </button>
+                    </div>
                 </div>
-                 <table-responsive-component>
+                 <table-responsive-component v-if="options.length">
                     <template #title>
                         <tr>
                             <th-responsive-component 
@@ -38,25 +92,30 @@
                                 {{item.id}}
                             </td-responsive-component>
                             <td-responsive-component>
+                                {{item.order_detail.order.client.details.name_company}}
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.order_detail.order.client.name}}
+                            </td-responsive-component>
+                            <td-responsive-component>
                                 No. {{item.order_detail.order_id}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.consignment 
-                                    ? item.consignment.consignment_number
+                                {{item.order_detail.consignment
+                                    ? item.order_detail.consignment.consignment_number
                                     : 'Pendiente '}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.order_detail.product.name}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.delivered}}
-                                m3
-                            </td-responsive-component>
-                            <td-responsive-component>
                                 {{item.order_detail.quantity}}
                                 m3
                             </td-responsive-component>
-                           
+                            <td-responsive-component>
+                                {{item.delivered}}
+                                m3
+                            </td-responsive-component>
                             <td-responsive-component>
                                 <ul>
                                     <li >Placa: 
@@ -66,6 +125,9 @@
                                         <span class="capitalize">{{item.carrier.carrier}}</span>
                                     </li>
                                 </ul>
+                            </td-responsive-component>
+                            <td-responsive-component>
+                                {{item.isSigned ? 'Si' : 'No'}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{moment(item.created_at).format('DD/MM/YYYY')}}
@@ -100,86 +162,85 @@
                         </tr>
                     </template>
                 </table-responsive-component>
+                <div v-else>No hay datos</div>
                 <paginate-component 
+                v-if="options.length"
                 :package="package"
                 @updatingData="updateData"></paginate-component>
             </div>
-            <div v-else>No hay datos</div>
+            
         </div>
     </admin-layout>
 </template>
 
 <script>
-    import AdminLayout from '@/Layouts/AdminLayout'
-    import JetNavLink from '@/Jetstream/NavLink'
-    import JetButton from '@/Jetstream/Button'
-    import TableResponsiveComponent from '@/Components/TableResponsive'
-    import ThResponsiveComponent from '@/Components/THResponsive'
-    import TdResponsiveComponent from '@/Components/TDResponsive'
-    import PaginateComponent from '@/Components/Paginate'
-    import JetDropdown from '@/Jetstream/Dropdown'
-    import JetDropdownLink from '@/Jetstream/DropdownLink'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
-    import moment from 'moment';
-    moment.locale('es')
+    import { DataTableComponentMixin} from '@/Mixins/DataTableComponentMixin'
     
-
-
     export default {
-        components: {
-            AdminLayout,
-            JetNavLink,
-            JetButton,
-            TableResponsiveComponent,
-            ThResponsiveComponent,
-            TdResponsiveComponent,
-            PaginateComponent,
-            JetDropdown,
-            JetDropdownLink,
-            vSelect
-        },
+        mixins: [DataTableComponentMixin],
         created() {
-            this.getPaginate();
+            this.url = '/getPaginateAllRemissions/remission';
         },
         data () {
             return {
-                status: {},
-                loading: false,
-                lenght: 5,
-                page: this.lenght,
-                pages:[
-                    5,10,20
-                ],
-                titles: ['#','Pedido','Consignación','Producto','Entregado','Cantidad','Vehiculo','Fecha','Opciones'],
-                options: [],
-                package: [],
+                titles: ['#','Empresa','Cliente','Pedido','Consignación','Producto','Cantidad','Entregado','Vehiculo','Firmado','Fecha','Opciones'],
+                document_name: 'Listado pagina de remisiones',
+                columns: ['#','Empresa','Cliente','Pedido','Consignación','Producto','Cantidad','Entregado','Vehiculo','Firmado','Fecha'],
+                json_fields: {
+                    '#' : 'id',
+                    Empresa : 'order_detail.order.client.details.name_company',
+                    Cliente : 'order_detail.order.client.name',
+                    Pedido : 'order_detail.order_id',
+                    'Consignación': {
+                        field: 'order_detail.consignment_id',
+                        callback: (value) => {
+                            return  value ? value : 'Sin asignar'
+                        }
+                    },
+                    Producto: 'order_detail.product.name',
+                    Cantidad: {
+                        field: 'order_detail.quantity',
+                        callback: (value) => {
+                            return `${value} m3`
+                        }
+                    },
+                    Entregado: {
+                        field: 'delivered',
+                        callback: (value) => {
+                            return `${value} m3`
+                        }
+                    },
+                    Vehiculo: {
+                        callback: (value) => {
+                            return `Placa: ${value.carrier.vehicle.license_plate} / Conductor: ${value.carrier.carrier}`
+                        }
+                    },
+                    Firma: {
+                        field: 'isSigned',
+                        callback: (value) => {
+                            return value ? 'Si' : 'No'
+                        }
+                    },
+                    Fecha: {
+                        field: 'created_at',
+                        callback: (value) => {
+                            return this.moment(value).format('DD/MM/YYYY');
+                        }
+                    }
+                },
                 actions: [
                     {name: 'Ver', route:'remission.show'},
+                    {name: 'Editar', route:'remission.edit'},
                 ],
-                moment: moment,
+                params: {
+                    isSigned: [
+                        {label:'Si',value: 1},
+                        {label:'No',value: 0},
+                    ]
+                },
             }
         },
         methods: {
-            getPaginate(){
-                var url = '/getPaginateAllRemissions/remission',
-                    param = '?lenght='+this.lenght,
-                    total_url = url + param;
-
-                this.startLoading();
-
-                axios.get(total_url)
-                .then(res => {
-                    this.options = res.data.data;
-                    this.package = res.data
-                })
-                .finally( () => this.endLoading());
-
-            },
-            updateData(data){
-                this.options = data.data;
-                this.package = data;
-            },
             updaStatus(id){
                 this.startLoading();
 
@@ -194,17 +255,6 @@
                     this.endLoading();
                 });
             },
-            startLoading(){
-                
-                this.loading = this.$vs.loading({
-                    type: 'circles'
-                });
-                this.loading.text = "Procesando...";
-
-            },
-            endLoading(){
-                this.loading.close();
-            }
         }
     }
 </script>

@@ -15,8 +15,7 @@ class TypeIdentificationSeeder extends Seeder
     public function run()
     {
     	$types = [
-    		['Registro civil','RC'],
-    		['Tarjeta de identidad','TI'],
+    		['Número de Identificación Tributaria','NIT'],
     		['Cédula de ciudadanía','CC'],
     		['Cédula de extranjería','CE'],
     	];

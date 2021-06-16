@@ -73,31 +73,17 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import vSelect from "vue-select"
-    import 'vue-select/dist/vue-select.css'
+	
+    import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
-    	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-            vSelect
-    	},
+    	
+    	mixins: [FormComponentMixin],
     	props: {
     		vehicle: {
-    			type: Object
-    		}
+    			type: Object,
+    			required: true
+    		},
     	},
     	data(){
             return {
@@ -110,15 +96,24 @@
             }
         },
         mounted(){
-
         },
         methods: {
             updateVehicle(){
                 this.form.put(route('vehicle.update',{vehicle: this.vehicle.id}), {
                     errorBag: 'updateVehicle',
-                    preserveScroll: true
+                    preserveScroll: true,
+                    onStart: () => { 
+                      this.startLoading();
+                    },
+                    onSuccess: () => {
+                        this.loader.text = "¡Hecho!";
+                        this.uploadedImagen = false;
+                    },
+                    onFinish: () => {
+                        this.endLoading();
+                    },
                 });
-            }
+            },
         }
 
     }

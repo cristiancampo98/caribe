@@ -2,7 +2,7 @@
 	<admin-layout>
 		 <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Crear menú
+                Editar menú
             </h2>
         </template>
         <div class="py-12">
@@ -110,36 +110,21 @@
 	
 </template>
 <script>
-	import AdminLayout from '@/Layouts/AdminLayout'
-	import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetLabel from '@/Jetstream/Label'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
+
+	import { FormComponentMixin} from '@/Mixins/FormComponentMixin'
 
     export default {
-    	components: {
-            JetFormSection,
-            JetInput,
-            JetLabel,
-            JetInputError,
-            JetActionMessage,
-            JetButton,
-            AdminLayout,
-    	},
-
-        props: ['menu', 'errors'],
-    		
+    	mixins: [FormComponentMixin],
+        props: ['item', 'errors'],
     	data(){
             return {
                  form: this.$inertia.form({
-                    name: this.menu.name,
-                    slug: this.menu.slug,
-                    description: this.menu.description,
-                    icon: this.menu.icon,
-                    available: this.menu.available,
-                    isDirect: this.menu.isDirect,
+                    name: this.item.name,
+                    slug: this.item.slug,
+                    description: this.item.description,
+                    icon: this.item.icon,
+                    available: this.item.available,
+                    isDirect: this.item.isDirect,
                 }),
             }
         },
@@ -148,7 +133,7 @@
         },
         methods: {
             updateMenu(){
-				this.form.patch(`/menu/${this.menu.id}`, {
+				this.form.patch(`/menu/${this.item.id}`, {
                     errorBag: 'updateMenu',
                     preserveScroll: true
                 })

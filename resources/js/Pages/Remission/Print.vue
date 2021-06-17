@@ -65,7 +65,7 @@
 				</div>
 				<div class="flex-1 border border-gray-400">
 					<dt class="bg-gray-300 p-1">Cantidad del producto</dt>
-					<dd class="p-1">{{remission.order_detail.quantity}}</dd>				
+					<dd class="p-1">{{remission.order_detail.quantity | formatNumber m3}}</dd>				
 				</div>
 			</div>
 			<div class="flex  px-2">

@@ -63,14 +63,14 @@
                         <template #description>
                             <ul class="mx-auto">
                                 <li>Nombre: {{item.product.name}}</li>
-                                <li>Cantidad: {{item.quantity}} m3</li>
-                                <li>Equivalencia: {{(item.quantity / item.product.cubic_meters).toFixed(2)}} ton</li>
+                                <li>Cantidad: {{item.quantity | formatNumber}} m3</li>
+                                <li>Equivalencia: {{(item.quantity / item.product.cubic_meters).toFixed(3)}} ton</li>
                             </ul>
                             <div v-if="item.remissions.length" class="bg-white p-3">
                                 <strong>Remisiones</strong>
                                 <ul v-for="(remi) in item.remissions">
                                     <h3>Remisión # {{remi.id}}</h3>
-                                    <li class="ml-5" type="disc">Entregado {{remi.delivered}} m3 de {{item.quantity}} m3</li>
+                                    <li class="ml-5" type="disc">Entregado {{remi.delivered | formatNumber}} m3 de {{item.quantity | formatNumber }} m3</li>
                                     <li class="ml-5" type="disc">Placa de vehículo 
                                         <span class="uppercase">
                                             {{remi.carrier.vehicle.license_plate}}

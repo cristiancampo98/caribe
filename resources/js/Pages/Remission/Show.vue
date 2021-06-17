@@ -75,7 +75,7 @@
             		</item-list-component>
             		<item-list-component>
             			<template #attribute>Cantidad del producto</template>
-            			<template #description>{{remission.order_detail.quantity}} m3</template>
+            			<template #description>{{remission.order_detail.quantity | formatNumber}} m3</template>
             		</item-list-component>
             		<item-list-component class="bg-gray-100">
             			<template #attribute>Producto</template>

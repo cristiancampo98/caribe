@@ -201,6 +201,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         [PermissionStorageController::class, 'getPaginateAllPermissions']
     );
 
+    Route::get('print/{id}/remission',
+        [RemissionStorageController::class, 'print']
+    );
+
     Route::get('config-clear', function() {
         Artisan::call('config:clear');
         echo '<a href='. url('dashboard') .'>Se ha limpiado la configuración, volver al sistema.</a>';

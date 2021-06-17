@@ -6,18 +6,23 @@
             </h2>
         </template>
         <div class="py-12">
+
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <vs-button
-                class="tracking-widest"
-                dark
-                border
-                @click="exportPDF"
-                >
-                    <i class="bx bx-printer"></i> Imprimir
-                </vs-button>
+                <a 
+                :href="`/print/${remission.id}/remission`" 
+                target="_blank"
+                class="hover:text-blue-500 underline">
+                 Imprimir
+                </a>
             	<description-list-component>
             		<template #title>Remisión</template>
             		<template #subtitle>Visualiza la información de la remisión</template>
+                    <item-list-component >
+                        <template #attribute>Consecutivo Remisión </template>
+                        <template #description>
+                            {{remission.id}}
+                        </template> 
+                    </item-list-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Empresa </template>
                         <template #description>
@@ -27,7 +32,7 @@
             		<item-list-component >
             			<template #attribute>Cliente </template>
             			<template #description>
-            				{{remission.order_detail.order.client.name}} {{remission.order_detail.order.client.email}}
+            				{{remission.order_detail.order.client.name}}
             			</template>	
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
@@ -61,12 +66,12 @@
                         </template> 
                     </item-list-component>
             		<item-list-component>
-            			<template #attribute>No. Pedido</template>
+            			<template #attribute>Consecutivo Pedido</template>
             			<template #description>{{remission.order_detail.order_id}}</template>
             		</item-list-component>
             		<item-list-component class="bg-gray-100">
             			<template #attribute>Cantidad entregada</template>
-            			<template #description>{{remission.delivered}} m3</template>
+            			<template #description>{{ remission.delivered | formatNumber}} m3</template>
             		</item-list-component>
             		<item-list-component>
             			<template #attribute>Cantidad del producto</template>

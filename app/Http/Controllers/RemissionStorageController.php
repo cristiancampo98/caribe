@@ -25,4 +25,11 @@ class RemissionStorageController extends Controller
     {
     	return self::getRemissionByProductTrait($id);
     }
+
+    public function print($id)
+    {
+        return inertia('Remission/Print', [
+            'remission' => self::getRemissionByIdWithRelationships($id)
+        ]);
+    }
 }

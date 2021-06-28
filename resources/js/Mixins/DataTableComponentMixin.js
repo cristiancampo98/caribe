@@ -17,8 +17,8 @@ moment.locale('es')
 
 export const DataTableComponentMixin = {
 
-	components: {
-     	AdminLayout,
+    components: {
+        AdminLayout,
         JetNavLink,
         JetButton,
         TableResponsiveComponent,
@@ -31,74 +31,79 @@ export const DataTableComponentMixin = {
         JsonExcel
     },
     beforeCreate() {
-    	console.log('Hook called from DataTableComponentMixin.js');
+        console.log('Hook called from DataTableComponentMixin.js');
     },
- 	mounted(){
+    mounted() {
         this.getPaginate();
     },
     data() {
         return {
             lenght: 5,
             page: this.lenght,
-            pages:[
-                5,10,20
+            pages: [
+                5, 10, 20
             ],
             valueParams: {},
             options: [],
             url: null,
             btn_name_excel: "XLS",
-		    json_meta: [
-		      [
-		        {
-		          key: "charset",
-		          value: "utf-8",
-		        },
-		      ],
-		    ],
-		    moment: moment,
+            json_meta: [
+                [
+                    {
+                        key: "charset",
+                        value: "utf-8",
+                    },
+                ],
+            ],
+            moment: moment,
         }
     },
     methods: {
-        getPaginate(){
+        getPaginate() {
             this.startLoading();
 
-            var param = '?lenght='+this.lenght;
+            var param = '?lenght=' + this.lenght;
             var data = this.paramsStringFormat()
 
             if (data.length) {
                 param += data
             }
-            
+
             var total_url = this.url + param;
             axios.get(total_url)
-            .then(res => {
-                this.options = res.data.data;
-                this.package = res.data
-            })
-            .finally( () => {
-                this.endLoading();
-            });
+                .then(res => {
+                    this.options = res.data.data;
+                    this.package = res.data
+                })
+                .finally(() => {
+                    this.endLoading();
+                });
         },
         updateData(data) {
             this.options = data.data;
             this.package = data;
         },
         exportPDF() {
-        	this.startLoading();
-        	var vm = this
-        	const doc = new jsPDF()
-        	autoTable(doc, { 
-        		html: '#my-table' ,
-        		theme: 'grid',
-        		columns: vm.columns,
-        		margin: {top: 30},
-        	})
-        	doc.save(vm.document_name)
-        	this.endLoading();
+            this.startLoading();
+            var vm = this
+            const doc = new jsPDF('l', 'pt', 'a1')
+            autoTable(doc, {
+                html: '#my-table',
+                theme: 'grid',
+                startY: 60,
+                styles: {
+                    fontSize: 30,
+                    cellWidth: 'unwrap'
+                },
+                columns: vm.columns,
+                margin: { top: 30 },
+            })
+            doc.save(vm.document_name)
+            this.endLoading();
         },
         paramsStringFormat() {
             var format = ''
-            for(var i in this.valueParams) {
+            for (var i in this.valueParams) {
                 format += `&${i}=${this.valueParams[i]}`
             }
             return format
@@ -108,5 +113,5 @@ export const DataTableComponentMixin = {
             this.getPaginate()
         }
     }
-	
+
 }

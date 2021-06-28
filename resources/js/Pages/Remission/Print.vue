@@ -36,18 +36,15 @@
 			</div>
 			<div class="flex  px-2">
 				<div class="flex-1 border border-gray-400">
-					<dt class="bg-gray-300 p-1">Departamento</dt>
-					<dd class="p-1">{{remission.order_detail.order.client.details.deparment}}</dd>
+					<dt class="bg-gray-300 p-1">Lugar de cargue</dt>
+					<dd class="p-1"></dd>
 				</div>
 				<div class="flex-1 border border-gray-400">
-					<dt class="bg-gray-300 p-1">Ciudad</dt>
-
-					<dd class="p-1">{{remission.order_detail.order.client.details.city}}</dd>
-				</div>
-				<div class="flex-1 border border-gray-400">
-					<dt class="bg-gray-300 p-1">Dirección</dt>
-					<dd class="p-1">{{remission.order_detail.order.client.details.street_address}}</dd>
-
+					<dt class="bg-gray-300 p-1">Destino</dt>
+					<dd class="p-1">
+						{{remission.order_detail.order.department}} - {{remission.order_detail.order.city}}.
+						Dirección: {{remission.order_detail.order.shipping_address}}
+						</dd>
 				</div>
 				<div class="flex-1 border border-gray-400">
 					<dt class="bg-gray-300 p-1">Telefono</dt>

@@ -42,21 +42,9 @@
                         </template> 
                     </item-list-component>
                     <item-list-component>
-                        <template #attribute>Departamento</template>
+                        <template #attribute>Ubicación cliente</template>
                         <template #description>
-                            {{remission.order_detail.order.client.details.deparment}}
-                        </template> 
-                    </item-list-component>
-                    <item-list-component class="bg-gray-100">
-                        <template #attribute>Ciudad</template>
-                        <template #description>
-                            {{remission.order_detail.order.client.details.city}}
-                        </template> 
-                    </item-list-component>
-                    <item-list-component>
-                        <template #attribute>Dirección</template>
-                        <template #description>
-                            {{remission.order_detail.order.client.details.street_address}}
+                            {{remission.order_detail.order.client.details.deparment}} - {{remission.order_detail.order.client.details.city}} / {{remission.order_detail.order.client.details.street_address}}
                         </template> 
                     </item-list-component>
                      <item-list-component class="bg-gray-100">
@@ -68,6 +56,14 @@
             		<item-list-component>
             			<template #attribute>Consecutivo Pedido</template>
             			<template #description>{{remission.order_detail.order_id}}</template>
+            		</item-list-component>
+                    <item-list-component class="bg-gray-100">
+            			<template #attribute>Cargue</template>
+            			<template #description>{{remission.order_detail.order.place_loading}}</template>
+            		</item-list-component>
+                    <item-list-component>
+            			<template #attribute>Dirección de entrega</template>
+            			<template #description>{{remission.order_detail.order.department}} - {{remission.order_detail.order.city}} / {{remission.order_detail.order.shipping_address}}</template>
             		</item-list-component>
             		<item-list-component class="bg-gray-100">
             			<template #attribute>Cantidad entregada</template>

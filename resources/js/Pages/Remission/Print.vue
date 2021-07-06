@@ -1,7 +1,17 @@
 <template>
 	<div class="m-3 border border-gray-400">
 		<div class="bg-white py-2">
-			<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="Logo empresa">
+			<div class="grid grid-cols-5 gap-4">
+				<div>
+					<img class="w-16 md:w-32 lg:w-48" src="/images/Logos-01.png" alt="Logo empresa">
+				</div>
+				<div class="col-span-3 text-center">
+					<p class="">La negociación a que este documento se refiere se entenderá completa con la presentación para el cobro de la factura debidamente aceptada y la constancia de recibo de la mercancía o los servicos específicados.</p>
+					<h4 class="font-bold">"SE DEBE PRESENTAR ANTES DE 3 MESES DESPUES DE SU EXPEDICIÓN"</h4>
+				</div>
+			</div>
+			
+
 			<div class="flex  px-2">
 				<div class="flex-1 border border-gray-400">
 					<dt class="bg-gray-300 p-1">Fecha de remisión</dt>
@@ -37,7 +47,9 @@
 			<div class="flex  px-2">
 				<div class="flex-1 border border-gray-400">
 					<dt class="bg-gray-300 p-1">Lugar de cargue</dt>
-					<dd class="p-1"></dd>
+					<dd class="p-1">
+						{{remission.order_detail.order.place_loading}}
+					</dd>
 				</div>
 				<div class="flex-1 border border-gray-400">
 					<dt class="bg-gray-300 p-1">Destino</dt>
@@ -62,7 +74,7 @@
 				</div>
 				<div class="flex-1 border border-gray-400">
 					<dt class="bg-gray-300 p-1">Cantidad del producto</dt>
-					<dd class="p-1">{{remission.order_detail.quantity | formatNumber m3}}</dd>				
+					<dd class="p-1">{{remission.order_detail.quantity | formatNumber}} m3</dd>				
 				</div>
 			</div>
 			<div class="flex  px-2">
@@ -92,12 +104,11 @@
 			</div>
 			<div class="flex flex-row-reverse mr-4">
 				<div>
-					<dt>Remitido por</dt>
-					<dd>{{remission.creator.name}}</dd>
+					<dt class="font-bold">Remitido por</dt>
+					<dd class="-mt-3 text-xl underline">{{remission.creator.name}}</dd>
 				</div>				
 			</div>
 		</div>
-		
 	</div>
 </template>
 <script>

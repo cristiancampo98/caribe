@@ -18,32 +18,37 @@
             			<template #attribute>Cliente</template>
             			<template #description>{{order.client.name}}</template>
             		</item-list-component>
-            		<item-list-component class="bg-gray-100">
+                    <item-list-component class="bg-gray-100">
+            			<template #attribute>Lugar de cargue</template>
+            			<template #description>{{order.place_loading}}</template>	
+            		</item-list-component>
+            		<item-list-component >
             			<template #attribute>Dirección de envío</template>
             			<template #description>{{order.shipping_address}}</template>	
             		</item-list-component>
-            		<item-list-component>
-            			<template #attribute>Ubicación</template>
+            		<item-list-component class="bg-gray-100">
+            			<template #attribute>Ubicación de envío</template>
             			<template #description>{{order.department}} | {{order.city}}</template>
             		</item-list-component>
-                    <item-list-component class="bg-gray-100">
+                    <item-list-component>
                         <template #attribute>Nota de pedido</template>
                         <template #description>{{order.note}}</template>
                     </item-list-component>
-                    <item-list-component>
+                    <item-list-component class="bg-gray-100">
                         <template #attribute>Nota de eliminación</template>
                         <template #description>{{order.delete_note}}</template>
                     </item-list-component>
-                    <item-list-component class="bg-gray-100">
+                    <item-list-component>
                         <template #attribute>Estado</template>
                         <template #description>{{order.status}}</template>
                     </item-list-component>
-                    <item-list-download-component
+                    <item-list-download-component 
+                    class="bg-gray-100"
                     v-if="order_files.length"
                     title="Contrato/Orden de compra"
                     :files="order_files">
                     </item-list-download-component>
-                    <item-list-component class="bg-gray-100">
+                    <item-list-component >
                         <template #attribute>Fecha</template>
                         <template #description>{{moment(order.created_at).format('DD/MM/YYYY')}}</template>
                     </item-list-component>

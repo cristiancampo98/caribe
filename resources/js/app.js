@@ -16,6 +16,10 @@ Vue.use(LoadingPlugin)
 
 const app = document.getElementById('app');
 
+Vue.filter('formatNumber',  value => {
+    return parseFloat(value)
+});
+
 new Vue({
     render: (h) =>
         h(InertiaApp, {

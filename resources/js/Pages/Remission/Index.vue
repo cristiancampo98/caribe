@@ -109,11 +109,11 @@
                                 {{item.order_detail.product.name}}
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.order_detail.quantity}}
+                                {{item.order_detail.quantity | formatNumber}}
                                 m3
                             </td-responsive-component>
                             <td-responsive-component>
-                                {{item.delivered}}
+                                {{item.delivered | formatNumber}}
                                 m3
                             </td-responsive-component>
                             <td-responsive-component>

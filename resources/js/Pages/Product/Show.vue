@@ -25,16 +25,16 @@
             		</item-list-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Equivalencia en m3</template>
-                        <template #description>{{product.cubic_meters}}</template> 
+                        <template #description>{{product.cubic_meters | formatNumber}}</template> 
                     </item-list-component>
                    
                     <item-list-component >
                         <template #attribute>Equivalencia en ton</template>
-                        <template #description>{{product.ton}}</template>   
+                        <template #description>{{product.ton | formatNumber}}</template>   
                     </item-list-component>
                     <item-list-component class="bg-gray-100">
                         <template #attribute>Limite por día</template>
-                        <template #description>{{product.limit_day}}</template> 
+                        <template #description>{{product.limit_day | formatNumber}}</template> 
                     </item-list-component>
                     <item-list-component >
                         <template #attribute>Creador</template>

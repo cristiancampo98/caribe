@@ -51,7 +51,13 @@
 			            	<jet-label for="user_id" value="Cliente" />
 			            	<span class="border border-gray-300 rounded-md shadow-sm mt-1 block w-full my-2 py-2 pl-2 bg-gray-200">{{user.name}}</span>
 			            </div>
-			             <div class="col-span-6 lg:col-span-3">
+						 <!-- shipping address -->
+			            <div class="col-span-6 lg:col-span-3">
+			                <jet-label for="shipping_address" value="Dirección envío" />
+			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
+			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
+			            </div>
+			             <div class="col-span-6 lg:col-span-2">
 			                <jet-label for="deparment" value="Departamento" />
 			                <v-select 
 			            	class="mt-1"
@@ -63,7 +69,7 @@
 			            	@input="showCitys"></v-select>
 			            </div>
 			            <!-- city -->
-			            <div class="col-span-6 lg:col-span-3" >
+			            <div class="col-span-6 lg:col-span-2" >
 			                <jet-label for="city" value="Ciudad" />
 			               	<v-select 
 			               	v-if="form.city || citys.length"
@@ -74,30 +80,20 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
-			            <!-- shipping address -->
-			            <div class="col-span-6 lg:col-span-3">
-			                <jet-label for="shipping_address" value="Dirección envío" />
-			               	<jet-input id="shipping_address" type="text" class="mt-1 block w-full" v-model="form.shipping_address" required/>
-			                <jet-input-error :message="form.errors.shipping_address" class="mt-2" />
+						<!-- place of loading -->
+						<div class="col-span-6 lg:col-span-2" >
+			                <jet-label for="place_loading" value="Lugar de cargue" />
+			               	<jet-input id="place_loading" type="text" class="mt-1 block w-full" v-model="form.place_loading"/>
+			                <jet-input-error :message="form.errors.place_loading" class="mt-2" />
 			            </div>
+			           
 			           <!-- note -->
 			            <div class="col-span-6 lg:col-span-6">
 			                <jet-label for="note" value="Nota" />
 			               	<textarea id="note" class="mt-1 block w-full rounded-lg" v-model="form.note"></textarea>
 			                <jet-input-error :message="form.errors.note" class="mt-2" />
 			            </div>
-			             <!-- pse_url -->
-				        <!-- <div class="col-span-6 lg:col-span-3">
-				        	<jet-label for="pse_url" value="Link PSE" />
-				        	<jet-input id="pse_url" type="text" class="mt-1 block w-full" v-model="form.pse_url" />
-				            <jet-input-error :message="form.errors.pse_url" class="mt-2" />
-				        </div> -->
-				        <!-- pse_number -->
-				       <!--  <div class="col-span-6 lg:col-span-3">
-				        	<jet-label for="pse_number" value="PSE # radicado" />
-				        	<jet-input id="pse_number" type="text" class="mt-1 block w-full" v-model="form.pse_number" />
-				            <jet-input-error :message="form.errors.pse_number" class="mt-2" />
-				        </div> -->
+			            
 			             <!-- contrato -->
 			            <div class="col-span-6 lg:col-span-3" v-if="type_pay == 'crédito'">
 			            	<label for="contract" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
@@ -261,6 +257,7 @@
                 form: this.$inertia.form({
                 	_method: 'put',
                     user_id: this.order.user_id,
+					place_loading: this.order.place_loading,
                     shipping_address: this.order.shipping_address,
                     department: this.order.department,
                     city: this.order.city,

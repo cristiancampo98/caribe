@@ -52,10 +52,10 @@
                                 {{item.name}}
                             </td-responsive-component>
                              <td-responsive-component>
-                                {{item.cubic_meters}} m3 /  {{item.ton}} ton
+                                {{item.cubic_meters | formatNumber}} m3 /  {{item.ton | formatNumber}} ton
                             </td-responsive-component>
                              <td-responsive-component>
-                                {{item.limit_day}}
+                                {{item.limit_day | formatNumber}}
                             </td-responsive-component>
                             <td-responsive-component>
                                 {{item.description}}

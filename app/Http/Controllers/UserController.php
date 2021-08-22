@@ -103,7 +103,11 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $user->update($request->all());
-        $user->details->update($request->all());
+        
+        if (isset($user->details)) {
+            $user->details->update($request->all());
+        }
+        
         $user->roles()->sync($request->roles_id);
         
         if ($request->has('photo_document')) {

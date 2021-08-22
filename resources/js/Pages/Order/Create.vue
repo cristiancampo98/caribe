@@ -84,6 +84,13 @@
 			            	:options="citys"></v-select>
 			                <jet-input-error :message="form.errors.city" class="mt-2" />
 			            </div>
+
+						<!-- place of loading -->
+						<div class="col-span-6 lg:col-span-1" >
+			                <jet-label for="place_loading" value="Lugar de cargue" />
+			               	<jet-input id="place_loading" type="text" class="mt-1 block w-full" v-model="form.place_loading"/>
+			                <jet-input-error :message="form.errors.place_loading" class="mt-2" />
+			            </div>
 			           
 			           <!-- note -->
 			            <div class="col-span-6 lg:col-span-6">
@@ -233,6 +240,7 @@
             return {
                 form: this.$inertia.form({
                     user_id: null,
+					place_loading: null,
                     shipping_address: null,
                     department: null,
                     city: null,
